@@ -1,68 +1,73 @@
-# 🗃️ Database Models – JobTrackr
+# 💼 JobTrackr – Advanced Job Application Tracking System
 
-This directory contains the data model definitions and entity relationships used by the JobTrackr backend system (Spring Boot + PostgreSQL).
+**JobTrackr** is a full-featured, backend-first job application tracker designed to help users manage every aspect of their job search — from applications and resumes to recruiter communication, timelines, and follow-up reminders.
 
----
-
-## 📐 ER Diagram (Simplified)
-
-User (1) ──── (∞) JobApplication
+This system goes beyond CRUD, modeling the real-world complexity of job searching, and is built with enterprise-level architecture in mind.
 
 ---
 
-## 🧑‍💼 User
+## 📌 Table of Contents
 
-Represents an individual user with access to the system.  
-All job applications are scoped to a specific user.
-
-| Field        | Type     | Description                      |
-|--------------|----------|----------------------------------|
-| `id`         | UUID     | Primary Key                      |
-| `email`      | String   | Unique user email (used to log in) |
-| `password`   | String   | Encrypted password (BCrypt)      |
-| `full_name`  | String   | User's full name                 |
-| `created_at` | Timestamp| Date of account creation         |
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [System Overview](#system-overview)
+- [Data Model Summary](#data-model-summary)
+- [Design Principles](#design-principles)
+- [Future Plans](#future-plans)
 
 ---
 
-## 💼 JobApplication
+## 🌟 Features
 
-Represents a single job opportunity the user has applied for.
-
-| Field              | Type      | Description                                  |
-|--------------------|-----------|----------------------------------------------|
-| `id`               | UUID      | Primary Key                                  |
-| `user_id`          | UUID      | Foreign Key – references `User.id`           |
-| `job_title`        | String    | Title of the position                        |
-| `company_name`     | String    | Name of the company                          |
-| `location`         | String    | Location (or city) of the job                |
-| `is_remote`        | Boolean   | Whether it's a remote position               |
-| `application_date` | Date      | Date the job was applied to                  |
-| `status`           | Enum      | Current status: `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED` |
-| `source`           | String    | Where the user found the job (LinkedIn, etc)|
-| `resume_version`   | String    | Which resume version was used (optional)     |
-| `notes`            | Text      | Free-form notes about the application        |
-| `created_at`       | Timestamp | Created timestamp                            |
-| `updated_at`       | Timestamp | Last updated timestamp                       |
+- ✅ Secure user authentication (JWT-based)
+- ✅ Track job applications with detailed metadata
+- ✅ Manage resume versions and cover letters
+- ✅ Timeline of application events
+- ✅ Log all recruiter communication
+- ✅ Attach offer letters, prep notes, rejection letters, job descriptions, etc.
+- ✅ Set reminders for follow-ups
+- ✅ Schedule interviews and assessments
+- ✅ Audit log for all major actions
+- ✅ Normalize and structure sources, skills, and locations
 
 ---
 
-## 🧾 Notes
+## ⚙️ Tech Stack
 
-- Timestamps are handled automatically using `@CreationTimestamp` and `@UpdateTimestamp`.
-- `status` is stored as an `Enum` in Java but saved as a `String` in the DB for readability.
-- Additional tables (e.g., `Resume`, `Company`, `InterviewLog`) may be added as stretch features.
-
----
-
-## 📚 Future Model Ideas
-
-- **Resume** (track uploaded versions or templates)
-- **Interview** (date, round, feedback)
-- **JobOffer** (salary, benefits, deadline)
-- **ApplicationTimeline** (events like "Follow-up email sent")
+| Layer       | Tech                         |
+|-------------|------------------------------|
+| Backend     | Spring Boot (Java)           |
+| Database    | PostgreSQL                   |
+| ORM         | Spring Data JPA + Hibernate  |
+| Security    | Spring Security + JWT        |
+| Build Tool  | Maven                        |
+| Docs        | Swagger / OpenAPI (planned)  |
+| Deployment  | Render / Heroku (planned)    |
 
 ---
 
-> 📌 For schema evolution, we recommend using Liquibase or Flyway in `src/main/resources/db/migration`.
+## 🧠 System Overview
+
+JobTrackr is designed for real users to log:
+- Applications to roles (title, company, location, source, resume used)
+- Lifecycle updates like interviews or rejections
+- Communications like calls, emails, and LinkedIn DMs
+- Scheduled events like interviews or assessments
+- Reminders and follow-ups
+- Supporting files like resumes, offer letters, and job descriptions
+
+The system uses normalized models to avoid redundancy and enhance flexibility.
+
+## 📂 Folder Structure (Backend)
+
+TBC
+
+---
+
+## 👋 Want to Contribute?
+
+This project will soon be made public for open-source contributions. Stay tuned for the contribution guide!
+
+---
+
 
