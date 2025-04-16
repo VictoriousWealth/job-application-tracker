@@ -58,6 +58,115 @@ JobTrackr is designed for real users to log:
 
 The system uses normalized models to avoid redundancy and enhance flexibility.
 
+---
+
+## 🗃️ Data Model Summary
+
+### 👤 `User`
+Handles authentication and owns all resources.
+
+---
+
+### 💼 `JobApplication`
+Central entity representing a job applied to. Contains title, company, status, source, location, notes, etc.
+
+- `status` is an enum: `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`
+- Linked to `Location`, `JobSource`, `Resume`, and `CoverLetter`
+
+---
+
+### 🧾 `Resume`
+Stores different resume versions with:
+- `file_path` (only)
+- No `user_id` or direct job link; can be reused across jobs
+
+---
+
+### 📝 `CoverLetter`
+Stores general or reusable letters:
+- Contains title and file path or content
+- Not tied to specific job application (like `Resume`)
+
+---
+
+### 📅 `ApplicationTimeline`
+Tracks key lifecycle events like:
+- Application created, Interview scheduled, Offer made
+- Enum `event_type`: `CREATED`, `FOLLOW_UP`, `INTERVIEW`, `REJECTED`, `OFFER`, `NOTE`
+
+---
+
+### 📨 `CommunicationLog`
+Logs recruiter interactions:
+- Enum `type`: `EMAIL`, `CALL`, `LINKEDIN`, `IN_PERSON`
+- Enum `direction`: `INBOUND`, `OUTBOUND`
+
+---
+
+### 🔔 `FollowUpReminder`
+Sets reminders for follow-up actions with `remind_on` timestamp.
+
+---
+
+### 📆 `ScheduledCommunication`
+Logs upcoming events users must attend:
+- Interviews, assessments, HR calls, etc.
+- Type enum: `INTERVIEW`, `ONLINE_ASSESSMENT`, `CALL`
+
+---
+
+### 📎 `Attachment`
+Single model for all uploaded files:
+- Job descriptions (`type: JOB_DESCRIPTION`)
+- Offer letters (`type: OFFER_LETTER`)
+- Interview prep, rejections, etc.
+- Linked to a job via `job_application_id`
+
+---
+
+### 🧪 `AuditLog`
+Tracks changes across the system:
+- Enum `action`: `CREATE`, `UPDATE`, `DELETE`
+- `description` is **required** to explain each change
+
+---
+
+### 🗺️ `Location`
+Normalized city and country for analytics and filtering.
+
+---
+
+### 🧠 `SkillTracker`
+Links required skills to each job (future AI-ready).
+
+---
+
+### 🌐 `JobSource`
+Normalized table for application source (LinkedIn, Indeed, Referral, etc.)
+
+---
+
+## ✅ Design Principles
+
+- **Normalization**: Data is cleanly separated (e.g., `Location`, `JobSource`)
+- **Minimal Redundancy**: `Resume` and `CoverLetter` aren't tied directly to applications
+- **Auditability**: All changes are tracked through `AuditLog`
+- **Extendability**: Supports future AI integration (e.g., skill analysis, job matching)
+- **Security-first**: All routes gated by JWT auth and user ownership checks
+
+---
+
+## 🔮 Future Plans
+
+- Analytics dashboard (conversion rates, source performance)
+- Export data (PDF, CSV)
+- AI: Resume-job matching, follow-up email generator
+- Calendar view for events and reminders
+- REST → GraphQL (optional phase)
+- Frontend with React
+
+---
+
 ## 📂 Folder Structure (Backend)
 
 TBC
