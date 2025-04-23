@@ -1,9 +1,13 @@
 package com.nick.job_application_tracker.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
+import com.nick.job_application_tracker.dto.JobSourceDTO;
 import com.nick.job_application_tracker.model.JobSource;
 import com.nick.job_application_tracker.repository.JobSourceRepository;
 
@@ -16,15 +20,33 @@ public class JobSourceService {
         this.jobSourceRepository = jobSourceRepository;
     }
 
-    public List<JobSource> findAll() {
-        return jobSourceRepository.findAll();
+    public List<JobSourceDTO> getAllSources() {
+        return jobSourceRepository.findAll().stream()
+                .map(source -> new JobSourceDTO(source.getId(), source.getName()))
+                .collect(Collectors.toList());
     }
 
-    public JobSource save(JobSource source) {
-        return jobSourceRepository.save(source);
+    public JobSourceDTO createSource(JobSourceCreateDTO createDTO) {
+        JobSource source = new JobSource();
+        source.setName(createDTO.getName());
+        JobSource saved = jobSourceRepository.save(source);
+        return new JobSourceDTO(saved.getId(), saved.getName());
     }
 
-    public void delete(Long id) {
+    public Optional<JobSourceDTO> getSourceById(Long id) {
+        return jobSourceRepository.findById(id)
+                .map(source -> new JobSourceDTO(source.getId(), source.getName()));
+    }
+
+    public Optional<JobSourceDTO> updateSource(Long id, JobSourceCreateDTO createDTO) {
+        return jobSourceRepository.findById(id).map(source -> {
+            source.setName(createDTO.getName());
+            JobSource updated = jobSourceRepository.save(source);
+            return new JobSourceDTO(updated.getId(), updated.getName());
+        });
+    }
+
+    public void deleteSource(Long id) {
         jobSourceRepository.deleteById(id);
     }
 }
