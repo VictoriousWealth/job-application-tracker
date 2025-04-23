@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.FollowUpReminder;
+import com.nick.job_application_tracker.dto.FollowUpReminderCreateDTO;
+import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
 import com.nick.job_application_tracker.service.FollowUpReminderService;
 
 @RestController
@@ -25,13 +26,13 @@ public class FollowUpReminderController {
     }
 
     @GetMapping("/job/{jobAppId}")
-    public List<FollowUpReminder> getForJob(@PathVariable Long jobAppId) {
-        return service.getByJobAppId(jobAppId);
+    public ResponseEntity<List<FollowUpReminderDTO>> getForJob(@PathVariable Long jobAppId) {
+        return ResponseEntity.ok(service.getByJobAppId(jobAppId));
     }
 
     @PostMapping
-    public FollowUpReminder create(@RequestBody FollowUpReminder reminder) {
-        return service.save(reminder);
+    public ResponseEntity<FollowUpReminderDTO> create(@RequestBody FollowUpReminderCreateDTO dto) {
+        return ResponseEntity.ok(service.save(dto));
     }
 
     @DeleteMapping("/{id}")
