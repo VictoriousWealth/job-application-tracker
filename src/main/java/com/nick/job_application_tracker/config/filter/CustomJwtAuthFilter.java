@@ -38,7 +38,7 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // allow all public auth routes through without filtering
         String path = request.getServletPath();
-        if (path.startsWith("/api/auth/")) {
+        if (path.equals("/api/auth/signup") || path.equals("/api/auth/login")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,17 +53,9 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
         if (request.getHeader("Authorization").startsWith("Bearer ")) {
             String token = request.getHeader("Authorization").substring("Bearer ".length());
             System.out.println("token: " + token);
-            
-            String email = jwtService.extractEmail(token); // assumes your JwtService has this method
-            String role = jwtService.extractRole(token);   // extract role too, if needed
-
-            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(email, role, token);
-            authentication.setAuthenticated(true); // optional if your manager does it
-
+            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(token);
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
-
-            
             filterChain.doFilter(request, response);
             return;
         }
@@ -92,17 +84,9 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
             String role = userRepository.findByEmail(username).get().getRoles().toArray()[0].toString();
             token = jwtService.generateToken(username, role);
             System.out.println("token generated successfully :" + token);
-            
-            String email = jwtService.extractEmail(token); // assumes your JwtService has this method
-            String role = jwtService.extractRole(token);   // extract role too, if needed
-
-            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(email, role, token);
-            authentication.setAuthenticated(true); // optional if your manager does it
-
+            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(token);
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
-
-            
             response.addHeader("Authorization", "Bearer " + token);
             filterChain.doFilter(request, response);
         } catch (Exception e) {
