@@ -1,10 +1,11 @@
 package com.nick.job_application_tracker.repository;
 
-import com.nick.job_application_tracker.model.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.nick.job_application_tracker.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
