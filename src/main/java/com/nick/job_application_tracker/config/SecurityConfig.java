@@ -58,7 +58,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers(HttpMethod.GET, "/", "/favicon.ico", "/error").permitAll();
             auth.requestMatchers("/api/auth/**").permitAll();
-            auth.requestMatchers("/**").hasRole("BASIC");
             auth.anyRequest().authenticated(); // Protect all other routes
         });
 
