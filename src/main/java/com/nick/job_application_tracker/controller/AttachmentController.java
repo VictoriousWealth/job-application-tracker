@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.Attachment;
+import com.nick.job_application_tracker.dto.AttachmentDTO;
 import com.nick.job_application_tracker.service.AttachmentService;
 
 @RestController
@@ -25,13 +25,13 @@ public class AttachmentController {
     }
 
     @GetMapping("/job/{jobAppId}")
-    public List<Attachment> getForJob(@PathVariable Long jobAppId) {
-        return service.getByJobAppId(jobAppId);
+    public ResponseEntity<List<AttachmentDTO>> getForJob(@PathVariable Long jobAppId) {
+        return ResponseEntity.ok(service.getByJobAppId(jobAppId));
     }
 
     @PostMapping
-    public Attachment create(@RequestBody Attachment attachment) {
-        return service.save(attachment);
+    public ResponseEntity<AttachmentDTO> create(@RequestBody AttachmentDTO dto) {
+        return ResponseEntity.ok(service.save(dto));
     }
 
     @DeleteMapping("/{id}")
@@ -39,5 +39,4 @@ public class AttachmentController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }
