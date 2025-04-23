@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.ScheduledCommunication;
+import com.nick.job_application_tracker.dto.ScheduledCommunicationCreateDTO;
+import com.nick.job_application_tracker.dto.ScheduledCommunicationDTO;
 import com.nick.job_application_tracker.service.ScheduledCommunicationService;
 
 @RestController
-@RequestMapping("/api/scheduled-events")
+@RequestMapping("/api/scheduled-communications")
 public class ScheduledCommunicationController {
 
     private final ScheduledCommunicationService service;
@@ -24,14 +25,19 @@ public class ScheduledCommunicationController {
         this.service = service;
     }
 
-    @GetMapping("/job/{jobAppId}")
-    public List<ScheduledCommunication> getForJob(@PathVariable Long jobAppId) {
-        return service.getByJobAppId(jobAppId);
+    @GetMapping
+    public ResponseEntity<List<ScheduledCommunicationDTO>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ScheduledCommunicationDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public ScheduledCommunication create(@RequestBody ScheduledCommunication event) {
-        return service.save(event);
+    public ResponseEntity<ScheduledCommunicationDTO> create(@RequestBody ScheduledCommunicationCreateDTO dto) {
+        return ResponseEntity.ok(service.create(dto));
     }
 
     @DeleteMapping("/{id}")
