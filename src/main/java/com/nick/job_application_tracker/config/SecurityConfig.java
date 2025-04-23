@@ -1,10 +1,7 @@
 package com.nick.job_application_tracker.config;
 
-import com.nick.job_application_tracker.config.filter.CustomJwtAuthFilter;
-import com.nick.job_application_tracker.config.filter.LoggingFilter;
-import com.nick.job_application_tracker.config.provider.CustomJwtAuthenticationProvider;
-import com.nick.job_application_tracker.config.service.JwtService;
-import com.nick.job_application_tracker.repository.UserRepository;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,12 +13,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.util.List;
+import com.nick.job_application_tracker.config.filter.CustomJwtAuthFilter;
+import com.nick.job_application_tracker.config.filter.LoggingFilter;
+import com.nick.job_application_tracker.config.provider.CustomJwtAuthenticationProvider;
+import com.nick.job_application_tracker.config.service.JwtService;
+import com.nick.job_application_tracker.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -56,8 +57,8 @@ public class SecurityConfig {
         // 🔹 Role-Based Authorization
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers(HttpMethod.GET, "/", "/favicon.ico", "/error").permitAll();
-            auth.requestMatchers("/login").permitAll();
-            auth.requestMatchers("/basic").hasRole("BASIC");
+            auth.requestMatchers("/api/auth/**").permitAll();
+            auth.requestMatchers("/**").hasRole("BASIC");
             auth.anyRequest().authenticated(); // Protect all other routes
         });
 
