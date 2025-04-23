@@ -2,9 +2,12 @@ package com.nick.job_application_tracker.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.nick.job_application_tracker.dto.LocationDTO;
+import com.nick.job_application_tracker.mapper.LocationMapper;
 import com.nick.job_application_tracker.model.Location;
 import com.nick.job_application_tracker.repository.LocationRepository;
 
@@ -17,19 +20,29 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public List<Location> findAll() {
-        return locationRepository.findAll();
+    public List<LocationDTO> getAllLocations() {
+        return locationRepository.findAll().stream()
+                .map(LocationMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Location> findById(Long id) {
-        return locationRepository.findById(id);
+    public Optional<LocationDTO> getLocationById(Long id) {
+        return locationRepository.findById(id).map(LocationMapper::toDTO);
     }
 
-    public Location save(Location location) {
-        return locationRepository.save(location);
+    public LocationDTO createLocation(LocationDTO locationDTO) {
+        Location location = LocationMapper.toEntity(locationDTO);
+        return LocationMapper.toDTO(locationRepository.save(location));
     }
 
-    public void delete(Long id) {
+    public Optional<LocationDTO> updateLocation(Long id, LocationDTO locationDTO) {
+        return locationRepository.findById(id).map(existing -> {
+            LocationMapper.updateEntity(existing, locationDTO);
+            return LocationMapper.toDTO(locationRepository.save(existing));
+        });
+    }
+
+    public void deleteLocation(Long id) {
         locationRepository.deleteById(id);
     }
 }
