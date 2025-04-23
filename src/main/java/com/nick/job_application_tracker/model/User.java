@@ -50,4 +50,22 @@ public class User {
     public boolean isEnabled() {
         return isEnabled;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+    
+    
 }
