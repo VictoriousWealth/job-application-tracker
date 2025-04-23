@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.CommunicationLog;
+import com.nick.job_application_tracker.dto.CommunicationLogDTO;
 import com.nick.job_application_tracker.service.CommunicationLogService;
 
 @RestController
@@ -25,13 +25,13 @@ public class CommunicationLogController {
     }
 
     @GetMapping("/job/{jobAppId}")
-    public List<CommunicationLog> getForJob(@PathVariable Long jobAppId) {
+    public List<CommunicationLogDTO> getForJob(@PathVariable Long jobAppId) {
         return service.getByJobAppId(jobAppId);
     }
 
     @PostMapping
-    public CommunicationLog create(@RequestBody CommunicationLog log) {
-        return service.save(log);
+    public CommunicationLogDTO create(@RequestBody CommunicationLogDTO dto) {
+        return service.save(dto);
     }
 
     @DeleteMapping("/{id}")
