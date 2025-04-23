@@ -1,10 +1,12 @@
 package com.nick.job_application_tracker.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nick.job_application_tracker.dto.ResumeDTO;
+import com.nick.job_application_tracker.mapper.ResumeMapper;
 import com.nick.job_application_tracker.model.Resume;
 import com.nick.job_application_tracker.repository.ResumeRepository;
 
@@ -13,17 +15,21 @@ public class ResumeService {
 
     private final ResumeRepository resumeRepository;
 
-    @Autowired
     public ResumeService(ResumeRepository resumeRepository) {
         this.resumeRepository = resumeRepository;
     }
 
-    public List<Resume> findAll() {
-        return resumeRepository.findAll();
+    public List<ResumeDTO> findAll() {
+        return resumeRepository.findAll()
+            .stream()
+            .map(ResumeMapper::toDTO)
+            .collect(Collectors.toList());
     }
 
-    public Resume save(Resume resume) {
-        return resumeRepository.save(resume);
+    public ResumeDTO save(ResumeDTO dto) {
+        Resume resume = ResumeMapper.toEntity(dto);
+        Resume saved = resumeRepository.save(resume);
+        return ResumeMapper.toDTO(saved);
     }
 
     public void delete(Long id) {
