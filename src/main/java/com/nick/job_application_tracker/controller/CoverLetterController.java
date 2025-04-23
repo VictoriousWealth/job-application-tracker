@@ -11,32 +11,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.CoverLetter;
+import com.nick.job_application_tracker.dto.CoverLetterDTO;
 import com.nick.job_application_tracker.service.CoverLetterService;
+
 
 @RestController
 @RequestMapping("/api/cover-letters")
 public class CoverLetterController {
 
-    private final CoverLetterService service;
+    private final CoverLetterService coverLetterService;
 
     public CoverLetterController(CoverLetterService service) {
-        this.service = service;
+        this.coverLetterService = service;
     }
 
     @GetMapping
-    public List<CoverLetter> getAll() {
-        return service.findAll();
+    public List<CoverLetterDTO> getAll() {
+        return coverLetterService.findAll();
     }
 
     @PostMapping
-    public CoverLetter create(@RequestBody CoverLetter letter) {
-        return service.save(letter);
+    public ResponseEntity<CoverLetterDTO> save(@RequestBody CoverLetterDTO dto) {
+        return ResponseEntity.ok(coverLetterService.save(dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        coverLetterService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
