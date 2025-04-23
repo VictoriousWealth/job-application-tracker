@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.AuditLog;
+import com.nick.job_application_tracker.dto.AuditLogDTO;
 import com.nick.job_application_tracker.service.AuditLogService;
 
 @RestController
@@ -22,12 +22,12 @@ public class AuditLogController {
     }
 
     @GetMapping
-    public List<AuditLog> getAll() {
+    public List<AuditLogDTO> getAll() {
         return service.findAll();
     }
 
     @PostMapping
-    public AuditLog create(@RequestBody AuditLog log) {
-        return service.save(log);
+    public AuditLogDTO create(@RequestBody AuditLogDTO dto) {
+        return service.save(dto);
     }
 }
