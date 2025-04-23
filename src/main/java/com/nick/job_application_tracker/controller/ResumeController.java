@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.Resume;
+import com.nick.job_application_tracker.dto.ResumeDTO;
 import com.nick.job_application_tracker.service.ResumeService;
 
 @RestController
@@ -25,13 +25,13 @@ public class ResumeController {
     }
 
     @GetMapping
-    public List<Resume> getAll() {
+    public List<ResumeDTO> getAll() {
         return resumeService.findAll();
     }
 
     @PostMapping
-    public Resume upload(@RequestBody Resume resume) {
-        return resumeService.save(resume);
+    public ResumeDTO upload(@RequestBody ResumeDTO resumeDTO) {
+        return resumeService.save(resumeDTO);
     }
 
     @DeleteMapping("/{id}")
