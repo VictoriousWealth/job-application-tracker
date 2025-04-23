@@ -1,14 +1,16 @@
 package com.nick.job_application_tracker.config.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class JwtService {
@@ -103,4 +105,21 @@ public class JwtService {
 
         return header+"."+payload+"."+generateSignature(header+"."+payload);
     }
+
+    public String extractEmail(String token) throws Exception {
+        String[] split = token.split("\\.");
+        String payload = decodeToString(split[1]);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode payloadJson = objectMapper.readTree(payload);
+        return payloadJson.get("sub").asText();
+    }
+    
+    public String extractRole(String token) throws Exception {
+        String[] split = token.split("\\.");
+        String payload = decodeToString(split[1]);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode payloadJson = objectMapper.readTree(payload);
+        return payloadJson.get("role").asText().toUpperCase();
+    }
+    
 }
