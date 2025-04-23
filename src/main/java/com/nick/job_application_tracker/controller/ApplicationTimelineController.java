@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.model.ApplicationTimeline;
+import com.nick.job_application_tracker.dto.ApplicationTimelineDTO;
 import com.nick.job_application_tracker.service.ApplicationTimelineService;
 
 @RestController
@@ -25,13 +25,13 @@ public class ApplicationTimelineController {
     }
 
     @GetMapping("/job/{jobAppId}")
-    public List<ApplicationTimeline> getForJob(@PathVariable Long jobAppId) {
-        return service.getByJobAppId(jobAppId);
+    public ResponseEntity<List<ApplicationTimelineDTO>> getForJob(@PathVariable Long jobAppId) {
+        return ResponseEntity.ok(service.getByJobAppId(jobAppId));
     }
 
     @PostMapping
-    public ApplicationTimeline create(@RequestBody ApplicationTimeline timeline) {
-        return service.save(timeline);
+    public ResponseEntity<ApplicationTimelineDTO> create(@RequestBody ApplicationTimelineDTO dto) {
+        return ResponseEntity.ok(service.save(dto));
     }
 
     @DeleteMapping("/{id}")
@@ -39,4 +39,7 @@ public class ApplicationTimelineController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    
+
 }
