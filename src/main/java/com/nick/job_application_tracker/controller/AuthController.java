@@ -1,5 +1,8 @@
 package com.nick.job_application_tracker.controller;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -96,6 +99,27 @@ public class AuthController {
 
         return ResponseEntity.ok(userInfo);
     }
+
+    @GetMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(Authentication authentication) throws NoSuchAlgorithmException, InvalidKeyException {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing authentication");
+        }
+
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        // Assuming users only have one role (as your current setup implies)
+        String role = user.getRoles().iterator().next().name(); // Convert Enum to string
+
+        String newToken = jwtService.generateToken(email, role);
+
+        return ResponseEntity.ok(Map.of("token", newToken));
+    }
+
 
 
 }
