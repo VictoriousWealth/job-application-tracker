@@ -1,23 +1,25 @@
 package com.nick.job_application_tracker.config.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nick.job_application_tracker.config.CustomJwtAuthenticationToken;
-import com.nick.job_application_tracker.config.service.JwtService;
-import com.nick.job_application_tracker.repository.UserRepository;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nick.job_application_tracker.config.CustomJwtAuthenticationToken;
+import com.nick.job_application_tracker.config.service.JwtService;
+import com.nick.job_application_tracker.repository.UserRepository;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class CustomJwtAuthFilter extends OncePerRequestFilter {
@@ -34,8 +36,9 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // allow public endpoints without interference
-        if (request.getServletPath().equals("/")) {
+        // allow all public auth routes through without filtering
+        String path = request.getServletPath();
+        if (path.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -50,9 +53,17 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
         if (request.getHeader("Authorization").startsWith("Bearer ")) {
             String token = request.getHeader("Authorization").substring("Bearer ".length());
             System.out.println("token: " + token);
-            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(token);
+            
+            String email = jwtService.extractEmail(token); // assumes your JwtService has this method
+            String role = jwtService.extractRole(token);   // extract role too, if needed
+
+            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(email, role, token);
+            authentication.setAuthenticated(true); // optional if your manager does it
+
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
+
+            
             filterChain.doFilter(request, response);
             return;
         }
@@ -81,9 +92,17 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
             String role = userRepository.findByEmail(username).get().getRoles().toArray()[0].toString();
             token = jwtService.generateToken(username, role);
             System.out.println("token generated successfully :" + token);
-            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(token);
+            
+            String email = jwtService.extractEmail(token); // assumes your JwtService has this method
+            String role = jwtService.extractRole(token);   // extract role too, if needed
+
+            CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(email, role, token);
+            authentication.setAuthenticated(true); // optional if your manager does it
+
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
+
+            
             response.addHeader("Authorization", "Bearer " + token);
             filterChain.doFilter(request, response);
         } catch (Exception e) {
