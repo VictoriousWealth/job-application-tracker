@@ -2,7 +2,6 @@ package com.nick.job_application_tracker.controller;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -117,7 +116,7 @@ public class AuthController {
 
         String newToken = jwtService.generateToken(email, role);
 
-        return ResponseEntity.ok(Map.of("token", newToken));
+        return ResponseEntity.ok(new JwtResponse(newToken));
     }
 
 
