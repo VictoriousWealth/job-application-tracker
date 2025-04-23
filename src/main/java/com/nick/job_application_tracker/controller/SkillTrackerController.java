@@ -1,17 +1,16 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.nick.job_application_tracker.model.SkillTracker;
+import com.nick.job_application_tracker.dto.SkillTrackerDTO;
+import com.nick.job_application_tracker.dto.SkillTrackerCreateDTO;
+import com.nick.job_application_tracker.mapper.SkillTrackerMapper;
+import com.nick.job_application_tracker.model.JobApplication;
+import com.nick.job_application_tracker.service.JobApplicationService;
 import com.nick.job_application_tracker.service.SkillTrackerService;
 
 @RestController
@@ -19,19 +18,25 @@ import com.nick.job_application_tracker.service.SkillTrackerService;
 public class SkillTrackerController {
 
     private final SkillTrackerService service;
+    private final JobApplicationService jobApplicationService;
 
-    public SkillTrackerController(SkillTrackerService service) {
+    public SkillTrackerController(SkillTrackerService service, JobApplicationService jobApplicationService) {
         this.service = service;
+        this.jobApplicationService = jobApplicationService;
     }
 
     @GetMapping("/job/{jobAppId}")
-    public List<SkillTracker> getForJob(@PathVariable Long jobAppId) {
-        return service.getByJobAppId(jobAppId);
+    public List<SkillTrackerDTO> getForJob(@PathVariable Long jobAppId) {
+        return service.getByJobAppId(jobAppId)
+                      .stream()
+                      .map(SkillTrackerMapper::toDTO)
+                      .collect(Collectors.toList());
     }
 
     @PostMapping
-    public SkillTracker create(@RequestBody SkillTracker skill) {
-        return service.save(skill);
+    public SkillTrackerDTO create(@RequestBody SkillTrackerCreateDTO dto) {
+        JobApplication jobApp = jobApplicationService.findById(dto.getJobApplicationId());
+        return SkillTrackerMapper.toDTO(service.save(SkillTrackerMapper.toEntity(dto, jobApp)));
     }
 
     @DeleteMapping("/{id}")
