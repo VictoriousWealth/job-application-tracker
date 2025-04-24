@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
 import com.nick.job_application_tracker.dto.JobSourceDTO;
+import com.nick.job_application_tracker.mapper.JobSourceMapper;
 import com.nick.job_application_tracker.model.JobSource;
 import com.nick.job_application_tracker.repository.JobSourceRepository;
 
@@ -15,34 +16,33 @@ import com.nick.job_application_tracker.repository.JobSourceRepository;
 public class JobSourceService {
 
     private final JobSourceRepository jobSourceRepository;
+    private final JobSourceMapper mapper;
 
-    public JobSourceService(JobSourceRepository jobSourceRepository) {
+    public JobSourceService(JobSourceRepository jobSourceRepository, JobSourceMapper mapper) {
         this.jobSourceRepository = jobSourceRepository;
+        this.mapper = mapper;
     }
 
     public List<JobSourceDTO> getAllSources() {
         return jobSourceRepository.findAll().stream()
-                .map(source -> new JobSourceDTO(source.getId(), source.getName()))
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public JobSourceDTO createSource(JobSourceCreateDTO createDTO) {
-        JobSource source = new JobSource();
-        source.setName(createDTO.getName());
-        JobSource saved = jobSourceRepository.save(source);
-        return new JobSourceDTO(saved.getId(), saved.getName());
+        JobSource source = mapper.toEntity(createDTO);
+        return mapper.toDTO(jobSourceRepository.save(source));
     }
 
     public Optional<JobSourceDTO> getSourceById(Long id) {
         return jobSourceRepository.findById(id)
-                .map(source -> new JobSourceDTO(source.getId(), source.getName()));
+                .map(mapper::toDTO);
     }
 
     public Optional<JobSourceDTO> updateSource(Long id, JobSourceCreateDTO createDTO) {
         return jobSourceRepository.findById(id).map(source -> {
             source.setName(createDTO.getName());
-            JobSource updated = jobSourceRepository.save(source);
-            return new JobSourceDTO(updated.getId(), updated.getName());
+            return mapper.toDTO(jobSourceRepository.save(source));
         });
     }
 
