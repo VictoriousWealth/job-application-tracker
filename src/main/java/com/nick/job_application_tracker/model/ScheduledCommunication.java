@@ -16,32 +16,38 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "scheduled_communication")
 public class ScheduledCommunication {
-
+    
     public enum Type {
         INTERVIEW, ONLINE_ASSESSMENT, CALL
     }
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Type type;
-
+    
     @Column(nullable = false)
     private LocalDateTime scheduledFor;
-
+    
     @Column(columnDefinition = "TEXT")
     private String notes;
-
+    
     @ManyToOne(optional = false)
     @JoinColumn(name = "job_application_id")
     private JobApplication jobApplication;
 
+
     // Getters and Setters
+    
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Type getType() {
@@ -75,4 +81,6 @@ public class ScheduledCommunication {
     public void setJobApplication(JobApplication jobApplication) {
         this.jobApplication = jobApplication;
     }
+    
+    
 }
