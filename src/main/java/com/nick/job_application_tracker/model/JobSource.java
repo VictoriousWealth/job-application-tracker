@@ -19,8 +19,13 @@ public class JobSource {
     private String name; // e.g., LinkedIn, Indeed, Referral
 
     // Getters and Setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -30,4 +35,5 @@ public class JobSource {
     public void setName(String name) {
         this.name = name;
     }
+    
 }
