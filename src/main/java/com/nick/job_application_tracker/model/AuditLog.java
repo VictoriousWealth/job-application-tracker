@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "audit_log")
 public class AuditLog {
-
+    
     public enum Action {
         CREATE, UPDATE, DELETE;
         
@@ -43,9 +43,15 @@ public class AuditLog {
     @JoinColumn(name = "user_id")
     private User performedBy;
 
+
     // Getters and Setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Action getAction() {
@@ -79,4 +85,5 @@ public class AuditLog {
     public void setUser(User performedBy) {
         this.performedBy = performedBy;
     }
+
 }
