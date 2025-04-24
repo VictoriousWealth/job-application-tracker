@@ -72,11 +72,11 @@ public class AuditLog {
         this.createdAt = createdAt;
     }
 
-    public User getPerformedBy() {
+    public User getUser() {
         return performedBy;
     }
 
-    public void setPerformedBy(User performedBy) {
+    public void setUser(User performedBy) {
         this.performedBy = performedBy;
     }
 }
