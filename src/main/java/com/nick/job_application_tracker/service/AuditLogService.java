@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.nick.job_application_tracker.dto.AuditLogDTO;
 import com.nick.job_application_tracker.model.AuditLog;
 import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.repository.AuditLogRepository;
-import com.nick.job_application_tracker.dto.AuditLogDTO;
 
 @Service
 public class AuditLogService {
@@ -33,7 +33,7 @@ public class AuditLogService {
 
         User user = new User();
         user.setId(dto.userId);
-        log.setPerformedBy(user);
+        log.setUser(user);
 
         return toDTO(repo.save(log));
     }
@@ -44,7 +44,7 @@ public class AuditLogService {
             log.getAction().name(),
             log.getDescription(),
             log.getCreatedAt(),
-            log.getPerformedBy().getId()
+            log.getUser().getId()
         );
     }
 
