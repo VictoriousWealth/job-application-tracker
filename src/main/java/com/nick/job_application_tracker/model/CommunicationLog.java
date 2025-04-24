@@ -17,12 +17,20 @@ import jakarta.persistence.Table;
 @Table(name = "communication_log")
 public class CommunicationLog {
 
-    public enum Type {
-        EMAIL, CALL, LINKEDIN, IN_PERSON
+    public enum Method {
+        EMAIL, CALL, LINKEDIN, IN_PERSON;
+        
+        public String getName() {
+            return this.name().toUpperCase();
+        }
     }
 
     public enum Direction {
-        INBOUND, OUTBOUND
+        INBOUND, OUTBOUND;
+        
+        public String getName() {
+            return this.name().toUpperCase();
+        }
     }
 
     @Id
@@ -31,7 +39,7 @@ public class CommunicationLog {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Type type;
+    private Method type;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -52,11 +60,11 @@ public class CommunicationLog {
         return id;
     }
 
-    public Type getType() {
+    public Method getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(Method type) {
         this.type = type;
     }
 
