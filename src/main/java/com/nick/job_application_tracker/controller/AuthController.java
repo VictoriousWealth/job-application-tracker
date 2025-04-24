@@ -81,7 +81,6 @@ public class AuthController {
         }
 
         String email = authentication.getName();
-        System.out.println(authentication);
         Optional<User> userOpt = userRepository.findByEmail(email);
 
         if (userOpt.isEmpty()) {
@@ -100,7 +99,8 @@ public class AuthController {
     }
 
     @GetMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(Authentication authentication) throws NoSuchAlgorithmException, InvalidKeyException {
+    public ResponseEntity<?> refreshToken() throws NoSuchAlgorithmException, InvalidKeyException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing authentication");
         }
