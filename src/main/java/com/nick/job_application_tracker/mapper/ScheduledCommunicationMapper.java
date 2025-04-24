@@ -1,11 +1,14 @@
 package com.nick.job_application_tracker.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.nick.job_application_tracker.dto.ScheduledCommunicationCreateDTO;
 import com.nick.job_application_tracker.dto.ScheduledCommunicationDTO;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.ScheduledCommunication;
 import com.nick.job_application_tracker.model.ScheduledCommunication.Type;
 
+@Component
 public class ScheduledCommunicationMapper {
 
     public static ScheduledCommunicationDTO toDTO(ScheduledCommunication entity) {
