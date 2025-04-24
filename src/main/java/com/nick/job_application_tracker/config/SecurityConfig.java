@@ -59,7 +59,7 @@ public class SecurityConfig {
         // 🔹 Role-Based Authorization
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers(HttpMethod.GET, "/", "/favicon.ico", "/error").permitAll();
-            auth.requestMatchers("/api/auth/**").permitAll();
+            auth.requestMatchers("/api/auth/login", "/api/auth/signup").permitAll();
             auth.anyRequest().authenticated(); // Protect all other routes
         });
 
