@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "attachment")
 public class Attachment {
-
     public enum Type {
         JOB_DESCRIPTION,
         OFFER_LETTER,
@@ -42,9 +41,15 @@ public class Attachment {
     @JoinColumn(name = "job_application_id")
     private JobApplication jobApplication;
 
+
     // Getters and Setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Type getType() {
@@ -70,4 +75,6 @@ public class Attachment {
     public void setJobApplication(JobApplication jobApplication) {
         this.jobApplication = jobApplication;
     }
+
+   
 }
