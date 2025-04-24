@@ -16,9 +16,15 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "application_timeline")
 public class ApplicationTimeline {
-
     public enum EventType {
-        CREATED, FOLLOW_UP, INTERVIEW, REJECTED, OFFER, NOTE
+        CREATED,
+        UPDATED,
+        SUBMITTED,
+        CANCELLED;
+
+        public String getName() {
+            return this.name().toUpperCase();
+        }
     }
 
     @Id
@@ -40,8 +46,13 @@ public class ApplicationTimeline {
     private String description;
 
     // Getters and Setters
+    
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public EventType getEventType() {
@@ -75,4 +86,5 @@ public class ApplicationTimeline {
     public void setDescription(String description) {
         this.description = description;
     }
+    
 }
