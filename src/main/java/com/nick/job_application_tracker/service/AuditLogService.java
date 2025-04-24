@@ -1,51 +1,33 @@
 package com.nick.job_application_tracker.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.AuditLogDTO;
+import com.nick.job_application_tracker.mapper.AuditLogMapper;
 import com.nick.job_application_tracker.model.AuditLog;
-import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.repository.AuditLogRepository;
 
 @Service
 public class AuditLogService {
 
     private final AuditLogRepository repo;
+    private final AuditLogMapper mapper;
 
-    public AuditLogService(AuditLogRepository repo) {
+    public AuditLogService(AuditLogRepository repo, AuditLogMapper mapper) {
         this.repo = repo;
+        this.mapper = mapper;
     }
 
     public List<AuditLogDTO> findAll() {
         return repo.findAll().stream()
-            .map(this::toDTO)
+            .map(mapper::toDTO)
             .toList();
     }
 
     public AuditLogDTO save(AuditLogDTO dto) {
-        AuditLog log = new AuditLog();
-        log.setAction(AuditLog.Action.valueOf(dto.action));
-        log.setDescription(dto.description);
-        log.setCreatedAt(dto.createdAt != null ? dto.createdAt : LocalDateTime.now());
-
-        User user = new User();
-        user.setId(dto.userId);
-        log.setUser(user);
-
-        return toDTO(repo.save(log));
+        AuditLog log = mapper.toEntity(dto);
+        return mapper.toDTO(repo.save(log));
     }
-
-    private AuditLogDTO toDTO(AuditLog log) {
-        return new AuditLogDTO(
-            log.getId(),
-            log.getAction().name(),
-            log.getDescription(),
-            log.getCreatedAt(),
-            log.getUser().getId()
-        );
-    }
-
 }
