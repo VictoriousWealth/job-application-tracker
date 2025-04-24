@@ -1,8 +1,11 @@
 package com.nick.job_application_tracker.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.nick.job_application_tracker.dto.LocationDTO;
 import com.nick.job_application_tracker.model.Location;
 
+@Component
 public class LocationMapper {
 
     public static LocationDTO toDTO(Location location) {
