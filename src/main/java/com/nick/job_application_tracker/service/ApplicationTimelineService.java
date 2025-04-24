@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.ApplicationTimelineDTO;
+import com.nick.job_application_tracker.mapper.ApplicationTimelineMapper;
 import com.nick.job_application_tracker.model.ApplicationTimeline;
-import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.repository.ApplicationTimelineRepository;
 
 @Service
@@ -20,7 +20,7 @@ public class ApplicationTimelineService {
 
     public List<ApplicationTimelineDTO> getByJobAppId(Long jobAppId) {
         return repo.findByJobApplicationId(jobAppId).stream()
-            .map(this::toDTO)
+            .map(ApplicationTimelineMapper::toDTO)
             .toList();
     }
 
@@ -32,29 +32,8 @@ public class ApplicationTimelineService {
         repo.deleteById(id);
     }
 
-   
-
     public ApplicationTimelineDTO save(ApplicationTimelineDTO dto) {
-        ApplicationTimeline event = new ApplicationTimeline();
-        event.setEventType(ApplicationTimeline.EventType.valueOf(dto.eventType));
-        event.setEventTime(dto.eventTime);
-        event.setDescription(dto.description);
-        
-        JobApplication job = new JobApplication();
-        job.setId(dto.jobApplicationId);
-        event.setJobApplication(job);
-
-        return toDTO(repo.save(event));
+        ApplicationTimeline entity = ApplicationTimelineMapper.toEntity(dto);
+        return ApplicationTimelineMapper.toDTO(repo.save(entity));
     }
-
-    private ApplicationTimelineDTO toDTO(ApplicationTimeline entity) {
-        return new ApplicationTimelineDTO(
-            entity.getId(),
-            entity.getEventType().name(),
-            entity.getEventTime(),
-            entity.getDescription(),
-            entity.getJobApplication().getId()
-        );
-    }
-
 }
