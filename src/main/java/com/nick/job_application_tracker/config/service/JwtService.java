@@ -45,9 +45,9 @@ public class JwtService {
         String issuer = payloadJson.get("iss").asText();
 
         System.out.println("issuer: "+issuer +
-                (!issuer.equals("Oauth2applicationApplication")?" hence it is not trusted":" hence it is trusted"));
+                (!issuer.equals("JobTrackerApplicationBackend")?" hence it is not trusted":" hence it is trusted"));
 
-        return !issuer.equals("Oauth2applicationApplication");
+        return !issuer.equals("JobTrackerApplicationBackend");
     }
 
     private boolean isTokenExpired(String decodedPayload) throws Exception {
@@ -93,7 +93,7 @@ public class JwtService {
                 "}";
         long timeInSeconds = System.currentTimeMillis() / 1000;
         String payload = "{\n" +
-                "  \"iss\": \"Oauth2applicationApplication\",\n" +
+                "  \"iss\": \"JobTrackerApplicationBackend\",\n" +
                 "  \"sub\": \""+username+"\",\n" +
                 "  \"role\": \""+role+"\",\n" +
                 "  \"iat\": "+ timeInSeconds +",\n" +
