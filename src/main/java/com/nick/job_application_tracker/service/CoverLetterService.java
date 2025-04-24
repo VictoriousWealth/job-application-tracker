@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.CoverLetterDTO;
+import com.nick.job_application_tracker.mapper.CoverLetterMapper;
 import com.nick.job_application_tracker.model.CoverLetter;
 import com.nick.job_application_tracker.repository.CoverLetterRepository;
 
@@ -13,30 +14,26 @@ import com.nick.job_application_tracker.repository.CoverLetterRepository;
 public class CoverLetterService {
 
     private final CoverLetterRepository coverLetterRepository;
+    private final CoverLetterMapper coverLetterMapper;
 
     @Autowired
-    public CoverLetterService(CoverLetterRepository coverLetterRepository) {
+    public CoverLetterService(CoverLetterRepository coverLetterRepository, CoverLetterMapper coverLetterMapper) {
         this.coverLetterRepository = coverLetterRepository;
+        this.coverLetterMapper = coverLetterMapper;
     }
 
     public List<CoverLetterDTO> findAll() {
         return coverLetterRepository.findAll().stream()
-            .map(cl -> new CoverLetterDTO(cl.getId(), cl.getTitle(), cl.getFilePath(), cl.getContent()))
+            .map(coverLetterMapper::toDTO)
             .toList();
     }
 
     public CoverLetterDTO save(CoverLetterDTO dto) {
-        CoverLetter coverLetter = new CoverLetter();
-        coverLetter.setTitle(dto.getTitle());
-        coverLetter.setFilePath(dto.getFilePath());
-        coverLetter.setContent(dto.getContent());
-
-        CoverLetter saved = coverLetterRepository.save(coverLetter);
-        return new CoverLetterDTO(saved.getId(), saved.getTitle(), saved.getFilePath(), saved.getContent());
+        CoverLetter coverLetter = coverLetterMapper.toEntity(dto);
+        return coverLetterMapper.toDTO(coverLetterRepository.save(coverLetter));
     }
-    
+
     public void delete(Long id) {
         coverLetterRepository.deleteById(id);
     }
-
 }
