@@ -13,8 +13,11 @@ import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.JobApplication.Status;
 import com.nick.job_application_tracker.model.User;
 
+import jakarta.transaction.Transactional;
+
 
 @ActiveProfiles("test")
+@Transactional
 @SpringBootTest
 public class JobApplicationRepositoryTest {
 
