@@ -55,9 +55,15 @@ public class CommunicationLog {
     @JoinColumn(name = "job_application_id")
     private JobApplication jobApplication;
 
+
     // Getters and Setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Method getType() {
@@ -99,4 +105,5 @@ public class CommunicationLog {
     public void setJobApplication(JobApplication jobApplication) {
         this.jobApplication = jobApplication;
     }
+      
 }
