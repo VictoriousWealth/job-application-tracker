@@ -1,10 +1,13 @@
 package com.nick.job_application_tracker.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.nick.job_application_tracker.dto.SkillTrackerCreateDTO;
 import com.nick.job_application_tracker.dto.SkillTrackerDTO;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.SkillTracker;
 
+@Component
 public class SkillTrackerMapper {
 
     public static SkillTrackerDTO toDTO(SkillTracker skill) {
