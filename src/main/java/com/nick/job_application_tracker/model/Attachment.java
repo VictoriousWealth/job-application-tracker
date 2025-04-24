@@ -20,7 +20,11 @@ public class Attachment {
         OFFER_LETTER,
         INTERVIEW_PREP,
         REJECTION_LETTER,
-        OTHER
+        OTHER;
+
+        public String getName() {
+            return this.name().toUpperCase();
+        }
     }
 
     @Id
