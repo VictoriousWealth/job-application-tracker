@@ -27,7 +27,7 @@ public class CommunicationLogService {
 
     public CommunicationLogDTO save(CommunicationLogDTO dto) {
         CommunicationLog log = new CommunicationLog();
-        log.setType(CommunicationLog.Type.valueOf(dto.type));
+        log.setType(CommunicationLog.Method.valueOf(dto.type));
         log.setDirection(CommunicationLog.Direction.valueOf(dto.direction));
         log.setTimestamp(dto.timestamp != null ? dto.timestamp : LocalDateTime.now());
         log.setMessage(dto.message);
