@@ -14,7 +14,11 @@ import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
 
+import jakarta.transaction.Transactional;
+
+
 @SpringBootTest
+@Transactional
 @ActiveProfiles("test")
 public class AttachmentRepositoryTest {
 
