@@ -8,73 +8,96 @@ import org.springframework.stereotype.Service;
 import com.nick.job_application_tracker.dto.JobApplicationCreateDTO;
 import com.nick.job_application_tracker.dto.JobApplicationDetailDTO;
 import com.nick.job_application_tracker.dto.JobApplicationResponseDTO;
+import com.nick.job_application_tracker.mapper.JobApplicationMapper;
+import com.nick.job_application_tracker.model.CoverLetter;
 import com.nick.job_application_tracker.model.JobApplication;
+import com.nick.job_application_tracker.model.JobSource;
+import com.nick.job_application_tracker.model.Location;
+import com.nick.job_application_tracker.model.Resume;
+import com.nick.job_application_tracker.repository.CoverLetterRepository;
 import com.nick.job_application_tracker.repository.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.JobSourceRepository;
+import com.nick.job_application_tracker.repository.LocationRepository;
+import com.nick.job_application_tracker.repository.ResumeRepository;
 
 @Service
 public class JobApplicationService {
-    private final JobApplicationRepository jobApplicationRepository;
 
-    public JobApplicationService(JobApplicationRepository jobApplicationRepository) {
+    private final JobApplicationRepository jobApplicationRepository;
+    private final LocationRepository locationRepository;
+    private final JobSourceRepository jobSourceRepository;
+    private final ResumeRepository resumeRepository;
+    private final CoverLetterRepository coverLetterRepository;
+
+    public JobApplicationService(
+            JobApplicationRepository jobApplicationRepository,
+            LocationRepository locationRepository,
+            JobSourceRepository jobSourceRepository,
+            ResumeRepository resumeRepository,
+            CoverLetterRepository coverLetterRepository
+    ) {
         this.jobApplicationRepository = jobApplicationRepository;
+        this.locationRepository = locationRepository;
+        this.jobSourceRepository = jobSourceRepository;
+        this.resumeRepository = resumeRepository;
+        this.coverLetterRepository = coverLetterRepository;
     }
 
     public JobApplicationResponseDTO create(JobApplicationCreateDTO dto) {
-        JobApplication jobApp = new JobApplication();
-        jobApp.setJobTitle(dto.jobTitle);
-        jobApp.setCompany(dto.company);
-        jobApp.setStatus(dto.status);
-        jobApp.setNotes(dto.notes);
-        jobApp.setAppliedOn(dto.appliedOn);
-        // handle resumeId, coverLetterId, etc. here if needed
+        JobApplication jobApp = JobApplicationMapper.toEntity(dto);
+
+        // Set or create location
+        Location location = locationRepository.findByCityAndCountry(dto.getLocationCity(), dto.getLocationCountry())
+            .orElseGet(() -> {
+                Location loc = new Location();
+                loc.setCity(dto.getLocationCity());
+                loc.setCountry(dto.getLocationCountry());
+                return locationRepository.save(loc);
+            });
+        jobApp.setLocation(location);
+
+        // Set source, resume, and cover letter if present
+        if (dto.getSourceId() != null) {
+            JobSource source = jobSourceRepository.findById(dto.getSourceId())
+                    .orElseThrow(() -> new RuntimeException("Source not found"));
+            jobApp.setSource(source);
+        }
+
+        if (dto.getResumeId() != null) {
+            Resume resume = resumeRepository.findById(dto.getResumeId())
+                    .orElseThrow(() -> new RuntimeException("Resume not found"));
+            jobApp.setResume(resume);
+        }
+
+        if (dto.getCoverLetterId() != null) {
+            CoverLetter coverLetter = coverLetterRepository.findById(dto.getCoverLetterId())
+                    .orElseThrow(() -> new RuntimeException("Cover letter not found"));
+            jobApp.setCoverLetter(coverLetter);
+        }
 
         JobApplication saved = jobApplicationRepository.save(jobApp);
-        return toResponseDTO(saved);
+        return JobApplicationMapper.toResponseDTO(saved);
     }
 
     public List<JobApplicationResponseDTO> getAll() {
         return jobApplicationRepository.findAll().stream()
-                .map(this::toResponseDTO)
+                .map(JobApplicationMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     public JobApplicationDetailDTO getById(Long id) {
         JobApplication jobApp = jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Job Application not found"));
-        return toDetailDTO(jobApp);
+        return JobApplicationMapper.toDetailDTO(jobApp);
     }
 
-    // === Mapping Methods ===
-
-    private JobApplicationResponseDTO toResponseDTO(JobApplication app) {
-        JobApplicationResponseDTO dto = new JobApplicationResponseDTO();
-        dto.id = app.getId();
-        dto.jobTitle = app.getJobTitle();
-        dto.company = app.getCompany();
-        dto.status = app.getStatus();
-        dto.notes = app.getNotes();
-        dto.appliedOn = app.getAppliedOn();
-        dto.locationCity = app.getLocation() != null ? app.getLocation().getCity() : null;
-        dto.locationCountry = app.getLocation() != null ? app.getLocation().getCountry() : null;
-        dto.sourceName = app.getSource() != null ? app.getSource().getName() : null;
-        dto.resumeName = app.getResume() != null ? app.getResume().getFilePath() : null;
-        dto.coverLetterName = app.getCoverLetter() != null ? app.getCoverLetter().getFilePath() : null;
-        return dto;
+    public JobApplication findById(Long id) {
+        return jobApplicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job Application not found"));
     }
 
-    private JobApplicationDetailDTO toDetailDTO(JobApplication app) {
-        JobApplicationDetailDTO dto = new JobApplicationDetailDTO();
-        dto.id = app.getId();
-        dto.jobTitle = app.getJobTitle();
-        dto.company = app.getCompany();
-        dto.status = app.getStatus();
-        dto.notes = app.getNotes();
-        dto.appliedOn = app.getAppliedOn();
-        dto.locationCity = app.getLocation() != null ? app.getLocation().getCity() : null;
-        dto.locationCountry = app.getLocation() != null ? app.getLocation().getCountry() : null;
-        dto.sourceId = app.getSource() != null ? app.getSource().getId() : null;
-        dto.resumeId = app.getResume() != null ? app.getResume().getId() : null;
-        dto.coverLetterId = app.getCoverLetter() != null ? app.getCoverLetter().getId() : null;
-        return dto;
+    public void delete(Long id) {
+        jobApplicationRepository.deleteById(id);
     }
+    
 }
