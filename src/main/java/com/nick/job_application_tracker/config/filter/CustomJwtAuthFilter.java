@@ -37,7 +37,7 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // allow all public auth routes through without filtering
-        String path = request.getServletPath();
+        String path = request.getRequestURI();
         if (path.equals("/api/auth/signup") || path.equals("/api/auth/login")) {
             filterChain.doFilter(request, response);
             return;
@@ -45,7 +45,7 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
 
         // return unauthorized to clients who attempt to access protected endpoints
         if (request.getHeader("Authorization") == null) {
-            sendErrorResponse(response, "Unauthorized");
+            sendErrorResponse(response, "Authroization header is missing");
             return;
         }
 
