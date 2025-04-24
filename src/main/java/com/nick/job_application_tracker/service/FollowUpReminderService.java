@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
+import com.nick.job_application_tracker.mapper.FollowUpReminderMapper;
 import com.nick.job_application_tracker.model.FollowUpReminder;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.repository.FollowUpReminderRepository;
@@ -17,16 +18,21 @@ public class FollowUpReminderService {
 
     private final FollowUpReminderRepository repository;
     private final JobApplicationRepository jobAppRepo;
+    private final FollowUpReminderMapper mapper;
 
-    public FollowUpReminderService(FollowUpReminderRepository repository, JobApplicationRepository jobAppRepo) {
+    public FollowUpReminderService(
+            FollowUpReminderRepository repository,
+            JobApplicationRepository jobAppRepo,
+            FollowUpReminderMapper mapper) {
         this.repository = repository;
         this.jobAppRepo = jobAppRepo;
+        this.mapper = mapper;
     }
 
     public List<FollowUpReminderDTO> getByJobAppId(Long jobAppId) {
         return repository.findByJobApplicationId(jobAppId)
                 .stream()
-                .map(this::toDTO)
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -34,24 +40,11 @@ public class FollowUpReminderService {
         JobApplication jobApp = jobAppRepo.findById(dto.getJobApplicationId())
                 .orElseThrow(() -> new RuntimeException("Job application not found"));
 
-        FollowUpReminder reminder = new FollowUpReminder();
-        reminder.setRemindOn(dto.getRemindOn());
-        reminder.setNote(dto.getNote());
-        reminder.setJobApplication(jobApp);
-
-        return toDTO(repository.save(reminder));
+        FollowUpReminder reminder = mapper.toEntity(dto, jobApp);
+        return mapper.toDTO(repository.save(reminder));
     }
 
     public void delete(Long id) {
         repository.deleteById(id);
-    }
-
-    private FollowUpReminderDTO toDTO(FollowUpReminder entity) {
-        FollowUpReminderDTO dto = new FollowUpReminderDTO();
-        dto.setId(entity.getId());
-        dto.setRemindOn(entity.getRemindOn());
-        dto.setNote(entity.getNote());
-        dto.setJobApplicationId(entity.getJobApplication().getId());
-        return dto;
     }
 }
