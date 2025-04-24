@@ -1,45 +1,124 @@
-package com.nick.job_application_tracker;
+package com.nick.job_application_tracker.service;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.nick.job_application_tracker.dto.JobApplicationCreateDTO;
 import com.nick.job_application_tracker.dto.JobApplicationDetailDTO;
+import com.nick.job_application_tracker.dto.JobApplicationResponseDTO;
 import com.nick.job_application_tracker.model.JobApplication;
+import com.nick.job_application_tracker.model.Location;
+import com.nick.job_application_tracker.repository.CoverLetterRepository;
 import com.nick.job_application_tracker.repository.JobApplicationRepository;
-import com.nick.job_application_tracker.service.JobApplicationService;
+import com.nick.job_application_tracker.repository.JobSourceRepository;
+import com.nick.job_application_tracker.repository.LocationRepository;
+import com.nick.job_application_tracker.repository.ResumeRepository;
 
-@ExtendWith(MockitoExtension.class)
-class JobApplicationServiceTest {
+public class JobApplicationServiceTest {
 
-    @Mock
-    private JobApplicationRepository repository;
-
-    @InjectMocks
+    private JobApplicationRepository jobAppRepo;
+    private LocationRepository locationRepo;
+    private JobSourceRepository sourceRepo;
+    private ResumeRepository resumeRepo;
+    private CoverLetterRepository coverLetterRepo;
     private JobApplicationService service;
 
-    @Test
-    void testGetByIdReturnsCorrectApplication() {
-        JobApplication app = new JobApplication();
-        app.setId(1L);
-        app.setJobTitle("Engineer");
+    @BeforeEach
+    void setup() {
+        jobAppRepo = mock(JobApplicationRepository.class);
+        locationRepo = mock(LocationRepository.class);
+        sourceRepo = mock(JobSourceRepository.class);
+        resumeRepo = mock(ResumeRepository.class);
+        coverLetterRepo = mock(CoverLetterRepository.class);
 
-        when(repository.findById(1L)).thenReturn(Optional.of(app));
-
-        JobApplicationDetailDTO result = service.getById(1L);
-        assertEquals("Engineer", result.getJobTitle());
+        service = new JobApplicationService(jobAppRepo, locationRepo, sourceRepo, resumeRepo, coverLetterRepo);
     }
 
     @Test
-    void testDeleteCallsRepositoryDelete() {
-        service.delete(5L);
-        verify(repository).deleteById(5L);
+    @DisplayName("Should create a new job application")
+    void testCreateJobApplication() {
+        JobApplicationCreateDTO dto = new JobApplicationCreateDTO();
+        dto.setJobTitle("Engineer");
+        dto.setCompany("TestCorp");
+        dto.setLocationCity("London");
+        dto.setLocationCountry("UK");
+
+        Location location = new Location();
+        location.setCity("London");
+        location.setCountry("UK");
+
+        when(locationRepo.findByCityAndCountry("London", "UK")).thenReturn(Optional.empty());
+        when(locationRepo.save(any(Location.class))).thenReturn(location);
+        when(jobAppRepo.save(any(JobApplication.class))).thenAnswer(i -> i.getArgument(0));
+
+        JobApplicationResponseDTO result = service.create(dto);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getCompany()).isEqualTo("TestCorp");
+        verify(jobAppRepo).save(any(JobApplication.class));
+    }
+
+    @Test
+    @DisplayName("Should throw error when source not found")
+    void testCreateWithMissingSource() {
+        JobApplicationCreateDTO dto = new JobApplicationCreateDTO();
+        dto.setSourceId(99L);
+        dto.setLocationCity("London");
+        dto.setLocationCountry("UK");
+
+        when(locationRepo.findByCityAndCountry(any(), any())).thenReturn(Optional.of(new Location()));
+        when(sourceRepo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.create(dto))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Source not found");
+    }
+
+    @Test
+    @DisplayName("Should return all job applications")
+    void testGetAll() {
+        when(jobAppRepo.findAll()).thenReturn(List.of(new JobApplication()));
+        List<JobApplicationResponseDTO> all = service.getAll();
+        assertThat(all).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("Should return job application by ID")
+    void testGetById() {
+        JobApplication app = new JobApplication();
+        app.setId(1L);
+        app.setCompany("TestCo");
+        when(jobAppRepo.findById(1L)).thenReturn(Optional.of(app));
+
+        JobApplicationDetailDTO dto = service.getById(1L);
+        assertThat(dto).isNotNull();
+        assertThat(dto.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("Should throw error if job app not found")
+    void testGetByInvalidId() {
+        when(jobAppRepo.findById(999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.getById(999L))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Job Application not found");
+    }
+
+    @Test
+    @DisplayName("Should delete a job application by ID")
+    void testDelete() {
+        service.delete(1L);
+        verify(jobAppRepo).deleteById(1L);
     }
 }
