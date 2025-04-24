@@ -18,9 +18,13 @@ import jakarta.persistence.Table;
 public class JobApplication {
 
     public enum Status {
-        APPLIED, INTERVIEW, OFFER, REJECTED
+        APPLIED, INTERVIEW, OFFER, REJECTED;
+        
+        public String getName() {
+            return this.name().toUpperCase();
+        }
     }
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,7 +64,25 @@ public class JobApplication {
 
     private LocalDateTime appliedOn;
 
+    public JobApplication(Long id, String jobTitle, String company, Status status, User user, Location location,
+            JobSource source, Resume resume, CoverLetter coverLetter, String notes, LocalDateTime appliedOn) {
+        this.id = id;
+        this.jobTitle = jobTitle;
+        this.company = company;
+        this.status = status;
+        this.user = user;
+        this.location = location;
+        this.source = source;
+        this.resume = resume;
+        this.coverLetter = coverLetter;
+        this.notes = notes;
+        this.appliedOn = appliedOn;
+    }
+    
+    public JobApplication() {}
+
     // Getters and Setters
+
 
     public Long getId() {
         return id;
