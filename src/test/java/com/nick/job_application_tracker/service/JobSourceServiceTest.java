@@ -1,19 +1,22 @@
 package com.nick.job_application_tracker.service;
 
-import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
-import com.nick.job_application_tracker.dto.JobSourceDTO;
-import com.nick.job_application_tracker.model.JobSource;
-import com.nick.job_application_tracker.repository.JobSourceRepository;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
+import com.nick.job_application_tracker.dto.JobSourceDTO;
+import com.nick.job_application_tracker.mapper.JobSourceMapper;
+import com.nick.job_application_tracker.model.JobSource;
+import com.nick.job_application_tracker.repository.JobSourceRepository;
 
 public class JobSourceServiceTest {
 
@@ -23,7 +26,8 @@ public class JobSourceServiceTest {
     @BeforeEach
     void setup() {
         jobSourceRepository = mock(JobSourceRepository.class);
-        jobSourceService = new JobSourceService(jobSourceRepository);
+        JobSourceMapper jobSourceMapper = new JobSourceMapper();
+        jobSourceService = new JobSourceService(jobSourceRepository, jobSourceMapper);
     }
 
     @Test
@@ -38,6 +42,7 @@ public class JobSourceServiceTest {
         s2.setName("Company Website");
 
         when(jobSourceRepository.findAll()).thenReturn(List.of(s1, s2));
+
 
         List<JobSourceDTO> sources = jobSourceService.getAllSources();
 
@@ -122,6 +127,7 @@ public class JobSourceServiceTest {
     @DisplayName("Should delete job source by ID")
     void testDeleteSource() {
         jobSourceService.deleteSource(1L);
+
         verify(jobSourceRepository).deleteById(1L);
     }
 }
