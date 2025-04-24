@@ -1,10 +1,13 @@
 package com.nick.job_application_tracker.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.nick.job_application_tracker.dto.JobApplicationCreateDTO;
 import com.nick.job_application_tracker.dto.JobApplicationDetailDTO;
 import com.nick.job_application_tracker.dto.JobApplicationResponseDTO;
 import com.nick.job_application_tracker.model.JobApplication;
 
+@Component
 public class JobApplicationMapper {
 
     public static JobApplication toEntity(JobApplicationCreateDTO dto) {
