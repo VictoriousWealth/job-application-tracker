@@ -19,8 +19,13 @@ public class Resume {
     private String filePath;
 
     // Getters and Setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFilePath() {
@@ -30,4 +35,5 @@ public class Resume {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+    
 }
