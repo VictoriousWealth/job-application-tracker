@@ -35,6 +35,12 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.junit.jupiter:junit-jupiter-api")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+	testImplementation("com.h2database:h2")
+
+
 }
 
 tasks.withType<Test> {
