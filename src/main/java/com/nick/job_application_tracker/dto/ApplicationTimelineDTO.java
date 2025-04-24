@@ -18,4 +18,46 @@ public class ApplicationTimelineDTO {
         this.description = description;
         this.jobApplicationId = jobApplicationId;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public LocalDateTime getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(LocalDateTime eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getJobApplicationId() {
+        return jobApplicationId;
+    }
+
+    public void setJobApplicationId(Long jobApplicationId) {
+        this.jobApplicationId = jobApplicationId;
+    }
+
+    
 }
