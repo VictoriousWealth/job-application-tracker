@@ -22,8 +22,13 @@ public class Location {
     private String country;
 
     // Getters and Setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCity() {
@@ -41,4 +46,5 @@ public class Location {
     public void setCountry(String country) {
         this.country = country;
     }
+    
 }
