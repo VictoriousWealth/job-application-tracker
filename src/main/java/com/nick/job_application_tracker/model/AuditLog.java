@@ -18,7 +18,11 @@ import jakarta.persistence.Table;
 public class AuditLog {
 
     public enum Action {
-        CREATE, UPDATE, DELETE
+        CREATE, UPDATE, DELETE;
+        
+        public String getName() {
+            return this.name().toUpperCase();
+        }
     }
 
     @Id
