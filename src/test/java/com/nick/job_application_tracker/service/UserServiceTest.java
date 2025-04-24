@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nick.job_application_tracker.dto.UserInfoDTO;
 import com.nick.job_application_tracker.dto.UserUpdateDTO;
+import com.nick.job_application_tracker.mapper.UserMapper;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.repository.UserRepository;
@@ -31,7 +32,8 @@ class UserServiceTest {
     void setUp() {
         userRepository = mock(UserRepository.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        userService = new UserService(userRepository, passwordEncoder);
+        UserMapper userMapper = new UserMapper(); 
+        userService = new UserService(userRepository, passwordEncoder, userMapper);
     }
 
     @Test
