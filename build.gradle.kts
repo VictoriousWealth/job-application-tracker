@@ -1,7 +1,8 @@
 plugins {
-	java
-	id("org.springframework.boot") version "3.3.10" // or "3.4.2"
-	id("io.spring.dependency-management") version "1.1.7"
+    java
+    id("org.springframework.boot") version "3.3.10" // or "3.4.2"
+    id("io.spring.dependency-management") version "1.1.7"
+    id("jacoco")
 }
 
 group = "com.nick"
@@ -46,3 +47,36 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests must run before generating report
+
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.required.set(true) // ENABLE HTML report
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+}
+
+// ✅ Automatically generate coverage report on `./gradlew check`
+tasks.named("check") {
+    dependsOn(tasks.jacocoTestReport)
+}
+
+tasks.register("openJacocoReport") {
+    dependsOn(tasks.jacocoTestReport)
+    doLast {
+        val reportPath = layout.buildDirectory.dir("jacocoHtml").get().asFile.resolve("index.html")
+        println("📄 Opening report at: $reportPath")
+        exec {
+            commandLine("open", reportPath.absolutePath)
+        }
+    }
+}
+
+
