@@ -14,10 +14,12 @@ public class CommunicationLogService {
 
     private final CommunicationLogRepository repo;
     private final CommunicationLogMapper mapper;
+    private final AuditLogService auditLogService;
 
-    public CommunicationLogService(CommunicationLogRepository repo, CommunicationLogMapper mapper) {
+    public CommunicationLogService(CommunicationLogRepository repo, CommunicationLogMapper mapper, AuditLogService auditLogService) {
         this.repo = repo;
         this.mapper = mapper;
+        this.auditLogService = auditLogService;
     }
 
     public List<CommunicationLogDTO> getByJobAppId(Long jobAppId) {
@@ -28,10 +30,19 @@ public class CommunicationLogService {
 
     public CommunicationLogDTO save(CommunicationLogDTO dto) {
         CommunicationLog entity = mapper.toEntity(dto);
-        return mapper.toDTO(repo.save(entity));
+        CommunicationLog saved = repo.save(entity);
+
+        if (dto.getId() == null) {
+            auditLogService.logCreate("Created CommunicationLog for JobApplication ID " + dto.getJobApplicationId());
+        } else {
+            auditLogService.logUpdate("Updated CommunicationLog ID " + saved.getId() + " for JobApplication ID " + dto.getJobApplicationId());
+        }
+
+        return mapper.toDTO(saved);
     }
 
     public void delete(Long id) {
         repo.deleteById(id);
+        auditLogService.logDelete("Deleted CommunicationLog ID " + id);
     }
 }
