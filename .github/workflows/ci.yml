@@ -1,5 +1,5 @@
 # .github/workflows/ci.yml
-name: Java CI/CD with Gradle - Pro Version
+name: Java CI/CD with Gradle - Pro Version (with .env)
 
 on:
   push:
@@ -9,8 +9,27 @@ on:
 
 jobs:
   build-and-test:
-
     runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - name: Checkout repository
@@ -26,11 +45,22 @@ jobs:
     - name: Grant permission to Gradle wrapper
       run: chmod +x gradlew
 
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        until pg_isready -h localhost -p 5432; do
+          echo "Waiting for Postgres to be ready..."
+          sleep 2
+        done
+
     - name: Build and run tests
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/${{ env.POSTGRES_DB }}
+        SPRING_DATASOURCE_USERNAME: ${{ env.POSTGRES_USER }}
+        SPRING_DATASOURCE_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
       run: ./gradlew clean build --info
 
     - name: Archive Test Reports
-      if: always()  # even if tests fail
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
