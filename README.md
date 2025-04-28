@@ -93,13 +93,6 @@ Example:
 
 ---
 
-Perfect, you already wrote a very nice script README.  
-Let's **link it cleanly** from the general `README.md` so recruiters and engineers easily discover it.
-
-Here’s how we can **update the Scripts section** of the general README:
-
----
-
 ## 🧹 Scripts
 
 | Script | Description |
