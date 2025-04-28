@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -16,35 +15,40 @@ import com.nick.job_application_tracker.repository.ScheduledCommunicationReposit
 @Service
 public class ScheduledCommunicationService {
 
-    private final ScheduledCommunicationRepository repository;
-    private final JobApplicationRepository jobAppRepository;
+    private final ScheduledCommunicationRepository repo;
+    private final JobApplicationRepository jobApplicationRepo;
+    private final AuditLogService auditLogService;
 
-    public ScheduledCommunicationService(ScheduledCommunicationRepository repository,
-                                         JobApplicationRepository jobAppRepository) {
-        this.repository = repository;
-        this.jobAppRepository = jobAppRepository;
+    public ScheduledCommunicationService(
+        ScheduledCommunicationRepository repo,
+        JobApplicationRepository jobApplicationRepo,
+        AuditLogService auditLogService
+    ) {
+        this.repo = repo;
+        this.jobApplicationRepo = jobApplicationRepo;
+        this.auditLogService = auditLogService;
     }
 
-    public List<ScheduledCommunicationDTO> getAll() {
-        return repository.findAll().stream()
+    public List<ScheduledCommunicationDTO> getByJobAppId(Long jobAppId) {
+        return repo.findByJobApplicationId(jobAppId).stream()
             .map(ScheduledCommunicationMapper::toDTO)
-            .collect(Collectors.toList());
+            .toList();
     }
 
-    public ScheduledCommunicationDTO getById(Long id) {
-        return repository.findById(id)
-            .map(ScheduledCommunicationMapper::toDTO)
-            .orElseThrow(() -> new RuntimeException("ScheduledCommunication not found"));
-    }
-
-    public ScheduledCommunicationDTO create(ScheduledCommunicationCreateDTO dto) {
-        JobApplication jobApp = jobAppRepository.findById(dto.getJobApplicationId())
+    public ScheduledCommunicationDTO save(ScheduledCommunicationCreateDTO dto) {
+        JobApplication application = jobApplicationRepo.findById(dto.getJobApplicationId())
             .orElseThrow(() -> new RuntimeException("Job Application not found"));
-        ScheduledCommunication entity = ScheduledCommunicationMapper.toEntity(dto, jobApp);
-        return ScheduledCommunicationMapper.toDTO(repository.save(entity));
+
+        ScheduledCommunication comm = ScheduledCommunicationMapper.toEntity(dto, application);
+        ScheduledCommunication saved = repo.save(comm);
+
+        auditLogService.logCreate("Created scheduled communication with id: " + saved.getId());
+
+        return ScheduledCommunicationMapper.toDTO(saved);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        repo.deleteById(id);
+        auditLogService.logDelete("Deleted scheduled communication with id: " + id);
     }
 }
