@@ -2,7 +2,6 @@ package com.nick.job_application_tracker.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.CoverLetterDTO;
@@ -13,27 +12,39 @@ import com.nick.job_application_tracker.repository.CoverLetterRepository;
 @Service
 public class CoverLetterService {
 
-    private final CoverLetterRepository coverLetterRepository;
-    private final CoverLetterMapper coverLetterMapper;
+    private final CoverLetterRepository repo;
+    private final CoverLetterMapper mapper;
+    private final AuditLogService auditLogService;
 
-    @Autowired
-    public CoverLetterService(CoverLetterRepository coverLetterRepository, CoverLetterMapper coverLetterMapper) {
-        this.coverLetterRepository = coverLetterRepository;
-        this.coverLetterMapper = coverLetterMapper;
+    public CoverLetterService(CoverLetterRepository repo, CoverLetterMapper mapper, AuditLogService auditLogService) {
+        this.repo = repo;
+        this.mapper = mapper;
+        this.auditLogService = auditLogService;
     }
 
     public List<CoverLetterDTO> findAll() {
-        return coverLetterRepository.findAll().stream()
-            .map(coverLetterMapper::toDTO)
+        return repo.findAll().stream()
+            .map(mapper::toDTO)
             .toList();
     }
 
     public CoverLetterDTO save(CoverLetterDTO dto) {
-        CoverLetter coverLetter = coverLetterMapper.toEntity(dto);
-        return coverLetterMapper.toDTO(coverLetterRepository.save(coverLetter));
+        boolean isNew = (dto.getId() == null);
+
+        CoverLetter entity = mapper.toEntity(dto);
+        CoverLetter saved = repo.save(entity);
+
+        if (isNew) {
+            auditLogService.logCreate("Created new cover letter with id: " + saved.getId());
+        } else {
+            auditLogService.logUpdate("Updated cover letter with id: " + saved.getId());
+        }
+
+        return mapper.toDTO(saved);
     }
 
     public void delete(Long id) {
-        coverLetterRepository.deleteById(id);
+        repo.deleteById(id);
+        auditLogService.logDelete("Deleted cover letter with id: " + id);
     }
 }
