@@ -1,27 +1,32 @@
 package com.nick.job_application_tracker.service;
 
-import com.nick.job_application_tracker.dto.ResumeDTO;
-import com.nick.job_application_tracker.model.Resume;
-import com.nick.job_application_tracker.repository.ResumeRepository;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.nick.job_application_tracker.dto.ResumeDTO;
+import com.nick.job_application_tracker.model.Resume;
+import com.nick.job_application_tracker.repository.ResumeRepository;
 
 public class ResumeServiceTest {
 
     private ResumeRepository resumeRepository;
     private ResumeService resumeService;
+    private AuditLogService auditLogService;
 
     @BeforeEach
     void setUp() {
         resumeRepository = mock(ResumeRepository.class);
-        resumeService = new ResumeService(resumeRepository);
+        auditLogService = mock(AuditLogService.class);
+        resumeService = new ResumeService(resumeRepository, auditLogService);
     }
 
     @Test
