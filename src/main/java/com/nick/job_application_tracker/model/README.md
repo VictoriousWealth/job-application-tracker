@@ -1,182 +1,68 @@
-# 💼 JobTrackr – Advanced Job Application Tracking System
+# Models
 
-**JobTrackr** is a full-featured, backend-first job application tracker designed to help users manage every aspect of their job search — from applications and resumes to recruiter communication, timelines, and follow-up reminders.
-
-This system goes beyond CRUD, modeling the real-world complexity of job searching, and is built with enterprise-level architecture in mind.
-
----
-
-## 📌 Table of Contents
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [System Overview](#system-overview)
-- [Data Model Summary](#data-model-summary)
-- [Design Principles](#design-principles)
-- [Future Plans](#future-plans)
+This directory contains the core data entities (JPA entities) used in the JobTrackr application.  
+Each model maps to a corresponding database table and represents critical aspects of job tracking, user management, and audit logging.
 
 ---
 
-## 🌟 Features
+## Entities:
 
-- ✅ Secure user authentication (JWT-based)
-- ✅ Track job applications with detailed metadata
-- ✅ Manage resume versions and cover letters
-- ✅ Timeline of application events
-- ✅ Log all recruiter communication
-- ✅ Attach offer letters, prep notes, rejection letters, job descriptions, etc.
-- ✅ Set reminders for follow-ups
-- ✅ Schedule interviews and assessments
-- ✅ Audit log for all major actions
-- ✅ Normalize and structure sources, skills, and locations
+- **ApplicationTimeline**  
+  Tracks major events (created, updated, submitted, cancelled) related to a job application.
 
----
+- **Attachment**  
+  Stores supplementary documents linked to applications, like job descriptions, offer letters, and more.
 
-## ⚙️ Tech Stack
+- **AuditLog**  
+  Records key system actions (create, update, delete) along with the user responsible for the action.
 
-| Layer       | Tech                         |
-|-------------|------------------------------|
-| Backend     | Spring Boot (Java)           |
-| Database    | PostgreSQL                   |
-| ORM         | Spring Data JPA + Hibernate  |
-| Security    | Spring Security + JWT        |
-| Build Tool  | Maven                        |
-| Docs        | Swagger / OpenAPI (planned)  |
-| Deployment  | Render / Heroku (planned)    |
+- **CommunicationLog**  
+  Captures communication events related to job applications (email, call, LinkedIn, in-person).
 
----
+- **CoverLetter**  
+  Represents user cover letters, either as uploaded files or rich text content.
 
-## 🧠 System Overview
+- **FollowUpReminder**  
+  Sets scheduled reminders for users to follow up on specific job applications.
 
-JobTrackr is designed for real users to log:
-- Applications to roles (title, company, location, source, resume used)
-- Lifecycle updates like interviews or rejections
-- Communications like calls, emails, and LinkedIn DMs
-- Scheduled events like interviews or assessments
-- Reminders and follow-ups
-- Supporting files like resumes, offer letters, and job descriptions
+- **JobApplication**  
+  Central entity for tracking a user's job applications, including company, title, status, resume, and notes.
 
-The system uses normalized models to avoid redundancy and enhance flexibility.
+- **JobSource**  
+  Identifies the platform or method through which the job opportunity was found (e.g., LinkedIn, Referral).
 
----
+- **Location**  
+  Stores city and country information associated with a job listing.
 
-## 🗃️ Data Model Summary
+- **Resume**  
+  Represents user-uploaded resumes, stored as file paths.
 
-### 👤 `User`
-Handles authentication and owns all resources.
+- **ScheduledCommunication**  
+  Tracks upcoming important events like interviews, online assessments, and scheduled calls.
+
+- **SkillTracker**  
+  Associates key skills with each job application to monitor required qualifications.
+
+- **User**  
+  Represents a JobTrackr user, including email, password, role, and enabled status.
 
 ---
 
-### 💼 `JobApplication`
-Central entity representing a job applied to. Contains title, company, status, source, location, notes, etc.
+## Enums:
 
-- `status` is an enum: `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`
-- Linked to `Location`, `JobSource`, `Resume`, and `CoverLetter`
+- **Role**  
+  Defines user roles within the system (currently only `BASIC`).
 
----
-
-### 🧾 `Resume`
-Stores different resume versions with:
-- `file_path` (only)
-- No `user_id` or direct job link; can be reused across jobs
-
----
-
-### 📝 `CoverLetter`
-Stores general or reusable letters:
-- Contains title and file path or content
-- Not tied to specific job application (like `Resume`)
+- **Other Enums** (embedded within models):  
+  - `ApplicationTimeline.EventType`
+  - `Attachment.Type`
+  - `AuditLog.Action`
+  - `CommunicationLog.Method` and `Direction`
+  - `JobApplication.Status`
+  - `ScheduledCommunication.Type`
 
 ---
 
-### 📅 `ApplicationTimeline`
-Tracks key lifecycle events like:
-- Application created, Interview scheduled, Offer made
-- Enum `event_type`: `CREATED`, `FOLLOW_UP`, `INTERVIEW`, `REJECTED`, `OFFER`, `NOTE`
-
----
-
-### 📨 `CommunicationLog`
-Logs recruiter interactions:
-- Enum `type`: `EMAIL`, `CALL`, `LINKEDIN`, `IN_PERSON`
-- Enum `direction`: `INBOUND`, `OUTBOUND`
-
----
-
-### 🔔 `FollowUpReminder`
-Sets reminders for follow-up actions with `remind_on` timestamp.
-
----
-
-### 📆 `ScheduledCommunication`
-Logs upcoming events users must attend:
-- Interviews, assessments, HR calls, etc.
-- Type enum: `INTERVIEW`, `ONLINE_ASSESSMENT`, `CALL`
-
----
-
-### 📎 `Attachment`
-Single model for all uploaded files:
-- Job descriptions (`type: JOB_DESCRIPTION`)
-- Offer letters (`type: OFFER_LETTER`)
-- Interview prep, rejections, etc.
-- Linked to a job via `job_application_id`
-
----
-
-### 🧪 `AuditLog`
-Tracks changes across the system:
-- Enum `action`: `CREATE`, `UPDATE`, `DELETE`
-- `description` is **required** to explain each change
-
----
-
-### 🗺️ `Location`
-Normalized city and country for analytics and filtering.
-
----
-
-### 🧠 `SkillTracker`
-Links required skills to each job (future AI-ready).
-
----
-
-### 🌐 `JobSource`
-Normalized table for application source (LinkedIn, Indeed, Referral, etc.)
-
----
-
-## ✅ Design Principles
-
-- **Normalization**: Data is cleanly separated (e.g., `Location`, `JobSource`)
-- **Minimal Redundancy**: `Resume` and `CoverLetter` aren't tied directly to applications
-- **Auditability**: All changes are tracked through `AuditLog`
-- **Extendability**: Supports future AI integration (e.g., skill analysis, job matching)
-- **Security-first**: All routes gated by JWT auth and user ownership checks
-
----
-
-## 🔮 Future Plans
-
-- Analytics dashboard (conversion rates, source performance)
-- Export data (PDF, CSV)
-- AI: Resume-job matching, follow-up email generator
-- Calendar view for events and reminders
-- REST → GraphQL (optional phase)
-- Frontend with React
-
----
-
-## 📂 Folder Structure (Backend)
-
-TBC
-
----
-
-## 👋 Want to Contribute?
-
-This project will soon be made public for open-source contributions. Stay tuned for the contribution guide!
-
----
-
+Each entity uses JPA and Hibernate annotations to map to relational database tables.  
+The models are designed for clean relationships (`@ManyToOne`, `@Enumerated`) and extensibility as the system grows.
 
