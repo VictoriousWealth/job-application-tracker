@@ -22,12 +22,14 @@ public class JobSourceServiceTest {
 
     private JobSourceRepository jobSourceRepository;
     private JobSourceService jobSourceService;
+    private AuditLogService auditLogService;
 
     @BeforeEach
     void setup() {
         jobSourceRepository = mock(JobSourceRepository.class);
+        auditLogService = mock(AuditLogService.class);
         JobSourceMapper jobSourceMapper = new JobSourceMapper();
-        jobSourceService = new JobSourceService(jobSourceRepository, jobSourceMapper);
+        jobSourceService = new JobSourceService(jobSourceRepository, jobSourceMapper, auditLogService);
     }
 
     @Test
