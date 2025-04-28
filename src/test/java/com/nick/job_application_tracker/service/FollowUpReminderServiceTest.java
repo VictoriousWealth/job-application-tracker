@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.nick.job_application_tracker.dto.FollowUpReminderCreateDTO;
@@ -37,6 +38,9 @@ public class FollowUpReminderServiceTest {
 
     @Autowired
     private UserRepository userRepo;
+
+    @MockBean
+    private AuditLogService auditLogService; // ✅ ADD THIS
 
     private Long jobAppId;
 
@@ -87,8 +91,9 @@ public class FollowUpReminderServiceTest {
 
         assertThatThrownBy(() -> service.save(dto))
             .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining("Job application not found");
+            .hasMessageContaining("Job Application not found"); // ✅ match your real service
     }
+
 
     @Test
     @DisplayName("Should return all reminders by job application ID")
