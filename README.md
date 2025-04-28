@@ -3,7 +3,7 @@
 [![Coverage Checker](https://img.shields.io/badge/Test%20Coverage-Available-green?style=flat-square)](./scripts/README.md)
 [![Gradle Tests](https://img.shields.io/badge/Gradle%20Tests-Supported-blue?style=flat-square)](https://gradle.org/)
 [![Built with Java](https://img.shields.io/badge/Built%20with-Java%2017-blueviolet?style=flat-square)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-[![License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](./LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](./LICENSE)
 
 **JobTrackr** is a comprehensive system designed to streamline and manage every part of the job search process — tracking applications, managing resumes and cover letters, logging communication, setting follow-ups, and organizing timelines.  
 It is built for real-world use with a secure backend, a clean modular design, and future-ready architecture.
