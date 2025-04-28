@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.SkillTracker;
 import com.nick.job_application_tracker.repository.SkillTrackerRepository;
 
@@ -17,11 +18,13 @@ public class SkillTrackerServiceTest {
 
     private SkillTrackerRepository repo;
     private SkillTrackerService service;
+    private AuditLogService auditLogService;
 
     @BeforeEach
     void setUp() {
         repo = mock(SkillTrackerRepository.class);
-        service = new SkillTrackerService(repo);
+        auditLogService = mock(AuditLogService.class);
+        service = new SkillTrackerService(repo, auditLogService);
     }
 
     @Test
@@ -49,9 +52,15 @@ public class SkillTrackerServiceTest {
         SkillTracker skill = new SkillTracker();
         skill.setSkillName("Docker");
 
+        // 🛠 FIX: Add a JobApplication
+        JobApplication job = new JobApplication();
+        job.setId(1L); // (mocked ID)
+        skill.setJobApplication(job);
+
         SkillTracker saved = new SkillTracker();
         saved.setId(55L);
         saved.setSkillName("Docker");
+        saved.setJobApplication(job); // Match saved skill too
 
         when(repo.save(skill)).thenReturn(saved);
 
@@ -59,6 +68,7 @@ public class SkillTrackerServiceTest {
 
         assertThat(result.getId()).isEqualTo(55L);
         assertThat(result.getSkillName()).isEqualTo("Docker");
+        assertThat(result.getJobApplication().getId()).isEqualTo(1L); // ✅ Assert jobApp too if you want
     }
 
     @Test
