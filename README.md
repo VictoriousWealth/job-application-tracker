@@ -99,6 +99,8 @@ Example:
 |:------|:------------|
 | [`scripts/check_test_coverage.sh`](./scripts/README.md) | Calculates Java class test coverage. Shows per-folder breakdowns. Integrates with Gradle test runner. |
 
+📖 **See [`scripts/README.md`](./scripts/README.md) for full instructions on checking test coverage and running Gradle tests.**
+
 ---
 
 ## 📂 Folder Structure (Backend)
