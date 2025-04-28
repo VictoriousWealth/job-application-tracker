@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.nick.job_application_tracker.dto.AttachmentDTO;
 import com.nick.job_application_tracker.model.Attachment;
@@ -22,7 +21,6 @@ import com.nick.job_application_tracker.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
-@ActiveProfiles("test")
 @SpringBootTest
 public class AttachmentServiceTest {
 
