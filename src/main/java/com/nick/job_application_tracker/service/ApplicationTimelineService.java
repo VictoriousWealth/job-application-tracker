@@ -13,9 +13,11 @@ import com.nick.job_application_tracker.repository.ApplicationTimelineRepository
 public class ApplicationTimelineService {
 
     private final ApplicationTimelineRepository repo;
+    private final AuditLogService auditLogService;
 
-    public ApplicationTimelineService(ApplicationTimelineRepository repo) {
+    public ApplicationTimelineService(ApplicationTimelineRepository repo, AuditLogService auditLogService) {
         this.repo = repo;
+        this.auditLogService = auditLogService;
     }
 
     public List<ApplicationTimelineDTO> getByJobAppId(Long jobAppId) {
@@ -25,15 +27,28 @@ public class ApplicationTimelineService {
     }
 
     public ApplicationTimeline save(ApplicationTimeline event) {
-        return repo.save(event);
+        ApplicationTimeline saved = repo.save(event);
+        auditLogService.logCreate("Created a new ApplicationTimeline event (ID: " + saved.getId() + ")");
+        return saved;
     }
 
     public void delete(Long id) {
         repo.deleteById(id);
+        auditLogService.logDelete("Deleted an ApplicationTimeline event (ID: " + id + ")");
     }
 
     public ApplicationTimelineDTO save(ApplicationTimelineDTO dto) {
-        ApplicationTimeline entity = ApplicationTimelineMapper.toEntity(dto);
-        return ApplicationTimelineMapper.toDTO(repo.save(entity));
+        boolean isUpdate = dto.getId() != null;
+    
+        ApplicationTimeline saved = repo.save(ApplicationTimelineMapper.toEntity(dto));
+    
+        if (isUpdate) {
+            auditLogService.logUpdate("Updated ApplicationTimeline event (ID: " + saved.getId() + ")");
+        } else {
+            auditLogService.logCreate("Created a new ApplicationTimeline event (ID: " + saved.getId() + ")");
+        }
+    
+        return ApplicationTimelineMapper.toDTO(saved);
     }
+    
 }
