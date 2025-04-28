@@ -28,20 +28,24 @@ public class JobApplicationService {
     private final JobSourceRepository jobSourceRepository;
     private final ResumeRepository resumeRepository;
     private final CoverLetterRepository coverLetterRepository;
+    private final AuditLogService auditLogService;
 
     public JobApplicationService(
-            JobApplicationRepository jobApplicationRepository,
-            LocationRepository locationRepository,
-            JobSourceRepository jobSourceRepository,
-            ResumeRepository resumeRepository,
-            CoverLetterRepository coverLetterRepository
+        JobApplicationRepository jobApplicationRepository,
+        LocationRepository locationRepository,
+        JobSourceRepository jobSourceRepository,
+        ResumeRepository resumeRepository,
+        CoverLetterRepository coverLetterRepository,
+        AuditLogService auditLogService // <- new!
     ) {
         this.jobApplicationRepository = jobApplicationRepository;
         this.locationRepository = locationRepository;
         this.jobSourceRepository = jobSourceRepository;
         this.resumeRepository = resumeRepository;
         this.coverLetterRepository = coverLetterRepository;
+        this.auditLogService = auditLogService;
     }
+
 
     public JobApplicationResponseDTO create(JobApplicationCreateDTO dto) {
         JobApplication jobApp = JobApplicationMapper.toEntity(dto);
@@ -76,13 +80,14 @@ public class JobApplicationService {
         }
 
         JobApplication saved = jobApplicationRepository.save(jobApp);
+        auditLogService.logCreate("Created job application with id: " + saved.getId());
         return JobApplicationMapper.toResponseDTO(saved);
     }
 
     public List<JobApplicationResponseDTO> getAll() {
         return jobApplicationRepository.findAll().stream()
                 .map(JobApplicationMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .collect((Collectors.toList()));
     }
 
     public JobApplicationDetailDTO getById(Long id) {
@@ -97,7 +102,11 @@ public class JobApplicationService {
     }
 
     public void delete(Long id) {
-        jobApplicationRepository.deleteById(id);
+        JobApplication jobApp = jobApplicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job Application not found"));
+    
+        jobApplicationRepository.delete(jobApp);
+        auditLogService.logDelete("Deleted job application with id: " + id);
     }
     
 }
