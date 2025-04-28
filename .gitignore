@@ -1,3 +1,4 @@
+# Standard Stuff
 HELP.md
 .gradle
 build/
@@ -5,6 +6,20 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# Spring specific
+*.log
+logs/
+!**/src/main/**/logs/
+!**/src/test/**/logs/
+
+# macOS junk files
+.DS_Store
+
+# Env files
+.env
+.env.*
+
+# IDEs
 ### STS ###
 .apt_generated
 .classpath
