@@ -27,13 +27,15 @@ class UserServiceTest {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private UserService userService;
+    private AuditLogService auditLogService;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
         passwordEncoder = mock(PasswordEncoder.class);
+        auditLogService = mock(AuditLogService.class);
         UserMapper userMapper = new UserMapper(); 
-        userService = new UserService(userRepository, passwordEncoder, userMapper);
+        userService = new UserService(userRepository, passwordEncoder, userMapper, auditLogService);
     }
 
     @Test
