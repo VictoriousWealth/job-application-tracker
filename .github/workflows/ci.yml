@@ -1,5 +1,5 @@
 # .github/workflows/ci.yml
-name: Java CI/CD with Gradle - Pro Version (with .env)
+name: Java CI/CD with Gradle
 
 on:
   push:
