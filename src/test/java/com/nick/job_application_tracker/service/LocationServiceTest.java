@@ -1,28 +1,32 @@
 package com.nick.job_application_tracker.service;
 
-import com.nick.job_application_tracker.dto.LocationDTO;
-import com.nick.job_application_tracker.model.Location;
-import com.nick.job_application_tracker.repository.LocationRepository;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.nick.job_application_tracker.dto.LocationDTO;
+import com.nick.job_application_tracker.model.Location;
+import com.nick.job_application_tracker.repository.LocationRepository;
 
 public class LocationServiceTest {
 
     private LocationRepository locationRepository;
     private LocationService locationService;
+    private AuditLogService auditLogService;
 
     @BeforeEach
     void setup() {
         locationRepository = mock(LocationRepository.class);
-        locationService = new LocationService(locationRepository);
+        auditLogService = mock(AuditLogService.class);
+        locationService = new LocationService(locationRepository, auditLogService);
     }
 
     @Test
