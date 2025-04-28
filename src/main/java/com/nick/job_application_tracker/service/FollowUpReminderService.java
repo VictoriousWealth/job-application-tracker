@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -16,35 +15,43 @@ import com.nick.job_application_tracker.repository.JobApplicationRepository;
 @Service
 public class FollowUpReminderService {
 
-    private final FollowUpReminderRepository repository;
-    private final JobApplicationRepository jobAppRepo;
+    private final FollowUpReminderRepository repo;
     private final FollowUpReminderMapper mapper;
+    private final AuditLogService auditLogService;
+    private final JobApplicationRepository jobApplicationRepository;
 
     public FollowUpReminderService(
-            FollowUpReminderRepository repository,
-            JobApplicationRepository jobAppRepo,
-            FollowUpReminderMapper mapper) {
-        this.repository = repository;
-        this.jobAppRepo = jobAppRepo;
+        FollowUpReminderRepository repo,
+        FollowUpReminderMapper mapper,
+        AuditLogService auditLogService,
+        JobApplicationRepository jobApplicationRepository
+    ) {
+        this.repo = repo;
         this.mapper = mapper;
+        this.auditLogService = auditLogService;
+        this.jobApplicationRepository = jobApplicationRepository;
     }
 
     public List<FollowUpReminderDTO> getByJobAppId(Long jobAppId) {
-        return repository.findByJobApplicationId(jobAppId)
-                .stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+        return repo.findByJobApplicationId(jobAppId).stream()
+            .map(mapper::toDTO)
+            .toList();
     }
 
     public FollowUpReminderDTO save(FollowUpReminderCreateDTO dto) {
-        JobApplication jobApp = jobAppRepo.findById(dto.getJobApplicationId())
-                .orElseThrow(() -> new RuntimeException("Job application not found"));
+        JobApplication application = jobApplicationRepository.findById(dto.getJobApplicationId())
+            .orElseThrow(() -> new IllegalArgumentException("Job Application not found"));
 
-        FollowUpReminder reminder = mapper.toEntity(dto, jobApp);
-        return mapper.toDTO(repository.save(reminder));
+        FollowUpReminder reminder = mapper.toEntity(dto, application);
+        FollowUpReminder saved = repo.save(reminder);
+
+        auditLogService.logCreate("Created follow-up reminder with id: " + saved.getId());
+
+        return mapper.toDTO(saved);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        repo.deleteById(id);
+        auditLogService.logDelete("Deleted follow-up reminder with id: " + id);
     }
 }
