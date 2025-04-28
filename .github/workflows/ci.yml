@@ -53,10 +53,6 @@ jobs:
         done
 
     - name: Build and run tests
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/${{ env.POSTGRES_DB }}
-        SPRING_DATASOURCE_USERNAME: ${{ env.POSTGRES_USER }}
-        SPRING_DATASOURCE_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
       run: ./gradlew clean build --info
 
     - name: Archive Test Reports
