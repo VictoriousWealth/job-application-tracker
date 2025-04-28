@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.nick.job_application_tracker.dto.AuditLogDTO;
 import com.nick.job_application_tracker.model.AuditLog;
@@ -19,7 +18,6 @@ import com.nick.job_application_tracker.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
-@ActiveProfiles("test")
 @Transactional
 @SpringBootTest
 public class AuditLogServiceTest {
