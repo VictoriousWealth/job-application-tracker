@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.JobApplication.Status;
@@ -16,9 +16,9 @@ import com.nick.job_application_tracker.model.User;
 import jakarta.transaction.Transactional;
 
 
-@ActiveProfiles("test")
 @Transactional
 @SpringBootTest
+@TestPropertySource("classpath:application-test.properties") 
 public class JobApplicationRepositoryTest {
 
     @Autowired
