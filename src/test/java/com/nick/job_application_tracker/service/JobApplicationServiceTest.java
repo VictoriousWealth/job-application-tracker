@@ -32,6 +32,8 @@ public class JobApplicationServiceTest {
     private ResumeRepository resumeRepo;
     private CoverLetterRepository coverLetterRepo;
     private JobApplicationService service;
+    private AuditLogService auditLogService;
+
 
     @BeforeEach
     void setup() {
@@ -40,8 +42,9 @@ public class JobApplicationServiceTest {
         sourceRepo = mock(JobSourceRepository.class);
         resumeRepo = mock(ResumeRepository.class);
         coverLetterRepo = mock(CoverLetterRepository.class);
+        auditLogService = mock(AuditLogService.class);
 
-        service = new JobApplicationService(jobAppRepo, locationRepo, sourceRepo, resumeRepo, coverLetterRepo);
+        service = new JobApplicationService(jobAppRepo, locationRepo, sourceRepo, resumeRepo, coverLetterRepo, auditLogService);
     }
 
     @Test
@@ -118,7 +121,14 @@ public class JobApplicationServiceTest {
     @Test
     @DisplayName("Should delete a job application by ID")
     void testDelete() {
+        JobApplication jobApplication = new JobApplication();
+        jobApplication.setId(1L);
+
+        when(jobAppRepo.findById(1L)).thenReturn(Optional.of(jobApplication));
+
         service.delete(1L);
-        verify(jobAppRepo).deleteById(1L);
+
+        verify(jobAppRepo).delete(jobApplication);
     }
+
 }
