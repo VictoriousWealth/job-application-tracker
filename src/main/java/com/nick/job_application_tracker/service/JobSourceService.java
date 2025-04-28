@@ -1,9 +1,12 @@
 package com.nick.job_application_tracker.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
 import com.nick.job_application_tracker.dto.JobSourceDTO;
 import com.nick.job_application_tracker.mapper.JobSourceMapper;
 import com.nick.job_application_tracker.model.JobSource;
@@ -12,46 +15,45 @@ import com.nick.job_application_tracker.repository.JobSourceRepository;
 @Service
 public class JobSourceService {
 
-    private final JobSourceRepository repo;
+    private final JobSourceRepository jobSourceRepository;
     private final JobSourceMapper mapper;
     private final AuditLogService auditLogService;
 
-    public JobSourceService(JobSourceRepository repo, JobSourceMapper mapper, AuditLogService auditLogService) {
-        this.repo = repo;
+    public JobSourceService(JobSourceRepository jobSourceRepository, JobSourceMapper mapper, AuditLogService auditLogService) {
+        this.jobSourceRepository = jobSourceRepository;
         this.mapper = mapper;
         this.auditLogService = auditLogService;
     }
 
-    public List<JobSourceDTO> findAll() {
-        return repo.findAll().stream()
-            .map(mapper::toDTO)
-            .toList();
+    public List<JobSourceDTO> getAllSources() {
+        return jobSourceRepository.findAll().stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public JobSourceDTO createSource(JobSourceDTO dto) {
-        JobSource source = mapper.toEntity(dto);
-        JobSource saved = repo.save(source);
-
-        auditLogService.logCreate("Created new job source: " + saved.getName());
-        return mapper.toDTO(saved);
+    public JobSourceDTO createSource(JobSourceCreateDTO createDTO) {
+        JobSource source = mapper.toEntity(createDTO);
+        JobSource savedSource = jobSourceRepository.save(source);
+        auditLogService.logCreate("Created JobSource with ID " + savedSource.getId() + " and name '" + savedSource.getName() + "'");
+        return mapper.toDTO(savedSource);
     }
 
-    public JobSourceDTO updateSource(Long id, JobSourceDTO dto) {
-        JobSource existing = repo.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Job Source not found with id: " + id));
+    public Optional<JobSourceDTO> getSourceById(Long id) {
+        return jobSourceRepository.findById(id)
+                .map(mapper::toDTO);
+    }
 
-        existing.setName(dto.getName());
-        JobSource updated = repo.save(existing);
-
-        auditLogService.logUpdate("Updated job source ID: " + id);
-        return mapper.toDTO(updated);
+    public Optional<JobSourceDTO> updateSource(Long id, JobSourceCreateDTO createDTO) {
+        return jobSourceRepository.findById(id).map(source -> {
+            source.setName(createDTO.getName());
+            JobSource updatedSource = jobSourceRepository.save(source);
+            auditLogService.logUpdate("Updated JobSource with ID " + updatedSource.getId() + " to name '" + updatedSource.getName() + "'");
+            return mapper.toDTO(updatedSource);
+        });
     }
 
     public void deleteSource(Long id) {
-        JobSource existing = repo.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Job Source not found with id: " + id));
-
-        repo.delete(existing);
-        auditLogService.logDelete("Deleted job source ID: " + id);
+        jobSourceRepository.deleteById(id);
+        auditLogService.logDelete("Deleted JobSource with ID " + id);
     }
 }
