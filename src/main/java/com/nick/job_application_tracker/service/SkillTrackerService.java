@@ -4,51 +4,32 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.nick.job_application_tracker.dto.SkillTrackerCreateDTO;
-import com.nick.job_application_tracker.dto.SkillTrackerDTO;
-import com.nick.job_application_tracker.mapper.SkillTrackerMapper;
-import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.SkillTracker;
-import com.nick.job_application_tracker.repository.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.SkillTrackerRepository;
 
 @Service
 public class SkillTrackerService {
 
-    private final SkillTrackerRepository skillRepo;
-    private final JobApplicationRepository jobAppRepo;
+    private final SkillTrackerRepository repo;
     private final AuditLogService auditLogService;
 
-    public SkillTrackerService(
-        SkillTrackerRepository skillRepo,
-        JobApplicationRepository jobAppRepo,
-        AuditLogService auditLogService
-    ) {
-        this.skillRepo = skillRepo;
-        this.jobAppRepo = jobAppRepo;
+    public SkillTrackerService(SkillTrackerRepository repo, AuditLogService auditLogService) {
+        this.repo = repo;
         this.auditLogService = auditLogService;
     }
 
-    public SkillTrackerDTO create(SkillTrackerCreateDTO dto) {
-        JobApplication jobApp = jobAppRepo.findById(dto.getJobApplicationId())
-            .orElseThrow(() -> new RuntimeException("Job application not found"));
-
-        SkillTracker skill = SkillTrackerMapper.toEntity(dto, jobApp);
-        SkillTracker saved = skillRepo.save(skill);
-
-        auditLogService.logCreate("Created skill '" + saved.getSkillName() + "' for job application ID: " + jobApp.getId());
-
-        return SkillTrackerMapper.toDTO(saved);
+    public List<SkillTracker> getByJobAppId(Long jobAppId) {
+        return repo.findByJobApplicationId(jobAppId);
     }
 
-    public List<SkillTrackerDTO> getByJobAppId(Long jobAppId) {
-        return skillRepo.findByJobApplicationId(jobAppId).stream()
-            .map(SkillTrackerMapper::toDTO)
-            .toList();
+    public SkillTracker save(SkillTracker skill) {
+        SkillTracker savedSkill = repo.save(skill);
+        auditLogService.logCreate("Created SkillTracker with ID " + savedSkill.getId() + " for JobApplication ID " + savedSkill.getJobApplication().getId());
+        return savedSkill;
     }
 
     public void delete(Long id) {
-        skillRepo.deleteById(id);
-        auditLogService.logDelete("Deleted skill tracker entry with ID: " + id);
+        repo.deleteById(id);
+        auditLogService.logDelete("Deleted SkillTracker with ID " + id);
     }
 }
