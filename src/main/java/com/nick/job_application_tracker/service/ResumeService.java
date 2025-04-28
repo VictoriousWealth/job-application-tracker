@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,26 +12,35 @@ import com.nick.job_application_tracker.repository.ResumeRepository;
 @Service
 public class ResumeService {
 
-    private final ResumeRepository resumeRepository;
+    private final ResumeRepository repo;
+    private final AuditLogService auditLogService;
 
-    public ResumeService(ResumeRepository resumeRepository) {
-        this.resumeRepository = resumeRepository;
-    }
-
-    public List<ResumeDTO> findAll() {
-        return resumeRepository.findAll()
-            .stream()
-            .map(ResumeMapper::toDTO)
-            .collect(Collectors.toList());
+    public ResumeService(ResumeRepository repo, AuditLogService auditLogService) {
+        this.repo = repo;
+        this.auditLogService = auditLogService;
     }
 
     public ResumeDTO save(ResumeDTO dto) {
         Resume resume = ResumeMapper.toEntity(dto);
-        Resume saved = resumeRepository.save(resume);
+        Resume saved = repo.save(resume);
+
+        if (dto.getId() == null) {
+            auditLogService.logCreate("Created resume with id: " + saved.getId());
+        } else {
+            auditLogService.logUpdate("Updated resume with id: " + saved.getId());
+        }
+
         return ResumeMapper.toDTO(saved);
     }
 
+    public List<ResumeDTO> getAll() {
+        return repo.findAll().stream()
+            .map(ResumeMapper::toDTO)
+            .toList();
+    }
+
     public void delete(Long id) {
-        resumeRepository.deleteById(id);
+        repo.deleteById(id);
+        auditLogService.logDelete("Deleted resume with id: " + id);
     }
 }
