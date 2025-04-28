@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,43 +12,33 @@ import com.nick.job_application_tracker.repository.AttachmentRepository;
 @Service
 public class AttachmentService {
 
-    private final AttachmentRepository repo;
+    private final AttachmentRepository repository;
     private final AttachmentMapper mapper;
     private final AuditLogService auditLogService;
 
-    public AttachmentService(AttachmentRepository repo, AttachmentMapper mapper, AuditLogService auditLogService) {
-        this.repo = repo;
+    public AttachmentService(AttachmentRepository repository, AttachmentMapper mapper, AuditLogService auditLogService) {
+        this.repository = repository;
         this.mapper = mapper;
         this.auditLogService = auditLogService;
     }
 
-    public List<AttachmentDTO> findAll() {
-        return repo.findAll().stream()
+    public List<AttachmentDTO> getByJobAppId(Long jobAppId) {
+        return repository.findByJobApplicationId(jobAppId).stream()
             .map(mapper::toDTO)
             .toList();
     }
 
-    public Optional<AttachmentDTO> findById(Long id) {
-        return repo.findById(id).map(mapper::toDTO);
-    }
-
-    public AttachmentDTO saveAttachment(AttachmentDTO dto) {
-        boolean isNew = (dto.getId() == null);
-
-        Attachment saved = repo.save(mapper.toEntity(dto));
-        AttachmentDTO savedDto = mapper.toDTO(saved);
-
-        if (isNew) {
-            auditLogService.logCreate("Created new attachment for job ID " + saved.getJobApplication().getId());
-        } else {
-            auditLogService.logUpdate("Updated attachment ID " + saved.getId());
-        }
-
+    public AttachmentDTO save(AttachmentDTO dto) {
+        Attachment attachment = mapper.toEntity(dto);
+        AttachmentDTO savedDto = mapper.toDTO(repository.save(attachment));
+        
+        auditLogService.logCreate("Created Attachment with ID " + savedDto.getId());
+        
         return savedDto;
     }
 
-    public void deleteAttachment(Long id) {
-        repo.deleteById(id);
-        auditLogService.logDelete("Deleted attachment ID " + id);
+    public void delete(Long id) {
+        repository.deleteById(id);
+        auditLogService.logDelete("Deleted Attachment with ID " + id);
     }
 }
