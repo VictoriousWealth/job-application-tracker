@@ -18,11 +18,13 @@ public class UserService {
     private final UserRepository repo;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
+    private final AuditLogService auditLogService;
 
-    public UserService(UserRepository repo, PasswordEncoder passwordEncoder, UserMapper mapper) {
+    public UserService(UserRepository repo, PasswordEncoder passwordEncoder, UserMapper mapper, AuditLogService auditLogService) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
+        this.auditLogService = auditLogService;
     }
 
     public UserInfoDTO getUserInfoByEmail(String email) {
@@ -44,25 +46,41 @@ public class UserService {
     public UserInfoDTO updateSelf(String email, UserUpdateDTO dto) {
         User user = repo.findByEmail(email).orElseThrow();
 
-        if (dto.email != null && !dto.email.isBlank()) {
+        boolean updated = false;
+
+        if (dto.email != null && !dto.email.isBlank() && !dto.email.equals(user.getEmail())) {
             user.setEmail(dto.email);
+            updated = true;
         }
         if (dto.password != null && !dto.password.isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.password));
+            updated = true;
         }
 
-        return mapper.toDTO(repo.save(user));
+        if (updated) {
+            User saved = repo.save(user);
+            auditLogService.logUpdate("Updated own user account with id: " + saved.getId());
+            return mapper.toDTO(saved);
+        }
+
+        return mapper.toDTO(user);
     }
 
     public void deactivateSelf(String email) {
         User user = repo.findByEmail(email).orElseThrow();
         user.setEnabled(false);
         repo.save(user);
+
+        auditLogService.logDelete("Deactivated own user account with id: " + user.getId());
     }
 
     public UserInfoDTO updateEnabledStatus(Long id, Boolean enabled) {
         User user = repo.findById(id).orElseThrow();
         user.setEnabled(enabled);
-        return mapper.toDTO(repo.save(user));
+        User saved = repo.save(user);
+
+        auditLogService.logUpdate("Updated enabled status for user with id: " + saved.getId());
+
+        return mapper.toDTO(saved);
     }
 }
