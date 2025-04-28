@@ -31,7 +31,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
 	testImplementation("org.springframework.security:spring-security-test")
-	"developmentOnly"("org.springframework.boot:spring-boot-devtools")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
@@ -41,7 +41,7 @@ dependencies {
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("com.h2database:h2")
 
-    implementation('me.paulschwarz:spring-dotenv:2.2.0')
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
 
 }
 
