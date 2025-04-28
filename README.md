@@ -1,5 +1,6 @@
 # 💼 JobTrackr – Full-Stack Job Application Tracker
 
+[![Build Status](https://github.com/VictoriousWealth/job-application-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/VictoriousWealth/job-application-tracker/actions/workflows/ci.yml)
 [![Coverage Checker](https://img.shields.io/badge/Test%20Coverage-Available-green?style=flat-square)](./scripts/README.md)
 [![Gradle Tests](https://img.shields.io/badge/Gradle%20Tests-Supported-blue?style=flat-square)](https://gradle.org/)
 [![Built with Java](https://img.shields.io/badge/Built%20with-Java%2017-blueviolet?style=flat-square)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
