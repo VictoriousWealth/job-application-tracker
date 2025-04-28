@@ -26,9 +26,16 @@ public class ApplicationTimelineService {
             .toList();
     }
 
-    public ApplicationTimeline save(ApplicationTimeline event) {
-        ApplicationTimeline saved = repo.save(event);
-        auditLogService.logCreate("Created a new ApplicationTimeline event (ID: " + saved.getId() + ")");
+    public ApplicationTimeline save(ApplicationTimeline entity) {
+        boolean isUpdate = entity.getId() != null;
+        ApplicationTimeline saved = repo.save(entity);
+    
+        if (isUpdate) {
+            auditLogService.logUpdate("Updated ApplicationTimeline event (ID: " + saved.getId() + ")");
+        } else {
+            auditLogService.logCreate("Created a new ApplicationTimeline event (ID: " + saved.getId() + ")");
+        }
+    
         return saved;
     }
 
@@ -38,17 +45,9 @@ public class ApplicationTimelineService {
     }
 
     public ApplicationTimelineDTO save(ApplicationTimelineDTO dto) {
-        boolean isUpdate = dto.getId() != null;
-    
-        ApplicationTimeline saved = repo.save(ApplicationTimelineMapper.toEntity(dto));
-    
-        if (isUpdate) {
-            auditLogService.logUpdate("Updated ApplicationTimeline event (ID: " + saved.getId() + ")");
-        } else {
-            auditLogService.logCreate("Created a new ApplicationTimeline event (ID: " + saved.getId() + ")");
-        }
-    
-        return ApplicationTimelineMapper.toDTO(saved);
+        ApplicationTimeline entity = ApplicationTimelineMapper.toEntity(dto);
+        ApplicationTimeline savedEntity = save(entity); // ✨ REUSE
+        return ApplicationTimelineMapper.toDTO(savedEntity);
     }
     
 }
