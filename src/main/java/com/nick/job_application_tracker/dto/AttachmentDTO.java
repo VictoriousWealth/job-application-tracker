@@ -1,9 +1,20 @@
 package com.nick.job_application_tracker.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+
 public class AttachmentDTO {
+    
+    @Null
     public Long id;
+    
+    @NotNull
     public String type;
+    
+    @NotNull
     public String filePath;
+    
+    @NotNull
     public Long jobApplicationId;
 
     public AttachmentDTO() {}
