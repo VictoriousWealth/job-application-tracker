@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nick.job_application_tracker.dto.ApplicationTimelineDTO;
 import com.nick.job_application_tracker.service.ApplicationTimelineService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/timelines")
 public class ApplicationTimelineController {
@@ -30,7 +32,7 @@ public class ApplicationTimelineController {
     }
 
     @PostMapping
-    public ResponseEntity<ApplicationTimelineDTO> create(@RequestBody ApplicationTimelineDTO dto) {
+    public ResponseEntity<ApplicationTimelineDTO> create(@Valid @RequestBody ApplicationTimelineDTO dto) {
         return ResponseEntity.ok(service.save(dto));
     }
 
@@ -40,6 +42,5 @@ public class ApplicationTimelineController {
         return ResponseEntity.noContent().build();
     }
 
-    
 
 }
