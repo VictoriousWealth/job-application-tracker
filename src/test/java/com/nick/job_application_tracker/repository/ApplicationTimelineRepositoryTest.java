@@ -49,7 +49,7 @@ public class ApplicationTimelineRepositoryTest {
 
     @Test
     @DisplayName("Should return multiple timelines for a single JobApplication")
-    public void shouldReturnMultipleTimelines() {
+    void shouldReturnMultipleTimelines() {
         JobApplication jobApp = createJobAppWithUser();
 
         ApplicationTimeline t1 = new ApplicationTimeline();
@@ -75,7 +75,7 @@ public class ApplicationTimelineRepositoryTest {
 
     @Test
     @DisplayName("Should return empty list when no timelines exist for given JobApplication ID")
-    public void shouldReturnEmptyListForInvalidJobAppId() {
+    void shouldReturnEmptyListForInvalidJobAppId() {
         List<ApplicationTimeline> timelines = timelineRepo.findByJobApplicationId(99999L); // unlikely to exist
         assertThat(timelines).isEmpty();
     }
