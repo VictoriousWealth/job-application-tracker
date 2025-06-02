@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "attachment")
@@ -32,13 +33,16 @@ public class Attachment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull
     private Type type;
 
     @Column(name = "file_path", nullable = false)
+    @NotNull
     private String filePath;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "job_application_id")
+    @NotNull
     private JobApplication jobApplication;
 
 
