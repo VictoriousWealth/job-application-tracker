@@ -2,11 +2,24 @@ package com.nick.job_application_tracker.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+
 public class AuditLogDTO {
+    
+    @Null
     public Long id;
+    
+    @NotNull
     public String action;
+   
+    @NotNull
     public String description;
+   
+    @Null
     public LocalDateTime createdAt;
+   
+    @Null
     public Long userId;
 
     public AuditLogDTO() {}
