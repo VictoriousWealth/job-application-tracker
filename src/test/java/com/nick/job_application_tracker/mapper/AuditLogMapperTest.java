@@ -1,17 +1,18 @@
 package com.nick.job_application_tracker.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.nick.job_application_tracker.dto.AuditLogDTO;
 import com.nick.job_application_tracker.model.AuditLog;
-import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.model.AuditLog.Action;
+import com.nick.job_application_tracker.model.User;
 
-public class AuditLogMapperTest {
+class AuditLogMapperTest {
 
     private final AuditLogMapper mapper = new AuditLogMapper();
 
@@ -25,7 +26,7 @@ public class AuditLogMapperTest {
         log.setAction(Action.CREATE);
         log.setDescription("Created a new application");
         log.setCreatedAt(LocalDateTime.of(2023, 10, 5, 12, 0));
-        log.setUser(user);
+        log.setPerformedBy(user);
 
         AuditLogDTO dto = mapper.toDTO(log);
 
@@ -39,19 +40,49 @@ public class AuditLogMapperTest {
 
     @Test
     void testToEntity() {
+        // Arrange
         AuditLogDTO dto = new AuditLogDTO();
         dto.id = 2L;
         dto.action = "UPDATE";
         dto.description = "Updated the resume";
-        dto.createdAt = LocalDateTime.of(2024, 1, 1, 9, 30);
-        dto.userId = 99L;
+        dto.createdAt = LocalDateTime.of(2024, 1, 1, 9, 30); // should be ignored
+        dto.userId = 99L; // should be ignored
 
-        AuditLog log = mapper.toEntity(dto);
+        User mockUser = new User();
+        mockUser.setId(123L);
 
+        // Act
+        AuditLog log = mapper.toEntity(dto, mockUser);
+
+        // Assert
         assertThat(log).isNotNull();
         assertThat(log.getAction()).isEqualTo(Action.UPDATE);
         assertThat(log.getDescription()).isEqualTo("Updated the resume");
-        assertThat(log.getCreatedAt()).isEqualTo(LocalDateTime.of(2024, 1, 1, 9, 30));
-        assertThat(log.getUser().getId()).isEqualTo(99L);
+        assertThat(log.getPerformedBy()).isEqualTo(mockUser); 
+        assertThat(log.getPerformedBy().getId()).isEqualTo(123L);
+
+        // This is optional because createdAt is set to now
+        assertThat(log.getCreatedAt()).isNotNull();
     }
+
+    @Test
+    void toEntityShouldThrow400OnInvalidAction() {
+        // Arrange
+        AuditLogDTO dto = new AuditLogDTO();
+        dto.action = "INVALID";
+        dto.description = "Some log";
+
+        User user = new User();
+        user.setId(1L);
+
+        // Act + Assert
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
+            mapper.toEntity(dto, user);
+        });
+
+        // Optionally check the message or status
+        assertThat(ex.getStatusCode().value()).isEqualTo(400);
+        assertThat(ex.getReason()).contains("Invalid action type");
+    }
+
 }
