@@ -1,67 +1,66 @@
-# Models
 
-This directory contains the core data entities (JPA entities) used in the JobTrackr application.  
-Each model maps to a corresponding database table and represents critical aspects of job tracking, user management, and audit logging.
+# 📦 Models
 
----
-
-## Entities:
-
-- [ApplicationTimeline.java](./ApplicationTimeline.java)  
-  Tracks major events (created, updated, submitted, cancelled) related to a job application.
-
-- [Attachment.java](./Attachment.java)  
-  Stores supplementary documents linked to applications, like job descriptions, offer letters, and more.
-
-- [AuditLog.java](./AuditLog.java)  
-  Records key system actions (create, update, delete) along with the user responsible for the action.
-
-- [CommunicationLog.java](./CommunicationLog.java)  
-  Captures communication events related to job applications (email, call, LinkedIn, in-person).
-
-- [CoverLetter.java](./CoverLetter.java)  
-  Represents user cover letters, either as uploaded files or rich text content.
-
-- [FollowUpReminder.java](./FollowUpReminder.java)  
-  Sets scheduled reminders for users to follow up on specific job applications.
-
-- [JobApplication.java](./JobApplication.java)  
-  Central entity for tracking a user's job applications, including company, title, status, resume, and notes.
-
-- [JobSource.java](./JobSource.java)  
-  Identifies the platform or method through which the job opportunity was found (e.g., LinkedIn, Referral).
-
-- [Location.java](./Location.java)  
-  Stores city and country information associated with a job listing.
-
-- [Resume.java](./Resume.java)  
-  Represents user-uploaded resumes, stored as file paths.
-
-- [ScheduledCommunication.java](./ScheduledCommunication.java)  
-  Tracks upcoming important events like interviews, online assessments, and scheduled calls.
-
-- [SkillTracker.java](./SkillTracker.java)  
-  Associates key skills with each job application to monitor required qualifications.
-
-- [User.java](./User.java)  
-  Represents a JobTrackr user, including email, password, role, and enabled status.
+This directory contains the core JPA entities used in the **JobTrackr** application.
+Each entity maps to a relational database table and represents essential concepts in job tracking, user management, and audit logging.
 
 ---
 
-## Enums:
+## 🗂 Entities
 
-- [Role.java](./Role.java)  
-  Defines user roles within the system (currently only `BASIC`).
+* [`ApplicationTimeline.java`](./ApplicationTimeline.java)
+  Logs significant events (`CREATED`, `UPDATED`, `SUBMITTED`, `CANCELLED`) in a job application's lifecycle.
 
-- **Other Embedded Enums** (inside models):  
-  - `ApplicationTimeline.EventType`
-  - `Attachment.Type`
-  - `AuditLog.Action`
-  - `CommunicationLog.Method` and `Direction`
-  - `JobApplication.Status`
-  - `ScheduledCommunication.Type`
+* [`Attachment.java`](./Attachment.java)
+  Stores files related to job applications, such as job descriptions, offer letters, or interview prep materials.
+
+* [`AuditLog.java`](./AuditLog.java)
+  Tracks user actions (e.g., `CREATE`, `UPDATE`, `DELETE`) across the system for accountability and auditing.
+
+* [`CommunicationLog.java`](./CommunicationLog.java)
+  Records communication activity tied to a job application, such as emails, calls, or LinkedIn messages.
+
+* [`CoverLetter.java`](./CoverLetter.java)
+  Represents user-written or uploaded cover letters used in job applications.
+
+* [`FollowUpReminder.java`](./FollowUpReminder.java)
+  Represents reminders set by the user to follow up on job applications.
+
+* [`JobApplication.java`](./JobApplication.java)
+  The core model representing a job application — includes status, company, title, notes, and links to resumes, cover letters, and more.
+
+* [`JobSource.java`](./JobSource.java)
+  Represents the origin of the job opportunity (e.g., LinkedIn, Referral, Company Site).
+
+* [`Location.java`](./Location.java)
+  Stores geographic metadata for a job listing (city and country).
+
+* [`Resume.java`](./Resume.java)
+  Stores file paths to user-uploaded resumes.
+
+* [`ScheduledCommunication.java`](./ScheduledCommunication.java)
+  Represents upcoming interactions like interviews, assessments, or calls tied to an application.
+
+* [`SkillTracker.java`](./SkillTracker.java)
+  Maps relevant skills to job applications to track required qualifications or improvements.
+
+* [`User.java`](./User.java)
+  Represents a JobTrackr user with fields like email, encrypted password, role, and activation status.
 
 ---
 
-Each entity uses JPA and Hibernate annotations to map to relational database tables.  
-The models are designed for clean relationships (`@ManyToOne`, `@Enumerated`) and extensibility as the system grows.
+## 🧩 Enums
+
+* [`Role.java`](./Role.java)
+  Enumerates user roles (e.g., `BASIC`).
+
+* **Embedded Enums** (defined within their respective models):
+
+  * `ApplicationTimeline.EventType`
+  * `Attachment.Type`
+  * `AuditLog.Action`
+  * `CommunicationLog.Type`, `CommunicationLog.Direction`
+  * `JobApplication.Status`
+  * `ScheduledCommunication.Type`
+
+---
