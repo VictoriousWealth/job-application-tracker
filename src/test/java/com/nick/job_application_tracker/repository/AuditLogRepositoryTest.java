@@ -19,7 +19,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @Transactional
 @TestPropertySource("classpath:application-test.properties") 
-public class AuditLogRepositoryTest {
+class AuditLogRepositoryTest {
 
     @Autowired
     private AuditLogRepository auditLogRepo;
@@ -29,7 +29,7 @@ public class AuditLogRepositoryTest {
 
     @Test
     @DisplayName("Should save and retrieve audit log entry")
-    public void testSaveAndFindAuditLog() {
+    void testSaveAndFindAuditLog() {
         // Given a user
         User user = new User();
         user.setEmail("logtester@example.com");
@@ -40,7 +40,7 @@ public class AuditLogRepositoryTest {
 
         // Create audit log entry
         AuditLog log = new AuditLog();
-        log.setUser(user);
+        log.setPerformedBy(user);
         log.setCreatedAt(LocalDateTime.now());
         log.setAction(AuditLog.Action.CREATE);
         log.setDescription("Created new job application");
@@ -52,7 +52,7 @@ public class AuditLogRepositoryTest {
 
         // Then
         assertThat(allLogs).isNotEmpty();
-        assertThat(allLogs.get(0).getUser().getEmail()).isEqualTo("logtester@example.com");
+        assertThat(allLogs.get(0).getPerformedBy().getEmail()).isEqualTo("logtester@example.com");
         assertThat(allLogs.get(0).getAction()).isEqualTo(AuditLog.Action.CREATE);
         assertThat(allLogs.get(0).getDescription()).contains("job application");
     }
