@@ -90,5 +90,3 @@ If you're maintaining this README with a focus on the database structure, consid
 - ✅ **ERD generation script** if the schema is auto-generated
 - ✅ **How to regenerate schema.sql** instructions (e.g., `pg_dump` command)
 - ✅ **Seeding or test data** references, if applicable
-
-Let me know if you'd like to auto-document the schema with tools like [SchemaSpy](http://schemaspy.org/) or [JPA Buddy ERD generator].
