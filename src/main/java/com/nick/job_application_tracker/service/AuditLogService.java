@@ -13,6 +13,8 @@ import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.repository.AuditLogRepository;
 import com.nick.job_application_tracker.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class AuditLogService {
 
@@ -25,14 +27,14 @@ public class AuditLogService {
         log.setAction(action);
         log.setDescription(description);
         log.setCreatedAt(LocalDateTime.now());
-        log.setUser(getCurrentUser()); 
+        log.setPerformedBy(getCurrentUser()); 
         repo.save(log);
     }
     
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(username)
-        .orElseThrow(() -> new RuntimeException("User not found: " + username));
+        .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
     }
     
     public AuditLogService(AuditLogRepository repo, AuditLogMapper mapper, UserRepository userRepository) {
@@ -48,9 +50,12 @@ public class AuditLogService {
     }
 
     public AuditLogDTO save(AuditLogDTO dto) {
-        AuditLog log = mapper.toEntity(dto);
+        User currentUser = getCurrentUser();
+        AuditLog log = mapper.toEntity(dto, currentUser);
         return mapper.toDTO(repo.save(log));
     }
+
+
 
     public void logCreate(String description) {
         saveLog(AuditLog.Action.CREATE, description);
