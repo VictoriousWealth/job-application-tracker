@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "application_timeline")
@@ -33,16 +34,20 @@ public class ApplicationTimeline {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull
     private EventType eventType;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "job_application_id")
+    @NotNull
     private JobApplication jobApplication;
 
     @Column(name = "event_time", nullable = false)
+    @NotNull
     private LocalDateTime eventTime;
 
     @Column(columnDefinition = "TEXT")
+    @NotNull
     private String description;
 
     // Getters and Setters
