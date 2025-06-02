@@ -2,7 +2,9 @@ package com.nick.job_application_tracker.mapper;
 
 import java.time.LocalDateTime;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.nick.job_application_tracker.dto.AuditLogDTO;
 import com.nick.job_application_tracker.model.AuditLog;
@@ -17,20 +19,23 @@ public class AuditLogMapper {
             log.getAction().name(),
             log.getDescription(),
             log.getCreatedAt(),
-            log.getUser().getId()
+            log.getPerformedBy().getId()
         );
     }
 
-    public AuditLog toEntity(AuditLogDTO dto) {
+    public AuditLog toEntity(AuditLogDTO dto, User currentUser) {
         AuditLog log = new AuditLog();
-        log.setAction(AuditLog.Action.valueOf(dto.action));
-        log.setDescription(dto.description);
-        log.setCreatedAt(dto.createdAt != null ? dto.createdAt : LocalDateTime.now());
+        try {
+            log.setAction(AuditLog.Action.valueOf(dto.action));
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid action type");
+        }
 
-        User user = new User();
-        user.setId(dto.userId);
-        log.setUser(user);
+        log.setDescription(dto.description);
+        log.setCreatedAt(LocalDateTime.now()); // always generated on the server
+        log.setPerformedBy(currentUser);              // authenticated user
 
         return log;
     }
+
 }
