@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "audit_log")
@@ -31,16 +32,20 @@ public class AuditLog {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull
     private Action action;
 
     @Column(columnDefinition = "TEXT", nullable = false)
+    @NotNull
     private String description;
 
     @Column(name = "created_at", nullable = false)
+    @NotNull
     private LocalDateTime createdAt;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false) 
+    @NotNull
     private User performedBy;
 
 
@@ -78,11 +83,11 @@ public class AuditLog {
         this.createdAt = createdAt;
     }
 
-    public User getUser() {
+    public User getPerformedBy() {
         return performedBy;
     }
 
-    public void setUser(User performedBy) {
+    public void setPerformedBy(User performedBy) {
         this.performedBy = performedBy;
     }
 
