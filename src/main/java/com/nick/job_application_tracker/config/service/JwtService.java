@@ -58,7 +58,7 @@ public class JwtService {
         long expiryTime = payloadJson.get("exp").asLong();
 
         long timeInSeconds = System.currentTimeMillis()/1000;
-        boolean isTokenExpired = !(issueTime < timeInSeconds && timeInSeconds < expiryTime);
+        boolean isTokenExpired = !(issueTime <= timeInSeconds && timeInSeconds < expiryTime);
         System.out.println(timeInSeconds + " ? "+issueTime+" ? "+expiryTime + " thus " + isTokenExpired);
 
         return isTokenExpired;
