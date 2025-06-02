@@ -2,11 +2,23 @@ package com.nick.job_application_tracker.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+
 public class ApplicationTimelineDTO {
+    @Null
     public Long id;
+
+    @NotNull
     public String eventType;
+
+    @NotNull
     public LocalDateTime eventTime;
+
+    @NotNull
     public String description;
+
+    @NotNull
     public Long jobApplicationId;
 
     public ApplicationTimelineDTO() {}
