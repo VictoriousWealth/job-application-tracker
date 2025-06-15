@@ -3,12 +3,14 @@ package com.nick.job_application_tracker.config.filter;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,10 +26,18 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomJwtAuthFilter extends OncePerRequestFilter {
 
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private static final List<String> PUBLIC_URL_PATTERNS = List.of(
+        "/api/auth/signup",
+        "/api/auth/login",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html"
+    );
+
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-
     public CustomJwtAuthFilter(JwtService jwtService, AuthenticationManager authenticationManager, UserRepository userRepository) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -38,7 +48,7 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // allow all public auth routes through without filtering
         String path = request.getRequestURI();
-        if (path.equals("/api/auth/signup") || path.equals("/api/auth/login")) {
+        if (isPublicUrl(path)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -103,4 +113,9 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
         errorResponse.put("error", message);
         response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
     }
+
+    private boolean isPublicUrl(String path) {
+    return PUBLIC_URL_PATTERNS.stream()
+        .anyMatch(pattern -> pathMatcher.match(pattern, path));
+}
 }
