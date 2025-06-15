@@ -142,7 +142,3 @@ This mapper layer aligns with the PostgreSQL schema:
 * Relationships are represented as `id` references, not full sub-entities, in DTOs.
 
 ---
-
-Let me know if you'd like this saved as a file (`mapper/README.md`) or want a matching `commit message` suggestion for this and the DTO readme together.
-
----
