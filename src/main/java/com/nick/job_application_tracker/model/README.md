@@ -166,3 +166,16 @@ See the PostgreSQL schema for all table definitions and enum types:
 - Enum string values must match exactly with DB definitions.
 - Time fields like `createdAt` and `eventTime` are always server-generated.
 
+--- 
+
+## 📚 See Also
+
+- [`repository/`](../repository/README.md) — Interfaces used to query and persist these JPA entities.
+- [`service/`](../service/README.md) — Business logic layer that manipulates these models.
+- [`mapper/`](../mapper/README.md) — Handles transformation between these entities and external-facing DTOs.
+- [`dto/`](../dto/README.md) — Serializable objects representing API input/output derived from these models.
+- [`controller/`](../controller/README.md) — REST endpoints exposing operations on these entities.
+- [`handler/`](../handler/README.md) — Global exception handling for model validation and persistence issues.
+
+--- 
+
