@@ -1,16 +1,3 @@
-Great idea! A `README.md` under `handler/` explaining the purpose and usage of the `GlobalExceptionHandler` will be valuable for documentation and onboarding others to your project.
-
-Here's a ready-to-use example you can paste directly into:
-
-```
-src/main/java/com/nick/job_application_tracker/handler/README.md
-```
-
----
-
-## 📄 `README.md` for `handler/GlobalExceptionHandler.java`
-
-````markdown
 # GlobalExceptionHandler
 
 The `GlobalExceptionHandler` is a centralized error-handling component that intercepts exceptions thrown by controller methods across the application and returns consistent, structured error responses in JSON format.
@@ -92,12 +79,3 @@ src/main/java/com/nick/job_application_tracker/handler/GlobalExceptionHandler.ja
 ```
 
 ---
-
-```
-
-Let me know if you'd like:
-- A similar README template for `controller/` or `config/`
-- To include unit test documentation in this file as well
-
-This keeps your project self-documenting and very professional 👌
-```
