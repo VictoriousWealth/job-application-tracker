@@ -1,76 +1,83 @@
 # 🎮 Controller Layer — `com.nick.job_application_tracker.controller`
 
-This directory contains the REST controllers that define the **HTTP API endpoints** of the JobTrackr application.
+This directory contains the **REST controllers** that define the **HTTP API endpoints** of the JobTrackr application.
 
-Controllers act as entry points for clients. They handle incoming requests, validate input, interact with service classes, and return responses in the form of DTOs. All business logic is delegated to the service layer.
+Controllers serve as the main **entry points for client requests**. They handle HTTP input, apply validation, call the appropriate services, and return results using DTOs. All core business logic resides in the service layer.
 
 ---
 
 ## 🔐 Authentication and User Management
 
-* [`AuthController.java`](./AuthController.java) — Manages user signup, login, JWT generation/refresh, and current user retrieval.
-* [`UserController.java`](./UserController.java) — Handles user self-service (`/me`) and admin operations like enabling/disabling accounts.
+* [`AuthController.java`](./AuthController.java)
+  Handles **user signup, login, token refresh**, and `/me` endpoint for retrieving authenticated user info.
+* [`UserController.java`](./UserController.java)
+  Supports **self-service actions** (update, deactivate via `/me`) and **admin user management** (list, enable/disable users).
 
 ---
 
 ## 💼 Core Application Controllers
 
-* [`JobApplicationController.java`](./JobApplicationController.java) — Create, fetch, and view job applications.
-* [`FollowUpReminderController.java`](./FollowUpReminderController.java) — CRUD for reminders to follow up on job applications.
-* [`ScheduledCommunicationController.java`](./ScheduledCommunicationController.java) — Handle scheduled events such as interviews and assessments.
-* [`SkillTrackerController.java`](./SkillTrackerController.java) — Track skills per job application.
-* [`ApplicationTimelineController.java`](./ApplicationTimelineController.java) — Log significant events like submission or cancellation.
+* [`JobApplicationController.java`](./JobApplicationController.java)
+  Create, list, and fetch job applications by ID.
+* [`FollowUpReminderController.java`](./FollowUpReminderController.java)
+  Manage reminders to follow up on job applications.
+* [`ScheduledCommunicationController.java`](./ScheduledCommunicationController.java)
+  Schedule events like **interviews** or **coding assessments**.
+* [`SkillTrackerController.java`](./SkillTrackerController.java)
+  Track **skills** associated with job applications.
+* [`ApplicationTimelineController.java`](./ApplicationTimelineController.java)
+  Log application **timeline events** like submission, interviews, or cancellation.
 
 ---
 
 ## 📁 Supporting Data Controllers
 
-* [`JobSourceController.java`](./JobSourceController.java) — Manage job sources like LinkedIn, Glassdoor, Indeed, etc.
-* [`LocationController.java`](./LocationController.java) — CRUD for job location metadata (city and country).
-* [`ResumeController.java`](./ResumeController.java) — Upload and manage user resumes.
-* [`CoverLetterController.java`](./CoverLetterController.java) — Create, list, and delete cover letters.
-* [`AttachmentController.java`](./AttachmentController.java) — Manage file uploads such as offer letters or job descriptions.
+* [`JobSourceController.java`](./JobSourceController.java)
+  Manage job sources such as **LinkedIn**, **Indeed**, and **referrals**.
+* [`LocationController.java`](./LocationController.java)
+  Handle **city/country** metadata tied to job postings.
+* [`ResumeController.java`](./ResumeController.java)
+  Upload, list, and delete **resumes**.
+* [`CoverLetterController.java`](./CoverLetterController.java)
+  Manage user cover letters.
+* [`AttachmentController.java`](./AttachmentController.java)
+  Manage uploaded **attachments** like offer letters or descriptions.
 
 ---
 
 ## 📜 Logging and Auditing
 
-* [`AuditLogController.java`](./AuditLogController.java) — Read-only view of audit trail entries for user/system actions.
-* [`CommunicationLogController.java`](./CommunicationLogController.java) — Logs communication interactions (email, phone, LinkedIn) with employers.
+* [`AuditLogController.java`](./AuditLogController.java)
+  Read-only access to system-wide audit trail entries.
+* [`CommunicationLogController.java`](./CommunicationLogController.java)
+  Log email, phone, in-person, or LinkedIn communications with employers.
 
 ---
 
 ## 🧩 Design Notes
 
-* All controllers:
+* ✅ All controllers:
 
-  * Use `ResponseEntity` for full control of status codes and payloads
-  * Leverage `@Valid` for DTO validation
-  * Adhere to RESTful path conventions (e.g., `/api/job-applications/{id}`)
-* Sensitive actions like signup/login use appropriate HTTP status codes and messages
-* Swagger/OpenAPI annotations are encouraged but not required
-* Custom errors are standardized via [`GlobalExceptionHandler`](../handler/GlobalExceptionHandler.java)
-
----
-
-## 🔐 Security
-
-* Most endpoints require JWT-based authentication
-* Authenticated user is resolved via Spring Security’s `SecurityContextHolder`
-* Admin-specific actions are gated via role logic in the service layer (not enforced directly in controllers)
+  * Use `@RestController` and follow RESTful conventions
+  * Return `ResponseEntity<?>` for precise control over HTTP responses
+  * Validate inputs using `@Valid`
+  * Group paths under `/api/...` consistently
+* 🔐 JWT authentication is required for most endpoints and injected via Spring Security's `SecurityContextHolder`
+* ⚙️ Authorization logic (e.g. admin checks) is implemented at the service level
+* 🎯 Swagger/OpenAPI annotations (e.g. `@Operation`, `@ApiResponse`) are **supported** and **recommended**
 
 ---
 
-## 🧾 Example Error Response
+## ⚠️ Global Error Handling
 
-All errors return the same format defined in `ErrorResponseDTO`:
+All exceptions are handled uniformly by [`GlobalExceptionHandler`](../handler/GlobalExceptionHandler.java), returning structured `ErrorResponseDTO` output like:
 
 ```json
 {
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Validation failed: email must not be blank",
-  "path": "/api/users/signup",
+  "status": 403,
+  "error": "Forbidden",
+  "message": "You are not allowed to update this resource",
+  "path": "/api/users/7",
   "timestamp": "2025-06-15T12:34:56.123Z"
 }
 ```
@@ -101,9 +108,10 @@ All errors return the same format defined in `ErrorResponseDTO`:
 
 ## 📚 See Also
 
-* [`GlobalExceptionHandler`](../handler/GlobalExceptionHandler.java)
-* [`ErrorResponseDTO`](../dto/ErrorResponseDTO.java)
-* [`service/`](../service/) for the underlying business logic
-* [`dto/`](../dto/) for the input/output structures used in all endpoints
+* [`GlobalExceptionHandler`](../handler/GlobalExceptionHandler.java) — Centralized error handling
+* [`ErrorResponseDTO`](../dto/ErrorResponseDTO.java) — Unified error response structure
+* [`dto/`](../dto/) — Input/output object definitions
+* [`service/`](../service/) — Business logic layer beneath controllers
+* [`mapper/`](../mapper/) — Conversion utilities between DTOs and entities
 
 ---
