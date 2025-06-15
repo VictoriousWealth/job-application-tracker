@@ -65,7 +65,7 @@ Recommended tools for testing repository behavior:
 ## 📚 See Also
 
 * [`model/`](../model/README.md) — The entities that these repositories persist
-* [`service/`](../service/) — Where most repositories are injected and used
+* [`service/`](../service/README.md) — Where most repositories are injected and used
 * [Spring Data JPA Docs](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
 
 ---

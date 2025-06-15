@@ -37,3 +37,16 @@ Services orchestrate operations between controllers, repositories, and mappers, 
 - Services interact with repositories to persist and retrieve entities.
 - Many services integrate `AuditLogService` to automatically log critical user/system actions.
 - Mapping between entities and DTOs is handled before passing data to or from the controller layer.
+
+---
+
+## 📚 See Also
+
+- [`controller/`](../controller/README.md) — Defines API endpoints that delegate to these services.
+- [`repository/`](../repository/README.md) — Interfaces for database access used within services.
+- [`mapper/`](../mapper/README.md) — Translates between DTOs and entities for service input/output.
+- [`dto/`](../dto/README.md) — Data Transfer Objects passed into and returned from services.
+- [`model/`](../model/README.md) — JPA entities manipulated and persisted by services.
+- [`handler/`](../handler/README.md) — Centralized error handling used across services and controllers.
+
+---
