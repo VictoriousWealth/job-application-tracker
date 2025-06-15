@@ -1,52 +1,76 @@
-# Services
+# 🧩 Services – `com.nick.job_application_tracker.service`
 
-This directory contains the business logic layer of the JobTrackr application.  
-Services orchestrate operations between controllers, repositories, and mappers, handling data processing, validation, and audit logging.
-
----
-
-## Core Application Services:
-
-- [JobApplicationService.java](./JobApplicationService.java) — Manages job application creation, retrieval, and deletion.
-- [FollowUpReminderService.java](./FollowUpReminderService.java) — Handles follow-up reminders linked to job applications.
-- [ScheduledCommunicationService.java](./ScheduledCommunicationService.java) — Manages scheduled events like interviews and assessments.
-- [SkillTrackerService.java](./SkillTrackerService.java) — Tracks skills associated with job applications.
+This package contains the **business logic layer** of the **JobTrackr** application.
+Services coordinate data flow between controllers, repositories, and mappers, while applying validation, ownership checks, and audit logging.
 
 ---
 
-## User and Authentication Services:
+## 🛠 What Services Do
 
-- [UserService.java](./UserService.java) — Manages user account operations (view, update, deactivate, enable/disable).
-- [AuditLogService.java](./AuditLogService.java) — Logs create, update, and delete operations throughout the system for traceability.
-
----
-
-## Supporting Services:
-
-- [AttachmentService.java](./AttachmentService.java) — Manages file attachments related to job applications.
-- [CommunicationLogService.java](./CommunicationLogService.java) — Manages communication events (emails, calls, meetings).
-- [CoverLetterService.java](./CoverLetterService.java) — Manages cover letter creation and retrieval.
-- [JobSourceService.java](./JobSourceService.java) — Manages job sources (e.g., LinkedIn, Indeed).
-- [LocationService.java](./LocationService.java) — Manages city and country locations for job applications.
-- [ResumeService.java](./ResumeService.java) — Handles resume storage and retrieval.
-- [ApplicationTimelineService.java](./ApplicationTimelineService.java) — Manages timeline events (submitted, updated, cancelled) for applications.
+* Receive DTOs from controllers and convert them to entities
+* Perform validation and handle relational consistency (e.g. ensure referenced `JobApplication` exists)
+* Persist data via repositories
+* Log operations through the `AuditLogService`
+* Return DTOs back to controllers for safe and structured API responses
 
 ---
 
-## Notes:
-- Services interact with repositories to persist and retrieve entities.
-- Many services integrate `AuditLogService` to automatically log critical user/system actions.
-- Mapping between entities and DTOs is handled before passing data to or from the controller layer.
+## 🗂 Service Classes Overview
+
+### 📌 Core Domain Services
+
+* [`JobApplicationService`](./JobApplicationService.java)
+  Creates and manages job applications, resolving relationships like location, resume, and source.
+
+* [`ApplicationTimelineService`](./ApplicationTimelineService.java)
+  Records key lifecycle events for job applications (e.g., submitted, updated, cancelled).
+
+* [`FollowUpReminderService`](./FollowUpReminderService.java)
+  Manages reminder entries tied to job applications, used for follow-ups.
+
+* [`ScheduledCommunicationService`](./ScheduledCommunicationService.java)
+  Manages scheduled events like interviews, phone calls, or assessments.
+
+* [`SkillTrackerService`](./SkillTrackerService.java)
+  Links specific skills to applications for tracking requirements or improvements.
+
+* [`CommunicationLogService`](./CommunicationLogService.java)
+  Logs communication events such as emails, LinkedIn messages, and calls.
+
+* [`AttachmentService`](./AttachmentService.java)
+  Manages file-based attachments such as job descriptions or offer letters.
+
+### 🧑‍💼 User-Facing Services
+
+* [`UserService`](./UserService.java)
+  Provides user-level operations like self-update, enable/disable, and listing users.
+
+* [`AuditLogService`](./AuditLogService.java)
+  Automatically logs `CREATE`, `UPDATE`, and `DELETE` actions system-wide, tied to the authenticated user.
+
+### 🗺️ Supporting Metadata Services
+
+* [`JobSourceService`](./JobSourceService.java)
+  Allows creation and management of job sources (e.g., LinkedIn, Indeed).
+
+* [`LocationService`](./LocationService.java)
+  Handles location reuse and ensures cities/countries are not duplicated in the DB.
+
+* [`ResumeService`](./ResumeService.java)
+  Manages uploaded resumes and links them to applications.
+
+* [`CoverLetterService`](./CoverLetterService.java)
+  Stores cover letters used for job applications.
 
 ---
 
 ## 📚 See Also
 
-- [`controller/`](../controller/README.md) — Defines API endpoints that delegate to these services.
-- [`repository/`](../repository/README.md) — Interfaces for database access used within services.
-- [`mapper/`](../mapper/README.md) — Translates between DTOs and entities for service input/output.
-- [`dto/`](../dto/README.md) — Data Transfer Objects passed into and returned from services.
-- [`model/`](../model/README.md) — JPA entities manipulated and persisted by services.
-- [`handler/`](../handler/README.md) — Centralized error handling used across services and controllers.
+* [`repository/`](../repository/) – Database layer powered by Spring Data JPA
+* [`mapper/`](../mapper/) – Maps between DTOs and domain entities
+* [`dto/`](../dto/) – Data Transfer Objects used across services and controllers
+* [`model/`](../model/) – JPA-annotated domain models and enums
+* [`controller/`](../controller/) – Exposes REST APIs using services
+* [`handler/`](../handler/) – Global exception handling and validation support
 
 ---
