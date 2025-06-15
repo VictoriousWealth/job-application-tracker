@@ -42,6 +42,10 @@ dependencies {
 	testImplementation("com.h2database:h2")
 
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+    implementation("io.swagger.core.v3:swagger-annotations:2.2.33")
+
+
 
 }
 
