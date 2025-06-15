@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "communication_log")
@@ -39,20 +40,25 @@ public class CommunicationLog {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull
     private Method type;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull
     private Direction direction;
 
     @Column(nullable = false)
+    @NotNull
     private LocalDateTime timestamp;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
+    @NotNull
     private String message;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "job_application_id")
+    @NotNull
     private JobApplication jobApplication;
 
 

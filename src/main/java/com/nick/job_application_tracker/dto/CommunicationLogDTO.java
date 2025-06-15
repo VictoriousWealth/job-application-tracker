@@ -2,12 +2,26 @@ package com.nick.job_application_tracker.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
+
 public class CommunicationLogDTO {
+
+    @NotNull
     public Long id;
+
+    @NotNull
     public String type;
+
+    @NotNull
     public String direction;
+
+    @NotNull
     public LocalDateTime timestamp;
+
+    @NotNull
     public String message;
+
+    @NotNull
     public Long jobApplicationId;
 
     public CommunicationLogDTO() {}

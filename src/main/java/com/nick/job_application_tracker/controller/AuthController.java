@@ -2,6 +2,7 @@ package com.nick.job_application_tracker.controller;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,7 @@ public class AuthController {
         newUser.setEnabled(true);
         userRepository.save(newUser);
         
-        return ResponseEntity.ok("Signup successful.");
+        return ResponseEntity.ok(Map.of("successful", true, "message", "Signup successful."));
     }
     
     @PostMapping("/login")
