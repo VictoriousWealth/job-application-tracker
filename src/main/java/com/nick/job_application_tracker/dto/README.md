@@ -1,69 +1,117 @@
-# Data Transfer Objects (DTOs)
+# 📦 Data Transfer Objects (DTOs)
 
-This directory contains all Data Transfer Objects (DTOs) used in the JobTrackr application.  
-DTOs are simple objects used to transfer data between layers (e.g., between the backend and frontend) without exposing internal entities.
-
----
-
-## Application and Timeline DTOs:
-
-- [ApplicationTimelineDTO.java](./ApplicationTimelineDTO.java) — Represents timeline events related to job applications.
-- [AuditLogDTO.java](./AuditLogDTO.java) — Represents audit log entries for user actions.
+This directory contains all **Data Transfer Objects (DTOs)** used in the **JobTrackr** Spring Boot application.
+DTOs are used to transfer data between the API and internal layers (e.g., services) while hiding internal entity structures and enforcing validation.
 
 ---
 
-## Attachments, Resumes, Cover Letters:
+## 📄 Application & Timeline DTOs
 
-- [AttachmentDTO.java](./AttachmentDTO.java) — Represents an attachment linked to a job application.
-- [ResumeDTO.java](./ResumeDTO.java) — Represents a user-uploaded resume.
-- [CoverLetterDTO.java](./CoverLetterDTO.java) — Represents a cover letter (title, path, content).
-
----
-
-## Job Application DTOs:
-
-- [JobApplicationCreateDTO.java](./JobApplicationCreateDTO.java) — DTO for creating new job applications.
-- [JobApplicationDetailDTO.java](./JobApplicationDetailDTO.java) — Detailed view of a job application.
-- [JobApplicationResponseDTO.java](./JobApplicationResponseDTO.java) — Response DTO for job applications including readable fields.
-- [FollowUpReminderCreateDTO.java](./FollowUpReminderCreateDTO.java) — Used for creating follow-up reminders.
-- [FollowUpReminderDTO.java](./FollowUpReminderDTO.java) — Represents a follow-up reminder.
+* [ApplicationTimelineDTO.java](./ApplicationTimelineDTO.java) — Represents timeline events for job applications.
+* [AuditLogDTO.java](./AuditLogDTO.java) — Records system-level actions for auditing purposes.
 
 ---
 
-## Communication DTOs:
+## 📎 Attachments, Resumes & Cover Letters
 
-- [CommunicationLogDTO.java](./CommunicationLogDTO.java) — Communication history (email, call, etc.) for job applications.
-- [ScheduledCommunicationCreateDTO.java](./ScheduledCommunicationCreateDTO.java) — DTO for scheduling communications like interviews.
-- [ScheduledCommunicationDTO.java](./ScheduledCommunicationDTO.java) — Represents scheduled communications tied to a job application.
-
----
-
-## Skills and Sources:
-
-- [SkillTrackerCreateDTO.java](./SkillTrackerCreateDTO.java) — DTO for associating skills with a job application.
-- [SkillTrackerDTO.java](./SkillTrackerDTO.java) — Represents a skill associated with a job application.
-- [JobSourceCreateDTO.java](./JobSourceCreateDTO.java) — DTO for creating job sources.
-- [JobSourceDTO.java](./JobSourceDTO.java) — Represents a job source (e.g., LinkedIn, Referral).
+* [AttachmentDTO.java](./AttachmentDTO.java) — Represents a file (currently stored via DB path) linked to a job application.
+* [ResumeDTO.java](./ResumeDTO.java) — Contains resume file information.
+* [CoverLetterDTO.java](./CoverLetterDTO.java) — Represents a stored cover letter with optional file path and content.
 
 ---
 
-## User and Authentication DTOs:
+## 📋 Job Application DTOs
 
-- [LoginRequest.java](./LoginRequest.java) — Payload for user login.
-- [SignupRequest.java](./SignupRequest.java) — Payload for user signup.
-- [JwtResponse.java](./JwtResponse.java) — JWT token returned after successful authentication.
-- [UserInfoDTO.java](./UserInfoDTO.java) — Represents basic user profile information.
-- [UserUpdateDTO.java](./UserUpdateDTO.java) — DTO for updating user details.
-
----
-
-## Miscellaneous:
-
-- [LocationDTO.java](./LocationDTO.java) — Represents a city and country associated with an application.
-- [ErrorResponseDTO.java](./ErrorResponseDTO.java) — Standard error response format for API errors.
+* [JobApplicationCreateDTO.java](./JobApplicationCreateDTO.java) — Used when creating new job applications.
+* [JobApplicationDetailDTO.java](./JobApplicationDetailDTO.java) — Full detail view, including IDs for related entities.
+* [JobApplicationResponseDTO.java](./JobApplicationResponseDTO.java) — Client-facing DTO showing resolved names (e.g., resume name).
+* [FollowUpReminderCreateDTO.java](./FollowUpReminderCreateDTO.java) — DTO for creating reminders.
+* [FollowUpReminderDTO.java](./FollowUpReminderDTO.java) — Represents a follow-up reminder entry.
 
 ---
 
-## Notes:
-- DTOs separate external data communication from internal model logic, improving security and flexibility.
-- Most DTOs match 1-to-1 with entities but selectively expose necessary fields.
+## 📞 Communication DTOs
+
+* [CommunicationLogDTO.java](./CommunicationLogDTO.java) — Logs sent/received messages related to a job application.
+* [ScheduledCommunicationCreateDTO.java](./ScheduledCommunicationCreateDTO.java) — For scheduling future communication events (e.g., interviews).
+* [ScheduledCommunicationDTO.java](./ScheduledCommunicationDTO.java) — Full representation of scheduled communication.
+
+---
+
+## 🧠 Skills & Job Sources
+
+* [SkillTrackerCreateDTO.java](./SkillTrackerCreateDTO.java) — Used to track skills for a job application.
+* [SkillTrackerDTO.java](./SkillTrackerDTO.java) — Represents an existing skill entry.
+* [JobSourceCreateDTO.java](./JobSourceCreateDTO.java) — For creating job sources (e.g., LinkedIn).
+* [JobSourceDTO.java](./JobSourceDTO.java) — Represents a job source record.
+
+---
+
+## 🔐 Authentication & User DTOs
+
+* [LoginRequest.java](./LoginRequest.java) — Payload for login requests.
+* [SignupRequest.java](./SignupRequest.java) — Payload for account registration.
+* [JwtResponse.java](./JwtResponse.java) — Contains JWT token after successful authentication.
+* [UserInfoDTO.java](./UserInfoDTO.java) — Contains user profile details and roles.
+* [UserUpdateDTO.java](./UserUpdateDTO.java) — Used for updating account credentials and status.
+
+---
+
+## 🌍 Miscellaneous
+
+* [LocationDTO.java](./LocationDTO.java) — Represents city and country location details.
+* [ErrorResponseDTO.java](./ErrorResponseDTO.java) — Standard structure for API error messages.
+
+---
+
+## ✅ Validation
+
+DTOs use Jakarta Bean Validation for input validation:
+
+| Annotation  | Purpose                                   |
+| ----------- | ----------------------------------------- |
+| `@NotNull`  | Field must not be `null`                  |
+| `@NotBlank` | String must be non-empty and non-null     |
+| `@Null`     | Field must be `null` (e.g., auto-gen IDs) |
+
+Validation is applied in controller endpoints using `@Valid`.
+
+---
+
+## 🌐 Timezone Handling
+
+All date-time fields (`LocalDateTime`, `OffsetDateTime`) are assumed to be in **UTC**.
+
+Configured in:
+
+```properties
+spring.jackson.time-zone=UTC
+```
+
+Clients must send and interpret all timestamps in UTC (e.g., `2025-06-15T14:00:00Z`), ensuring consistent behavior across regions.
+
+---
+
+## ⚙️ Assumptions & Design Notes
+
+| Topic            | Assumption / Practice                                            |
+| ---------------- | ---------------------------------------------------------------- |
+| Framework        | Spring Boot                                                      |
+| Mapping          | DTOs are manually mapped in `mapper/`                            |
+| Authentication   | JWT-based; passwords are hashed                                  |
+| Validation       | Enforced via `@Valid` and annotations                            |
+| API Docs         | OpenAPI/Swagger used (`@Schema` present)                         |
+| File Handling    | Currently file paths stored in DB; planning for filesystem/cloud |
+| DTO Usage        | Used in both controller and service layers                       |
+| Error Structure  | Unified via `ErrorResponseDTO`                                   |
+| Layer Separation | DTOs are never used as persistence entities                      |
+
+---
+
+## 💡 Notes for Contributors
+
+* Always create a separate DTO for API input/output instead of using entities directly.
+* If adding time fields, document UTC usage and validate client behavior.
+* Extend `ErrorResponseDTO` to support field-level validation errors if needed.
+
+---
