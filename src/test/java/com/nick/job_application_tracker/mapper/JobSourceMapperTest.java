@@ -5,8 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
 import com.nick.job_application_tracker.dto.JobSourceDTO;
+import com.nick.job_application_tracker.dto.create.JobSourceCreateDTO;
 import com.nick.job_application_tracker.model.JobSource;
 
 public class JobSourceMapperTest {

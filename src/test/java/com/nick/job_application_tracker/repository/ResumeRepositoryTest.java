@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import com.nick.job_application_tracker.model.Resume;
+import com.nick.job_application_tracker.repository.inter_face.ResumeRepository;
 
 import jakarta.transaction.Transactional;
 

@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.nick.job_application_tracker.config.filter.CustomJwtAuthFilter;
 import com.nick.job_application_tracker.dto.AuditLogDTO;
-import com.nick.job_application_tracker.service.AuditLogService;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
 
 
 @WebMvcTest(controllers = AuditLogController.class,

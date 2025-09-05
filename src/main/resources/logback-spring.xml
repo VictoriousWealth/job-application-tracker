@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  <property name="LOG_PATTERN"
+          value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%thread] %-5level %logger{36} [%X{requestId}] - %msg%n" />
+
+  <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <!-- optional: include custom fields -->
+      <customFields>{"app":"job-application-tracker"}</customFields>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="JSON_CONSOLE" />
+  </root>
+
+
+</configuration>
+<!--
+  This is a Logback configuration file for a Spring Boot application.
+  It sets up a console appender that outputs logs in JSON format using LogstashEncoder.
+  The log pattern includes timestamp, thread name, log level, logger name, and message.
+  The root logger is set to INFO level, meaning it will log messages at INFO level and above.
+  The custom field "app" is added to each log entry to identify the application.
+  The configuration is simple and focuses on console output, making it suitable for development and debugging.
+  The use of JSON format allows for structured logging, which can be easily parsed by log management systems.
+  The configuration does not include file appenders or other advanced features, keeping it lightweight.
+-->

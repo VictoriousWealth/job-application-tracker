@@ -1,63 +1,68 @@
 package com.nick.job_application_tracker.model;
 
-import java.time.LocalDateTime;
+import com.nick.job_application_tracker.model.common.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Records business-level actions performed in the system (e.g., CREATE, UPDATE).
+ * Populated manually via application logic, not HTTP logging.
+ */
 @Entity
 @Table(name = "audit_log")
-public class AuditLog {
-    
+public class AuditLog extends BaseEntity {
+
     public enum Action {
-        CREATE, UPDATE, DELETE;
-        
-        public String getName() {
-            return this.name().toUpperCase();
+        CREATE,
+        UPDATE,
+        DELETE;
+
+        public static Action from(String value) {
+            return Action.valueOf(value.toUpperCase());
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
     private Action action;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    @NotNull
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "created_at", nullable = false)
-    @NotNull
-    private LocalDateTime createdAt;
-
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false) 
-    @NotNull
+    @JoinColumn(name = "user_id", nullable = false)
     private User performedBy;
 
+    // --- Constructors ---
 
-    // Getters and Setters
+    public AuditLog() {}
 
-    public Long getId() {
-        return id;
+    public AuditLog(Action action, String description, User performedBy) {
+        this.action = action;
+        this.description = description;
+        this.performedBy = performedBy;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // --- Lifecycle Hook ---
+
+    @PrePersist
+    public void prePersist() {
+        if (description != null) {
+            description = description.trim();
+        }
+
     }
+
+    // --- Getters and Setters ---
 
     public Action getAction() {
         return action;
@@ -73,14 +78,6 @@ public class AuditLog {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public User getPerformedBy() {

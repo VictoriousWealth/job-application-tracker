@@ -12,7 +12,9 @@ import static org.mockito.Mockito.when;
 
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.SkillTracker;
-import com.nick.job_application_tracker.repository.SkillTrackerRepository;
+import com.nick.job_application_tracker.repository.inter_face.SkillTrackerRepository;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.inter_face.SkillTrackerService;
 
 public class SkillTrackerServiceTest {
 

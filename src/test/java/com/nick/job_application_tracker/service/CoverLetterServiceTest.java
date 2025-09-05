@@ -12,7 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.nick.job_application_tracker.dto.CoverLetterDTO;
 import com.nick.job_application_tracker.model.CoverLetter;
-import com.nick.job_application_tracker.repository.CoverLetterRepository;
+import com.nick.job_application_tracker.repository.inter_face.CoverLetterRepository;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.inter_face.CoverLetterService;
 
 import jakarta.transaction.Transactional;
 

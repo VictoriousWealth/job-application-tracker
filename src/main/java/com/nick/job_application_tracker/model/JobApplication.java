@@ -2,54 +2,63 @@ package com.nick.job_application_tracker.model;
 
 import java.time.LocalDateTime;
 
+import com.nick.job_application_tracker.model.common.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
+/**
+ * Represents a job application submitted by a user.
+ * Linked to optional documents and metadata like source and location.
+ * Tracks the current status of the application and supports drafts.
+ */
 @Entity
 @Table(name = "job_application")
-public class JobApplication {
+public class JobApplication extends BaseEntity {
 
     public enum Status {
-        APPLIED, INTERVIEW, OFFER, REJECTED;
-        
-        public String getName() {
-            return this.name().toUpperCase();
+        DRAFT, APPLIED, INTERVIEW, OFFER, REJECTED;
+        public static Status from(String value) {
+            return Status.valueOf(value.toUpperCase());
         }
     }
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(nullable = false)
+    @NotNull
+    @Column(nullable=false)
     private String jobTitle;
 
-    @Column(nullable = false)
+    @NotNull
+    @Column(nullable=false)
     private String company;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private Status status;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "source_id")
+    @JoinColumn(name = "source_id", nullable=false)
     private JobSource source;
+
+    @NotNull
+    @Column(columnDefinition = "TEXT", nullable=false)
+    private String jobDescription;
 
     @ManyToOne
     @JoinColumn(name = "resume_id")
@@ -62,35 +71,68 @@ public class JobApplication {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @Column(name = "applied_on")
     private LocalDateTime appliedOn;
 
-    public JobApplication(Long id, String jobTitle, String company, Status status, User user, Location location,
-            JobSource source, Resume resume, CoverLetter coverLetter, String notes, LocalDateTime appliedOn) {
-        this.id = id;
+    @Column(name = "deadline")
+    private LocalDateTime deadline;
+
+    // --- Lifecycle Hooks ---
+
+    @PrePersist
+    public void prePersist() {
+        if (status == null) {
+            status = Status.DRAFT;
+        }
+
+        if (jobTitle != null) {
+            jobTitle = jobTitle.trim();
+        }
+
+        if (company != null) {
+            company = company.trim();
+        }
+
+        if (notes != null) {
+            notes = notes.trim();
+        }
+
+        // Set appliedOn if status is APPLIED and no timestamp given
+        if (appliedOn == null && status == Status.APPLIED) {
+            appliedOn = LocalDateTime.now();
+        }
+
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        if (appliedOn == null && status == Status.APPLIED) {
+            appliedOn = LocalDateTime.now();
+        }
+    }
+
+    // --- Constructors ---
+
+    public JobApplication() {}
+
+    public JobApplication(String jobTitle, String company, Status status, User user,
+                          Location location, JobSource source, String jobDescription, Resume resume,
+                          CoverLetter coverLetter, String notes, LocalDateTime appliedOn, LocalDateTime deadline) {
         this.jobTitle = jobTitle;
         this.company = company;
         this.status = status;
         this.user = user;
         this.location = location;
         this.source = source;
+        this.jobDescription = jobDescription;
         this.resume = resume;
         this.coverLetter = coverLetter;
         this.notes = notes;
         this.appliedOn = appliedOn;
-    }
-    
-    public JobApplication() {}
-
-    // Getters and Setters
-
-
-    public Long getId() {
-        return id;
+        this.deadline = deadline;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // --- Getters and Setters ---
 
     public String getJobTitle() {
         return jobTitle;
@@ -140,6 +182,14 @@ public class JobApplication {
         this.source = source;
     }
 
+    public String getJobDescription() {
+        return jobDescription;
+    }
+
+    public void setJobDescription(String jobDescription) {
+        this.jobDescription = jobDescription;
+    }
+
     public Resume getResume() {
         return resume;
     }
@@ -171,4 +221,13 @@ public class JobApplication {
     public void setAppliedOn(LocalDateTime appliedOn) {
         this.appliedOn = appliedOn;
     }
+
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
+
 }

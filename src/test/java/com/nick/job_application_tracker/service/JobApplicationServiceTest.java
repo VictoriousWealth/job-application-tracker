@@ -13,16 +13,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.nick.job_application_tracker.dto.JobApplicationCreateDTO;
-import com.nick.job_application_tracker.dto.JobApplicationDetailDTO;
-import com.nick.job_application_tracker.dto.JobApplicationResponseDTO;
+import com.nick.job_application_tracker.dto.create.JobApplicationCreateDTO;
+import com.nick.job_application_tracker.dto.detail.JobApplicationDetailDTO;
+import com.nick.job_application_tracker.dto.response.JobApplicationResponseDTO;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.Location;
-import com.nick.job_application_tracker.repository.CoverLetterRepository;
-import com.nick.job_application_tracker.repository.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.JobSourceRepository;
-import com.nick.job_application_tracker.repository.LocationRepository;
-import com.nick.job_application_tracker.repository.ResumeRepository;
+import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.CoverLetterRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobSourceRepository;
+import com.nick.job_application_tracker.repository.inter_face.LocationRepository;
+import com.nick.job_application_tracker.repository.inter_face.ResumeRepository;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.specialised_common.JobApplicationServiceInterface;
 
 public class JobApplicationServiceTest {
 
@@ -31,7 +33,7 @@ public class JobApplicationServiceTest {
     private JobSourceRepository sourceRepo;
     private ResumeRepository resumeRepo;
     private CoverLetterRepository coverLetterRepo;
-    private JobApplicationService service;
+    private JobApplicationServiceInterface service;
     private AuditLogService auditLogService;
 
 
@@ -44,7 +46,7 @@ public class JobApplicationServiceTest {
         coverLetterRepo = mock(CoverLetterRepository.class);
         auditLogService = mock(AuditLogService.class);
 
-        service = new JobApplicationService(jobAppRepo, locationRepo, sourceRepo, resumeRepo, coverLetterRepo, auditLogService);
+        service = new JobApplicationServiceInterface(jobAppRepo, locationRepo, sourceRepo, resumeRepo, coverLetterRepo, auditLogService);
     }
 
     @Test

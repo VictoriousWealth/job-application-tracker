@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
-import com.nick.job_application_tracker.dto.JobApplicationCreateDTO;
-import com.nick.job_application_tracker.dto.JobApplicationDetailDTO;
-import com.nick.job_application_tracker.dto.JobApplicationResponseDTO;
+import com.nick.job_application_tracker.dto.create.JobApplicationCreateDTO;
+import com.nick.job_application_tracker.dto.detail.JobApplicationDetailDTO;
+import com.nick.job_application_tracker.dto.response.JobApplicationResponseDTO;
 import com.nick.job_application_tracker.model.CoverLetter;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.JobSource;

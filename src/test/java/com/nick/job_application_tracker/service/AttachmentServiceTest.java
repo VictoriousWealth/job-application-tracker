@@ -15,9 +15,11 @@ import com.nick.job_application_tracker.dto.AttachmentDTO;
 import com.nick.job_application_tracker.model.Attachment;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.AttachmentRepository;
-import com.nick.job_application_tracker.repository.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.AttachmentRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.service.inter_face.AttachmentService;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
 
 import jakarta.transaction.Transactional;
 

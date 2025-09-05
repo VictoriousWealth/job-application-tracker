@@ -21,10 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nick.job_application_tracker.config.SecurityConfig;
 import com.nick.job_application_tracker.config.provider.CustomJwtAuthenticationProvider;
 import com.nick.job_application_tracker.config.service.JwtService;
-import com.nick.job_application_tracker.dto.SignupRequest;
+import com.nick.job_application_tracker.dto.special.SignupRequest;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 
 
 @WebMvcTest(AuthController.class)

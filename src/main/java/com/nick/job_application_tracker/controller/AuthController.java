@@ -11,20 +11,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nick.job_application_tracker.config.service.JwtService;
-import com.nick.job_application_tracker.dto.*;
+import com.nick.job_application_tracker.dto.special.JwtResponse;
+import com.nick.job_application_tracker.dto.special.LoginRequest;
+import com.nick.job_application_tracker.dto.special.SignupRequest;
+import com.nick.job_application_tracker.dto.special.UserDetailDTO;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -47,7 +54,7 @@ public class AuthController {
     })
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        Optional<User> existing = userRepository.findByEmail(request.email);
+        Optional<User> existing = userRepository.findByEmailAndDeletedFalse(request.email);
         if (existing.isPresent()) {
             return ResponseEntity.badRequest().body("Email already in use.");
         }
@@ -69,8 +76,8 @@ public class AuthController {
         @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<User> userOpt = userRepository.findByEmail(request.email);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) throws InvalidKeyException, NoSuchAlgorithmException {
+        Optional<User> userOpt = userRepository.findByEmailAndDeletedFalse(request.email);
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(401).body("Invalid credentials.");
         }
@@ -88,7 +95,7 @@ public class AuthController {
     @Operation(summary = "Get authenticated user info")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Current user info retrieved",
-            content = @Content(schema = @Schema(implementation = UserInfoDTO.class))),
+            content = @Content(schema = @Schema(implementation = UserDetailDTO.class))),
         @ApiResponse(responseCode = "401", description = "Authentication is missing"),
         @ApiResponse(responseCode = "404", description = "User not found")
     })
@@ -100,13 +107,13 @@ public class AuthController {
         }
 
         String email = authentication.getName();
-        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<User> userOpt = userRepository.findByEmailAndDeletedFalse(email);
         if (userOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         User user = userOpt.get();
-        UserInfoDTO userInfo = new UserInfoDTO(
+        UserDetailDTO userInfo = new UserDetailDTO(
             user.getId(),
             user.getEmail(),
             user.isEnabled(),
@@ -131,7 +138,7 @@ public class AuthController {
         }
 
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }

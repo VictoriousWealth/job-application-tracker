@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nick.job_application_tracker.dto.CoverLetterDTO;
-import com.nick.job_application_tracker.service.CoverLetterService;
+import com.nick.job_application_tracker.service.inter_face.CoverLetterService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,7 +58,7 @@ public class CoverLetterController {
         @ApiResponse(responseCode = "404", description = "Cover letter not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         coverLetterService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nick.job_application_tracker.dto.ScheduledCommunicationCreateDTO;
 import com.nick.job_application_tracker.dto.ScheduledCommunicationDTO;
-import com.nick.job_application_tracker.service.ScheduledCommunicationService;
+import com.nick.job_application_tracker.service.inter_face.ScheduledCommunicationService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,7 +49,7 @@ public class ScheduledCommunicationController {
         @ApiResponse(responseCode = "404", description = "Event not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduledCommunicationDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<ScheduledCommunicationDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
@@ -69,7 +70,7 @@ public class ScheduledCommunicationController {
         @ApiResponse(responseCode = "404", description = "Event not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

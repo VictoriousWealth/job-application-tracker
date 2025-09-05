@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
-import com.nick.job_application_tracker.dto.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
+import com.nick.job_application_tracker.dto.create.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.model.FollowUpReminder;
 import com.nick.job_application_tracker.model.JobApplication;
 

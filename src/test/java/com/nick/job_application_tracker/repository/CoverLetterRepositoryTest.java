@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import com.nick.job_application_tracker.model.CoverLetter;
+import com.nick.job_application_tracker.repository.inter_face.CoverLetterRepository;
 
 import jakarta.transaction.Transactional;
 

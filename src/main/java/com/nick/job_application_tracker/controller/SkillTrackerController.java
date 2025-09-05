@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,8 @@ import com.nick.job_application_tracker.dto.SkillTrackerCreateDTO;
 import com.nick.job_application_tracker.dto.SkillTrackerDTO;
 import com.nick.job_application_tracker.mapper.SkillTrackerMapper;
 import com.nick.job_application_tracker.model.JobApplication;
-import com.nick.job_application_tracker.service.JobApplicationService;
-import com.nick.job_application_tracker.service.SkillTrackerService;
+import com.nick.job_application_tracker.service.inter_face.SkillTrackerService;
+import com.nick.job_application_tracker.service.specialised_common.JobApplicationServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,9 +33,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class SkillTrackerController {
 
     private final SkillTrackerService service;
-    private final JobApplicationService jobApplicationService;
+    private final JobApplicationServiceInterface jobApplicationService;
 
-    public SkillTrackerController(SkillTrackerService service, JobApplicationService jobApplicationService) {
+    public SkillTrackerController(SkillTrackerService service, JobApplicationServiceInterface jobApplicationService) {
         this.service = service;
         this.jobApplicationService = jobApplicationService;
     }
@@ -45,7 +46,7 @@ public class SkillTrackerController {
             content = @Content(schema = @Schema(implementation = SkillTrackerDTO.class)))
     })
     @GetMapping("/job/{jobAppId}")
-    public List<SkillTrackerDTO> getForJob(@PathVariable Long jobAppId) {
+    public List<SkillTrackerDTO> getForJob(@PathVariable UUID jobAppId) {
         return service.getByJobAppId(jobAppId)
                       .stream()
                       .map(SkillTrackerMapper::toDTO)
@@ -70,7 +71,7 @@ public class SkillTrackerController {
         @ApiResponse(responseCode = "404", description = "Skill not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

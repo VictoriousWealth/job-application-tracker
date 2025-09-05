@@ -1,57 +1,82 @@
 package com.nick.job_application_tracker.config.filter;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.*;
+import com.nick.job_application_tracker.common.LogKeys;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Component
 public class LoggingFilter extends OncePerRequestFilter {
 
-    /***
-     * The purpose of this class to log all responses that leave through port
-     * 8080 or the port by which tomcat apache is listening to
-     * @param request  The request to process
-     * @param response The response associated with the request
-     * @param filterChain    Provides access to the next filter in the chain for this filter to pass the request and response
-     *                     to for further processing
-     *
-     */
+    private static final Logger log = LoggerFactory.getLogger(LoggingFilter.class);
+    private static final String REQUEST_ID_HEADER = "X-Request-ID";
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        System.out.println("======================================================");
-        System.out.println("🌐 Incoming Request: " + request.getMethod() + " " + request.getRequestURI() + " with headers: " + getHeaderContent(request));
+        long start = System.currentTimeMillis();
+        // 1. Extract or generate request ID
+        String requestId = Optional.ofNullable(request.getHeader(REQUEST_ID_HEADER))
+                                .orElse(UUID.randomUUID().toString());
 
-        filterChain.doFilter(request, response);
+        // 2. Include it in response headers
+        response.setHeader(REQUEST_ID_HEADER, requestId);
+        MDC.put(LogKeys.REQUEST_ID, requestId);
 
-        System.out.println("🌐 Outgoing Response with status code " + response.getStatus() + " with headers: {" + getHeaderContent(response)+"}");
-        System.out.println("======================================================\n");
 
-    }
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            long durationMs = System.currentTimeMillis() - start;
 
-    private Map<String, String> getHeaderContent(HttpServletResponse res) {
-        Collection<String> headers = res.getHeaderNames();
-        Map<String, String> headerMap = new HashMap<>();
-        for (String header : headers) {
-            headerMap.put(header, res.getHeader(header));
+            String method = request.getMethod();
+            String uri = request.getRequestURI();
+            String ip = request.getRemoteAddr();
+            String userAgent = request.getHeader("User-Agent");
+            int status = response.getStatus();
+
+            // Optional: get authenticated user
+            String user = "anonymous";
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated()) {
+                Object principal = auth.getPrincipal();
+                if (principal instanceof UserDetails userDetails) {
+                    user = userDetails.getUsername();
+                } else if (principal instanceof String s) {
+                    user = s;
+                }
+            }
+
+            // 3. Log structured request log with requestId
+            log.info("Handled request",
+                kv(LogKeys.REQUEST_ID, requestId),
+                kv("method", method),
+                kv("uri", uri),
+                kv("status", status),
+                kv("ip", ip),
+                kv("userAgent", userAgent),
+                kv("durationMs", durationMs),
+                kv("user", user)
+            );
+            MDC.clear();
         }
-        return headerMap;
-    }
-
-    private Map<String, String> getHeaderContent(HttpServletRequest req) {
-        Enumeration<String> headers = req.getHeaderNames();
-        Map<String, String> headerMap = new HashMap<>();
-        Iterator<String> iterator = headers.asIterator();
-        while (iterator.hasNext()) {
-            String header = iterator.next();
-            headerMap.put(header, req.getHeader(header));
-        }
-        return headerMap;
     }
 }

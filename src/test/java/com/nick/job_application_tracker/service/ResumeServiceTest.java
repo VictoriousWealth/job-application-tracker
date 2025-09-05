@@ -14,7 +14,9 @@ import static org.mockito.Mockito.when;
 
 import com.nick.job_application_tracker.dto.ResumeDTO;
 import com.nick.job_application_tracker.model.Resume;
-import com.nick.job_application_tracker.repository.ResumeRepository;
+import com.nick.job_application_tracker.repository.inter_face.ResumeRepository;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.inter_face.ResumeService;
 
 public class ResumeServiceTest {
 

@@ -2,53 +2,71 @@ package com.nick.job_application_tracker.model;
 
 import java.time.LocalDateTime;
 
+import com.nick.job_application_tracker.model.common.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
+/**
+ * Represents an upcoming communication event (e.g., interview, call) for a job application.
+ * Supports draft saves for partially filled entries.
+ */
 @Entity
 @Table(name = "scheduled_communication")
-public class ScheduledCommunication {
-    
+public class ScheduledCommunication extends BaseEntity {
+
     public enum Type {
-        INTERVIEW, ONLINE_ASSESSMENT, CALL
+        INTERVIEW, ONLINE_ASSESSMENT, CALL, IN_PERSON_ASSESSMENT;
+        public static Type from(String value) {
+            return Type.valueOf(value.toUpperCase());
+        }
     }
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
+
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable=false)
     private Type type;
-    
-    @Column(nullable = false)
+
+    @NotNull
+    @Column
     private LocalDateTime scheduledFor;
-    
+
+    @NotBlank
     @Column(columnDefinition = "TEXT")
     private String notes;
-    
+
     @ManyToOne(optional = false)
-    @JoinColumn(name = "job_application_id")
+    @JoinColumn(name = "job_application_id", nullable = false)
     private JobApplication jobApplication;
 
+    // --- Constructors ---
 
-    // Getters and Setters
-    
-    public Long getId() {
-        return id;
+    public ScheduledCommunication() {}
+
+    public ScheduledCommunication(Type type, LocalDateTime scheduledFor, String notes, JobApplication jobApplication) {
+        this.type = type;
+        this.scheduledFor = scheduledFor;
+        this.notes = notes;
+        this.jobApplication = jobApplication;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // --- Lifecycle Hook ---
+
+    @PrePersist
+    public void prePersist() {
+        notes = notes.trim();
+
     }
+
+    // --- Getters and Setters ---
 
     public Type getType() {
         return type;
@@ -81,6 +99,5 @@ public class ScheduledCommunication {
     public void setJobApplication(JobApplication jobApplication) {
         this.jobApplication = jobApplication;
     }
-    
-    
+
 }

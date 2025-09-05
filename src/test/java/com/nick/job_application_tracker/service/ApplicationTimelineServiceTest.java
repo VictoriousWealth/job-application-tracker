@@ -13,12 +13,14 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.nick.job_application_tracker.dto.ApplicationTimelineDTO;
+import com.nick.job_application_tracker.dto.ApplicationTimelineCreateDTO;
 import com.nick.job_application_tracker.model.ApplicationTimeline;
 import com.nick.job_application_tracker.model.JobApplication;
-import com.nick.job_application_tracker.repository.ApplicationTimelineRepository;
-import com.nick.job_application_tracker.repository.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.ApplicationTimelineRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.service.inter_face.ApplicationTimelineService;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationTimelineServiceTest {
@@ -52,7 +54,7 @@ public class ApplicationTimelineServiceTest {
     @Test
     @DisplayName("Should save timeline via DTO and return DTO")
     void testSaveDto() {
-        ApplicationTimelineDTO dto = new ApplicationTimelineDTO(
+        ApplicationTimelineCreateDTO dto = new ApplicationTimelineCreateDTO(
             null,
             "CREATED",
             LocalDateTime.now(),
@@ -72,7 +74,7 @@ public class ApplicationTimelineServiceTest {
         when(timelineRepo.save(any(ApplicationTimeline.class))).thenReturn(savedEntity);
 
         // Now safely call the service
-        ApplicationTimelineDTO saved = service.save(dto);
+        ApplicationTimelineCreateDTO saved = service.save(dto);
 
         assertThat(saved).isNotNull();
         assertThat(saved.getId()).isEqualTo(1L);
@@ -83,7 +85,7 @@ public class ApplicationTimelineServiceTest {
     @Test
     @DisplayName("Should return list of timelines by job application ID")
     void testGetByJobAppId() {
-        List<ApplicationTimelineDTO> list = service.getByJobAppId(1L);
+        List<ApplicationTimelineCreateDTO> list = service.getByJobAppId(1L);
         assertThat(list).isNotNull(); // not a real list here unless you mock repo behavior
     }
 

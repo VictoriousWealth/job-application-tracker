@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nick.job_application_tracker.config.filter.CustomJwtAuthFilter;
 import com.nick.job_application_tracker.dto.AttachmentDTO;
-import com.nick.job_application_tracker.service.AttachmentService;
+import com.nick.job_application_tracker.service.inter_face.AttachmentService;
 
 import jakarta.persistence.EntityNotFoundException;
 

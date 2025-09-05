@@ -12,11 +12,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
 import com.nick.job_application_tracker.dto.JobSourceDTO;
+import com.nick.job_application_tracker.dto.create.JobSourceCreateDTO;
 import com.nick.job_application_tracker.mapper.JobSourceMapper;
 import com.nick.job_application_tracker.model.JobSource;
-import com.nick.job_application_tracker.repository.JobSourceRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobSourceRepository;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.inter_face.JobSourceService;
 
 public class JobSourceServiceTest {
 

@@ -15,12 +15,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.nick.job_application_tracker.dto.UserInfoDTO;
-import com.nick.job_application_tracker.dto.UserUpdateDTO;
+import com.nick.job_application_tracker.dto.special.UserDetailDTO;
+import com.nick.job_application_tracker.dto.special.UserUpdateDTO;
 import com.nick.job_application_tracker.mapper.UserMapper;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.inter_face.UserService;
 
 class UserServiceTest {
 
@@ -47,9 +49,9 @@ class UserServiceTest {
         user.setEnabled(true);
         user.setRole(Role.BASIC);
 
-        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmailAndDeletedFalse("user@example.com")).thenReturn(Optional.of(user));
 
-        UserInfoDTO dto = userService.getUserInfoByEmail("user@example.com");
+        UserDetailDTO dto = userService.getUserInfoByEmail("user@example.com");
 
         assertThat(dto.getEmail()).isEqualTo("user@example.com");
         assertThat(dto.getRoles()).contains("BASIC");
@@ -66,7 +68,7 @@ class UserServiceTest {
 
         when(userRepository.findById(2L)).thenReturn(Optional.of(user));
 
-        UserInfoDTO dto = userService.getUserInfoById(2L);
+        UserDetailDTO dto = userService.getUserInfoById(2L);
 
         assertThat(dto.getEmail()).isEqualTo("id@example.com");
         assertThat(dto.getRoles()).contains("BASIC");
@@ -89,7 +91,7 @@ class UserServiceTest {
 
         when(userRepository.findAll()).thenReturn(List.of(user1, user2));
 
-        List<UserInfoDTO> users = userService.getAllUsers();
+        List<UserDetailDTO> users = userService.getAllUsers();
 
         assertThat(users).hasSize(2);
         assertThat(users).anyMatch(u -> u.getEmail().equals("one@example.com"));
@@ -112,7 +114,7 @@ class UserServiceTest {
         when(passwordEncoder.encode("newpass")).thenReturn("encodedpass");
         when(userRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        UserInfoDTO updated = userService.updateSelf("old@example.com", updateDTO);
+        UserDetailDTO updated = userService.updateSelf("old@example.com", updateDTO);
 
         assertThat(updated.getEmail()).isEqualTo("new@example.com");
     }
@@ -144,7 +146,7 @@ class UserServiceTest {
         when(userRepository.findById(5L)).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
-        UserInfoDTO updated = userService.updateEnabledStatus(5L, true);
+        UserDetailDTO updated = userService.updateEnabledStatus(5L, true);
 
         assertThat(updated.isEnabled()).isTrue();
     }

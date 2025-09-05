@@ -2,8 +2,8 @@ package com.nick.job_application_tracker.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
 import com.nick.job_application_tracker.dto.JobSourceDTO;
+import com.nick.job_application_tracker.dto.create.JobSourceCreateDTO;
 import com.nick.job_application_tracker.model.JobSource;
 
 @Component

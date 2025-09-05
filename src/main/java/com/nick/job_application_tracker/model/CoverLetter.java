@@ -1,39 +1,47 @@
 package com.nick.job_application_tracker.model;
 
+import com.nick.job_application_tracker.model.common.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
+/**
+ * Represents a user's cover letter for job applications.
+ * Supports draft-saving with partial data.
+ */
 @Entity
 @Table(name = "cover_letter")
-public class CoverLetter {
+public class CoverLetter extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    @NotNull
+    @Column(nullable=false)
     private String title;
 
+    @NotNull
     @Column(name = "file_path")
     private String filePath;
 
-    @Lob
-    private String content;
+    // --- Constructors ---
 
-    // Getters and Setters
+    public CoverLetter() {}
 
-    public Long getId() {
-        return id;
+    public CoverLetter(String title, String filePath) {
+        this.title = title;
+        this.filePath = filePath;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // --- Lifecycle Hooks ---
+
+    @PrePersist
+    public void prePersist() {
+        title = title.trim();
+        filePath = filePath.trim();
     }
+
+    // --- Getters and Setters ---
 
     public String getTitle() {
         return title;
@@ -51,12 +59,4 @@ public class CoverLetter {
         this.filePath = filePath;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-        
 }

@@ -14,7 +14,9 @@ import static org.mockito.Mockito.when;
 
 import com.nick.job_application_tracker.dto.LocationDTO;
 import com.nick.job_application_tracker.model.Location;
-import com.nick.job_application_tracker.repository.LocationRepository;
+import com.nick.job_application_tracker.repository.inter_face.LocationRepository;
+import com.nick.job_application_tracker.service.implementation.LocationService;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
 
 public class LocationServiceTest {
 

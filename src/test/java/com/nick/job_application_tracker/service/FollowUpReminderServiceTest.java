@@ -13,14 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.nick.job_application_tracker.dto.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
+import com.nick.job_application_tracker.dto.create.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.model.FollowUpReminder;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.FollowUpReminderRepository;
-import com.nick.job_application_tracker.repository.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.FollowUpReminderRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.inter_face.FollowUpReminderService;
 
 @SpringBootTest
 public class FollowUpReminderServiceTest {

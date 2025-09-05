@@ -2,75 +2,89 @@ package com.nick.job_application_tracker.model;
 
 import java.time.LocalDateTime;
 
+import com.nick.job_application_tracker.model.common.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Represents a record of communication related to a job application.
+ * Supports draft-saving (optional or incomplete fields).
+ */
 @Entity
 @Table(name = "communication_log")
-public class CommunicationLog {
+public class CommunicationLog extends BaseEntity {
 
     public enum Method {
         EMAIL, CALL, LINKEDIN, IN_PERSON;
-        
-        public String getName() {
-            return this.name().toUpperCase();
+
+        public Method from(String value) {
+            return Method.valueOf(value.toUpperCase());
         }
     }
 
     public enum Direction {
         INBOUND, OUTBOUND;
-        
-        public String getName() {
-            return this.name().toUpperCase();
+
+        public Direction from(String value) {
+            return Direction.valueOf(value.toUpperCase());
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
     private Method type;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
     private Direction direction;
 
-    @Column(nullable = false)
-    @NotNull
+    @Column(nullable=false)
     private LocalDateTime timestamp;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    @NotNull
+    @NotBlank
+    @Column(columnDefinition = "TEXT", nullable=false)
     private String message;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "job_application_id")
-    @NotNull
+    @JoinColumn(name = "job_application_id", nullable = false)
     private JobApplication jobApplication;
 
+    // --- Lifecycle Hooks ---
 
-    // Getters and Setters
+    @PrePersist
+    public void prePersist() {
+        // Default timestamp to now if not provided and message exists (implying it's more than just a draft)
+        if (timestamp == null) {
+            timestamp = LocalDateTime.now();
+        }
 
-    public Long getId() {
-        return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // --- Constructors ---
+
+    public CommunicationLog() {}
+
+    public CommunicationLog(Method type, Direction direction, LocalDateTime timestamp,
+                            String message, JobApplication jobApplication) {
+        this.type = type;
+        this.direction = direction;
+        this.timestamp = timestamp;
+        this.message = message;
+        this.jobApplication = jobApplication;
     }
+
+    // --- Getters and Setters ---
 
     public Method getType() {
         return type;
@@ -111,5 +125,5 @@ public class CommunicationLog {
     public void setJobApplication(JobApplication jobApplication) {
         this.jobApplication = jobApplication;
     }
-      
+
 }

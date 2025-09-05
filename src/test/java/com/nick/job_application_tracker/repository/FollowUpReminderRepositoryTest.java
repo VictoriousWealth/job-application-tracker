@@ -14,6 +14,9 @@ import org.springframework.test.context.TestPropertySource;
 import com.nick.job_application_tracker.model.FollowUpReminder;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.JobApplication.Status;
+import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.FollowUpReminderRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
 

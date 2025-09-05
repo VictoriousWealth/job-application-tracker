@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nick.job_application_tracker.dto.AttachmentDTO;
-import com.nick.job_application_tracker.dto.ErrorResponseDTO;
-import com.nick.job_application_tracker.service.AttachmentService;
+import com.nick.job_application_tracker.dto.special.ErrorResponseDTO;
+import com.nick.job_application_tracker.service.inter_face.AttachmentService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,7 +44,7 @@ public class AttachmentController {
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
     @GetMapping("/job/{jobAppId}")
-    public ResponseEntity<List<AttachmentDTO>> getForJob(@PathVariable Long jobAppId) {
+    public ResponseEntity<List<AttachmentDTO>> getForJob(@PathVariable UUID jobAppId) {
         List<AttachmentDTO> attachments = service.getByJobAppId(jobAppId);
         if (attachments.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -73,7 +73,7 @@ public class AttachmentController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
 }

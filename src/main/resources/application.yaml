@@ -1,0 +1,12 @@
+spring:
+  config:
+    import: optional:dotenv:.env
+  jackson:
+    time-zone: UTC
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+logging:
+  config: classpath:logback-spring.xml

@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nick.job_application_tracker.dto.CommunicationLogDTO;
-import com.nick.job_application_tracker.service.CommunicationLogService;
+import com.nick.job_application_tracker.service.inter_face.CommunicationLogService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,7 +40,7 @@ public class CommunicationLogController {
         @ApiResponse(responseCode = "404", description = "No communication logs found for job ID")
     })
     @GetMapping("/job/{jobAppId}")
-    public List<CommunicationLogDTO> getForJob(@PathVariable Long jobAppId) {
+    public List<CommunicationLogDTO> getForJob(@PathVariable UUID jobAppId) {
         return service.getByJobAppId(jobAppId);
     }
 
@@ -60,7 +61,7 @@ public class CommunicationLogController {
         @ApiResponse(responseCode = "404", description = "Communication log not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

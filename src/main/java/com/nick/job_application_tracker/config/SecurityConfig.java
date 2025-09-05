@@ -27,7 +27,7 @@ import com.nick.job_application_tracker.config.filter.CustomJwtAuthFilter;
 import com.nick.job_application_tracker.config.filter.LoggingFilter;
 import com.nick.job_application_tracker.config.provider.CustomJwtAuthenticationProvider;
 import com.nick.job_application_tracker.config.service.JwtService;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 
 @Configuration
 @EnableWebSecurity

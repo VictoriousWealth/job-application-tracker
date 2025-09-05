@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.UserInfoDTO;
-import com.nick.job_application_tracker.dto.UserUpdateDTO;
-import com.nick.job_application_tracker.service.UserService;
+import com.nick.job_application_tracker.dto.special.UserDetailDTO;
+import com.nick.job_application_tracker.dto.special.UserUpdateDTO;
+import com.nick.job_application_tracker.service.inter_face.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,18 +38,18 @@ public class UserController {
 
     @Operation(summary = "Get current user's profile")
     @ApiResponse(responseCode = "200", description = "User info returned successfully",
-        content = @Content(schema = @Schema(implementation = UserInfoDTO.class)))
+        content = @Content(schema = @Schema(implementation = UserDetailDTO.class)))
     @GetMapping("/me")
-    public ResponseEntity<UserInfoDTO> getCurrentUser() {
+    public ResponseEntity<UserDetailDTO> getCurrentUser() {
         String email = getCurrentEmail();
         return ResponseEntity.ok(service.getUserInfoByEmail(email));
     }
 
     @Operation(summary = "Update current user's email or password")
     @ApiResponse(responseCode = "200", description = "User info updated",
-        content = @Content(schema = @Schema(implementation = UserInfoDTO.class)))
+        content = @Content(schema = @Schema(implementation = UserDetailDTO.class)))
     @PatchMapping("/me")
-    public ResponseEntity<UserInfoDTO> updateOwnProfile(@Valid @RequestBody UserUpdateDTO dto) {
+    public ResponseEntity<UserDetailDTO> updateOwnProfile(@Valid @RequestBody UserUpdateDTO dto) {
         String email = getCurrentEmail();
         return ResponseEntity.ok(service.updateSelf(email, dto));
     }
@@ -68,25 +69,25 @@ public class UserController {
 
     @Operation(summary = "Admin: Get all users")
     @ApiResponse(responseCode = "200", description = "List of users returned",
-        content = @Content(schema = @Schema(implementation = UserInfoDTO.class)))
+        content = @Content(schema = @Schema(implementation = UserDetailDTO.class)))
     @GetMapping
-    public ResponseEntity<List<UserInfoDTO>> getAllUsers() {
+    public ResponseEntity<List<UserDetailDTO>> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
     }
 
     @Operation(summary = "Admin: Get user by ID")
     @ApiResponse(responseCode = "200", description = "User info returned",
-        content = @Content(schema = @Schema(implementation = UserInfoDTO.class)))
+        content = @Content(schema = @Schema(implementation = UserDetailDTO.class)))
     @GetMapping("/{id}")
-    public ResponseEntity<UserInfoDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<UserDetailDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getUserInfoById(id));
     }
 
     @Operation(summary = "Admin: Enable or disable a user")
     @ApiResponse(responseCode = "200", description = "User status updated",
-        content = @Content(schema = @Schema(implementation = UserInfoDTO.class)))
+        content = @Content(schema = @Schema(implementation = UserDetailDTO.class)))
     @PatchMapping("/{id}")
-    public ResponseEntity<UserInfoDTO> updateEnabled(@PathVariable Long id, @RequestBody UserUpdateDTO dto) {
+    public ResponseEntity<UserDetailDTO> updateEnabled(@PathVariable UUID id, @RequestBody UserUpdateDTO dto) {
         return ResponseEntity.ok(service.updateEnabledStatus(id, dto.enabled));
     }
 

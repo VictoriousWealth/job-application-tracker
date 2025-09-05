@@ -1,38 +1,61 @@
 package com.nick.job_application_tracker.mapper;
 
-import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.nick.job_application_tracker.dto.CommunicationLogDTO;
+import com.nick.job_application_tracker.dto.create.CommunicationLogCreateDTO;
+import com.nick.job_application_tracker.dto.detail.CommunicationLogDetailDTO;
+import com.nick.job_application_tracker.dto.response.CommunicationLogResponseDTO;
+import com.nick.job_application_tracker.dto.update.CommunicationLogUpdateDTO;
 import com.nick.job_application_tracker.model.CommunicationLog;
 import com.nick.job_application_tracker.model.JobApplication;
 
 @Component
 public class CommunicationLogMapper {
 
-    public CommunicationLogDTO toDTO(CommunicationLog log) {
-        return new CommunicationLogDTO(
-            log.getId(),
-            log.getType().name(),
-            log.getDirection().name(),
-            log.getTimestamp(),
-            log.getMessage(),
-            log.getJobApplication().getId()
-        );
+    public static final Set<String> patchableFields = Set.of(
+        "type",
+        "direction",
+        "timestamp",
+        "message"
+    );
+
+    public static CommunicationLog updateEntityWithDTOInfo(CommunicationLog communicationLog, CommunicationLogUpdateDTO dto, JobApplication jobApplication) {
+        communicationLog.setType(dto.getType());
+        communicationLog.setDirection(dto.getDirection());
+        communicationLog.setTimestamp(dto.getTimestamp());
+        communicationLog.setMessage(dto.getMessage());
+        return communicationLog;
     }
 
-    public CommunicationLog toEntity(CommunicationLogDTO dto) {
+    public CommunicationLog toEntity(CommunicationLogCreateDTO dto, JobApplication jobApplication) {
         CommunicationLog log = new CommunicationLog();
-        log.setType(CommunicationLog.Method.valueOf(dto.type));
-        log.setDirection(CommunicationLog.Direction.valueOf(dto.direction));
-        log.setTimestamp(dto.timestamp != null ? dto.timestamp : LocalDateTime.now());
-        log.setMessage(dto.message);
-
-        JobApplication job = new JobApplication();
-        job.setId(dto.jobApplicationId);
-        log.setJobApplication(job);
-
+        log.setType(dto.getType());
+        log.setDirection(dto.getDirection());
+        log.setTimestamp(dto.getTimestamp());
+        log.setMessage(dto.getMessage());
+        log.setJobApplication(jobApplication);
         return log;
     }
+
+    public static CommunicationLogResponseDTO toResponseDTO(CommunicationLog communicationLog) {
+        CommunicationLogResponseDTO dto = new CommunicationLogResponseDTO();
+        dto.setDirection(communicationLog.getDirection());
+        dto.setMessage(communicationLog.getMessage());
+        dto.setType(communicationLog.getType());
+        dto.setJobApplicationId(communicationLog.getJobApplication() == null ? null : communicationLog.getJobApplication().getId());
+        return dto;
+    }
+
+    public CommunicationLogDetailDTO toDetailDTO(CommunicationLog log) {
+        CommunicationLogDetailDTO dto = new CommunicationLogDetailDTO();
+        dto.setId(log.getId());
+        dto.setDirection(log.getDirection());
+        dto.setType(log.getType());
+        dto.setJobApplicationId(log.getJobApplication() == null ? null : log.getJobApplication().getId());
+        return dto;
+    }
+
+    
 }

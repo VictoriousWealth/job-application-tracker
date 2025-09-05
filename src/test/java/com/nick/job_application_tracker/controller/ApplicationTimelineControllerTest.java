@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nick.job_application_tracker.config.filter.CustomJwtAuthFilter;
-import com.nick.job_application_tracker.dto.ApplicationTimelineDTO;
-import com.nick.job_application_tracker.service.ApplicationTimelineService;
+import com.nick.job_application_tracker.dto.ApplicationTimelineCreateDTO;
+import com.nick.job_application_tracker.service.inter_face.ApplicationTimelineService;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -43,7 +43,7 @@ class ApplicationTimelineControllerTest {
     @Test
     void testGetForJob() throws Exception {
         Long jobAppId = 1L;
-        ApplicationTimelineDTO dto = new ApplicationTimelineDTO();
+        ApplicationTimelineCreateDTO dto = new ApplicationTimelineCreateDTO();
         dto.setId(100L);
         dto.setEventType("PHONE_SCREEN");
         dto.setEventTime(LocalDateTime.of(2025, 6, 1, 12, 30));
@@ -62,20 +62,20 @@ class ApplicationTimelineControllerTest {
 
     @Test
     void testCreate() throws Exception {
-        ApplicationTimelineDTO request = new ApplicationTimelineDTO();
+        ApplicationTimelineCreateDTO request = new ApplicationTimelineCreateDTO();
         request.setEventType("INTERVIEW");
         request.setEventTime(LocalDateTime.of(2025, 6, 2, 14, 0));
         request.setDescription("Technical interview");
         request.setJobApplicationId(2L);
 
-        ApplicationTimelineDTO response = new ApplicationTimelineDTO();
+        ApplicationTimelineCreateDTO response = new ApplicationTimelineCreateDTO();
         response.setId(101L);
         response.setEventType(request.getEventType());
         response.setEventTime(request.getEventTime());
         response.setDescription(request.getDescription());
         response.setJobApplicationId(request.getJobApplicationId());
 
-        Mockito.when(service.save(Mockito.any(ApplicationTimelineDTO.class))).thenReturn(response);
+        Mockito.when(service.save(Mockito.any(ApplicationTimelineCreateDTO.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/timelines")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -153,13 +153,13 @@ class ApplicationTimelineControllerTest {
 
     @Test
     void testCreate_InternalServerError() throws Exception {
-        ApplicationTimelineDTO dto = new ApplicationTimelineDTO();
+        ApplicationTimelineCreateDTO dto = new ApplicationTimelineCreateDTO();
         dto.setEventType("INTERVIEW");
         dto.setEventTime(LocalDateTime.now());
         dto.setDescription("Oops");
         dto.setJobApplicationId(1L);
 
-        Mockito.when(service.save(Mockito.any(ApplicationTimelineDTO.class))).thenThrow(new RuntimeException("Unexpected error"));
+        Mockito.when(service.save(Mockito.any(ApplicationTimelineCreateDTO.class))).thenThrow(new RuntimeException("Unexpected error"));
 
         mockMvc.perform(post("/api/timelines")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -2,8 +2,8 @@ package com.nick.job_application_tracker.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.nick.job_application_tracker.dto.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
+import com.nick.job_application_tracker.dto.create.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.model.FollowUpReminder;
 import com.nick.job_application_tracker.model.JobApplication;
 

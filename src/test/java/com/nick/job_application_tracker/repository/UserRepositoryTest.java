@@ -11,6 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 
 import jakarta.transaction.Transactional;
 

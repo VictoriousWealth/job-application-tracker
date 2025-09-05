@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nick.job_application_tracker.config.CustomJwtAuthenticationToken;
 import com.nick.job_application_tracker.config.service.JwtService;
-import com.nick.job_application_tracker.repository.UserRepository;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,13 +26,19 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomJwtAuthFilter extends OncePerRequestFilter {
 
+    private static final String AUTHORIZATION_HDR_KEY = "Authorization";
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
-    private static final List<String> PUBLIC_URL_PATTERNS = List.of(
+    public static final List<String> PUBLIC_URL_PATTERNS = List.of(
         "/api/auth/signup",
         "/api/auth/login",
         "/v3/api-docs/**",
         "/swagger-ui/**",
-        "/swagger-ui.html"
+        "/swagger-ui.html",
+        "/",
+        "/favicon.ico",
+        "/error",
+        "/actuator/**",
+        "/h2-console/**"
     );
 
     private final JwtService jwtService;
@@ -45,7 +51,10 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+        @SuppressWarnings("null") HttpServletRequest request, 
+        @SuppressWarnings("null") HttpServletResponse response, 
+        @SuppressWarnings("null") FilterChain filterChain) throws ServletException, IOException {
         // allow all public auth routes through without filtering
         String path = request.getRequestURI();
         if (isPublicUrl(path)) {
@@ -54,14 +63,14 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
         }
 
         // return unauthorized to clients who attempt to access protected endpoints
-        if (request.getHeader("Authorization") == null) {
+        if (request.getHeader(AUTHORIZATION_HDR_KEY) == null) {
             sendErrorResponse(response, "Authroization header is missing");
             return;
         }
 
         // allow clients with valid jwt token to access protected endpoints
-        if (request.getHeader("Authorization").startsWith("Bearer ")) {
-            String token = request.getHeader("Authorization").substring("Bearer ".length());
+        if (request.getHeader(AUTHORIZATION_HDR_KEY).startsWith("Bearer ")) {
+            String token = request.getHeader(AUTHORIZATION_HDR_KEY).substring("Bearer ".length());
             System.out.println("token: " + token);
             CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(token);
             Authentication authResult = authenticationManager.authenticate(authentication);
@@ -72,18 +81,18 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
 
 
         // return unathorized to clients that attempt to access protected endpoints using anything other than basic or bearer authorization
-        if (!request.getHeader("Authorization").startsWith("Basic ")) {
+        if (!request.getHeader(AUTHORIZATION_HDR_KEY).startsWith("Basic ")) {
             sendErrorResponse(response, "Unauthorized");
             return;
         }
 
         // decoding data to extract credentials from basic auth clients
-        String token = new String(Base64.getUrlDecoder().decode(request.getHeader("Authorization").substring("Basic ".length())));
+        String token = new String(Base64.getUrlDecoder().decode(request.getHeader(AUTHORIZATION_HDR_KEY).substring("Basic ".length())));
         System.out.println("username:password " + token);
         String username = token.split(":")[0];
 
         // return unathorized to clients who attempt to access protected endpoints with invalid username and password combinations
-        if(userRepository.findByEmail(username).isEmpty()) {
+        if(userRepository.findByEmailAndDeletedFalse(username).isEmpty()) {
             sendErrorResponse(response, "Invalid username or password");
             return;
         }
@@ -91,13 +100,13 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
         // attempt to generate jwt token and authenticate it
         try {
             System.out.println("User found");
-            String role = userRepository.findByEmail(username).get().getRoles().toArray()[0].toString();
+            String role = userRepository.findByEmailAndDeletedFalse(username).get().getRoles().toArray()[0].toString();
             token = jwtService.generateToken(username, role);
             System.out.println("token generated successfully :" + token);
             CustomJwtAuthenticationToken authentication = new CustomJwtAuthenticationToken(token);
             Authentication authResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authResult);
-            response.addHeader("Authorization", "Bearer " + token);
+            response.addHeader(AUTHORIZATION_HDR_KEY, "Bearer " + token);
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             System.out.println("NoSuchAlgorithmException or InvalidKeyException");

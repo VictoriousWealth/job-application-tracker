@@ -1,32 +1,60 @@
 package com.nick.job_application_tracker.mapper;
 
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
-import com.nick.job_application_tracker.dto.AttachmentDTO;
+import com.nick.job_application_tracker.dto.create.AttachmentCreateDTO;
+import com.nick.job_application_tracker.dto.detail.AttachmentDetailDTO;
+import com.nick.job_application_tracker.dto.response.AttachmentResponseDTO;
+import com.nick.job_application_tracker.dto.update.AttachmentUpdateDTO;
 import com.nick.job_application_tracker.model.Attachment;
 import com.nick.job_application_tracker.model.JobApplication;
 
 @Component
 public class AttachmentMapper {
+    
+    public static final Set<String> patchableFields = Set.of(
+        "type",
+        "filePath"
+    );
 
-    public AttachmentDTO toDTO(Attachment attachment) {
-        return new AttachmentDTO(
-            attachment.getId(),
-            attachment.getType().name(),
-            attachment.getFilePath(),
-            attachment.getJobApplication().getId()
-        );
-    }
 
-    public Attachment toEntity(AttachmentDTO dto) {
-        Attachment attachment = new Attachment();
-        attachment.setType(Attachment.Type.valueOf(dto.type));
-        attachment.setFilePath(dto.filePath);
-
-        JobApplication job = new JobApplication();
-        job.setId(dto.jobApplicationId);
-        attachment.setJobApplication(job);
-
+    public static Attachment updateEntityWithDTOInfo(Attachment attachment, AttachmentUpdateDTO dto, JobApplication jobApplication) {
+        attachment.setType(dto.getType());
+        attachment.setFilePath(dto.getFilePath());
+        attachment.setJobApplication(jobApplication);
         return attachment;
     }
+
+    public static Attachment toEntity(
+        AttachmentCreateDTO dto, 
+        JobApplication jobApplication
+        )
+        {
+            Attachment entity = new Attachment();
+            entity.setType(dto.getType());
+            entity.setFilePath(dto.getFilePath());
+            entity.setJobApplication(jobApplication);
+            return entity;
+        }
+
+    public static AttachmentResponseDTO toResponseDTO(Attachment attachment) {
+        AttachmentResponseDTO dto = new AttachmentResponseDTO();
+        dto.setId(attachment.getId());
+        dto.setType(attachment.getType());
+        dto.setFilePath(attachment.getFilePath());
+        return dto;
+    }
+
+    public static AttachmentDetailDTO toDetailDTO(Attachment attachment) {
+        AttachmentDetailDTO dto = new AttachmentDetailDTO();
+        dto.setId(attachment.getId());
+        dto.setType(attachment.getType());
+        dto.setFilePath(attachment.getFilePath());
+        dto.setJobApplicationId(attachment.getJobApplication() == null ? null : attachment.getJobApplication().getId());
+        return dto;
+    }
+
+   
 }

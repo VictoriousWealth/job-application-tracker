@@ -1,181 +1,227 @@
 # 🧬 Model Package - `com.nick.job_application_tracker.model`
 
-This package defines the **core JPA entities** for the JobTrackr application. These map directly to PostgreSQL tables and represent the persistent domain model for job tracking, user management, communication logs, auditing, and scheduling.
+This package contains the **domain entities** for the JobTrackr backend system. Each model represents a persistent concept in the application and is mapped to PostgreSQL using **JPA**. These entities drive the system's business logic, DTO mappings, audit trail, and soft-deletion support.
 
 ---
 
-## 🗂 Quick Entity Index
+## 🗂 Entity Index
 
-- [`ApplicationTimeline`](./ApplicationTimeline.java)
-- [`Attachment`](./Attachment.java)
-- [`AuditLog`](./AuditLog.java)
-- [`CommunicationLog`](./CommunicationLog.java)
-- [`CoverLetter`](./CoverLetter.java)
-- [`FollowUpReminder`](./FollowUpReminder.java)
-- [`JobApplication`](./JobApplication.java)
-- [`JobSource`](./JobSource.java)
-- [`Location`](./Location.java)
-- [`Resume`](./Resume.java)
-- [`ScheduledCommunication`](./ScheduledCommunication.java)
-- [`SkillTracker`](./SkillTracker.java)
-- [`User`](./User.java)
-- [`Role`](./Role.java)
-
----
-
-## 📦 Entity Breakdown
-
-### 🔐 User & Authentication
-
-- **`User`** — Authenticated system user  
-  Fields: `email`, `password`, `role`, `isEnabled`  
-  Related to: `JobApplication`, `AuditLog`
-
-- **`Role` (enum)** — User role  
-  Value: `BASIC`
+| Entity                                                    | Purpose                                    |
+| --------------------------------------------------------- | ------------------------------------------ |
+| [`ApplicationTimeline`](./ApplicationTimeline.java)       | Tracks lifecycle events for job apps       |
+| [`Attachment`](./Attachment.java)                         | Uploaded documents like offer letters      |
+| [`AuditLog`](./AuditLog.java)                             | Logs user-triggered system actions         |
+| [`CommunicationLog`](./CommunicationLog.java)             | Logs comms (calls, emails, LinkedIn)       |
+| [`CoverLetter`](./CoverLetter.java)                       | Custom user-created letters                |
+| [`FollowUpReminder`](./FollowUpReminder.java)             | Reminders to follow up on applications     |
+| [`JobApplication`](./JobApplication.java)                 | Root entity for job tracking               |
+| [`JobSource`](./JobSource.java)                           | Where job posting originated               |
+| [`Location`](./Location.java)                             | City and country                           |
+| [`Resume`](./Resume.java)                                 | Uploaded CVs                               |
+| [`ScheduledCommunication`](./ScheduledCommunication.java) | Future scheduled events (interviews, etc.) |
+| [`SkillTracker`](./SkillTracker.java)                     | Tracks job-specific skills                 |
+| [`User`](./User.java)                                     | Represents a logged-in system user         |
+| [`Role`](./Role.java)                                     | Enum defining user access level            |
 
 ---
 
-### 💼 Core Application Structure
+## 🧱 Architectural Conventions
 
-- **`JobApplication`** — Central record of a job prospect  
-  Fields: `jobTitle`, `company`, `status`, `appliedOn`, `notes`  
-  Enums: `Status`: `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`  
-  Relations:
-  - Required: `User`
-  - Optional: `Location`, `JobSource`, `Resume`, `CoverLetter`
-  - One-to-many: `SkillTracker`, `ApplicationTimeline`, `CommunicationLog`, `FollowUpReminder`, `ScheduledCommunication`, `Attachment`
+### ✅ All models:
+
+* Extend [`BaseEntity`](./common/BaseEntity.java), which provides:
+
+  * `UUID` primary key (`id`)
+  * Audit metadata (`createdAt`, `updatedAt`, `createdBy`, `updatedBy`)
+  * Optimistic locking (`version`)
+  * Soft deletion fields: `deleted`, `deletedAt`
+
+### ✅ Additional standards:
+
+* Enums are stored as `EnumType.STRING`
+* All time fields use `UTC`
+* Data integrity is enforced using `@ManyToOne(optional = false)` where necessary
+* Soft-deleted entities are **not auto-filtered**, so queries should use `deleted = false`
 
 ---
 
-### 🗂 Supporting Tables
+## 📦 Entity Overview
 
-- **`Location`** — Geographic metadata  
+### 🔐 User & Role
+
+* **`User`**
+
+  * Fields: `email`, `password`, `isEnabled`
+  * Relationships:
+
+    * One-to-many: `JobApplication`, `AuditLog`
+    * Enum: `Role`
+  * Security-relevant fields are **excluded** from public-facing DTOs
+
+* **`Role`** (enum)
+
+  * Used for authorization
+  * Current values: `BASIC`
+
+---
+
+### 💼 Core Domain
+
+* **`JobApplication`**
+
+  * Fields: `jobTitle`, `company`, `status`, `appliedOn`, `notes`
+  * Enum: `Status`: `DRAFT`, `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`
+  * Relationships:
+
+    * Many-to-one: `User`
+    * One-to-many: `SkillTracker`, `CommunicationLog`, `ScheduledCommunication`, `FollowUpReminder`, `Attachment`, `ApplicationTimeline`
+    * Optional: `Location`, `JobSource`, `Resume`, `CoverLetter`
+
+---
+
+### 🌍 Metadata
+
+* **`Location`**
   Fields: `city`, `country`
 
-- **`JobSource`** — Origin of the opportunity  
-  Fields: `name`
-
-- **`Resume`** — User-uploaded resume  
-  Fields: `filePath`
-
-- **`CoverLetter`** — Custom letter  
-  Fields: `title`, `filePath`, `content` (as `@Lob`)
+* **`JobSource`**
+  Field: `name`
+  e.g., LinkedIn, Indeed, Referral
 
 ---
 
-### 📎 Add-ons & Trackers
+### 📝 User Documents
 
-- **`SkillTracker`** — Tracks job-specific skills  
-  Fields: `skillName`
+* **`Resume`**
 
-- **`Attachment`** — Uploaded docs tied to an app  
-  Fields: `filePath`, `type`  
-  Enum: `Type`: `JOB_DESCRIPTION`, `OFFER_LETTER`, `INTERVIEW_PREP`, `REJECTION_LETTER`, `OTHER`
+  * Field: `filePath`
 
----
+* **`CoverLetter`**
 
-### 📞 Logs & Communication
-
-- **`CommunicationLog`** — Email/call/LinkedIn tracking  
-  Fields: `type`, `direction`, `timestamp`, `message`  
-  Enums:
-  - `Method`: `EMAIL`, `CALL`, `LINKEDIN`, `IN_PERSON`
-  - `Direction`: `INBOUND`, `OUTBOUND`
-
-- **`ScheduledCommunication`** — Future interactions  
-  Fields: `type`, `scheduledFor`, `notes`  
-  Enum: `Type`: `INTERVIEW`, `ONLINE_ASSESSMENT`, `CALL`
+  * Fields: `title`, `filePath`, `content`
+  * Title is autogenerated if not supplied
 
 ---
 
-### 🕒 Timeline & Audit
+### 🧩 Add-ons
 
-- **`ApplicationTimeline`** — Lifecycle events for an application  
-  Fields: `eventType`, `eventTime`, `description`  
-  Enum: `EventType`: `CREATED`, `UPDATED`, `SUBMITTED`, `CANCELLED`
+* **`SkillTracker`**
 
-- **`FollowUpReminder`** — Reminder for user actions  
-  Fields: `remindOn`, `note`
+  * Field: `skillName`
 
-- **`AuditLog`** — System auditing  
-  Fields: `action`, `description`, `createdAt`, `performedBy`  
-  Enum: `Action`: `CREATE`, `UPDATE`, `DELETE`
+* **`Attachment`**
+
+  * Fields: `filePath`, `type`
+  * Enum: `Type`: `JOB_DESCRIPTION`, `OFFER_LETTER`, `INTERVIEW_PREP`, `REJECTION_LETTER`, `OTHER`
 
 ---
 
-## 🧠 Enum Glossary
+### 📞 Communications
 
-| Enum Location                 | Values                                              |
-|------------------------------|-----------------------------------------------------|
-| `Role`                       | `BASIC`                                             |
-| `JobApplication.Status`      | `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`         |
-| `ApplicationTimeline.Type`   | `CREATED`, `UPDATED`, `SUBMITTED`, `CANCELLED`      |
-| `AuditLog.Action`            | `CREATE`, `UPDATE`, `DELETE`                        |
-| `CommunicationLog.Method`    | `EMAIL`, `CALL`, `LINKEDIN`, `IN_PERSON`            |
-| `CommunicationLog.Direction` | `INBOUND`, `OUTBOUND`                               |
-| `Attachment.Type`            | `JOB_DESCRIPTION`, `OFFER_LETTER`, etc.             |
-| `ScheduledCommunication.Type`| `INTERVIEW`, `ONLINE_ASSESSMENT`, `CALL`            |
+* **`CommunicationLog`**
 
-_All enums are stored in the database using `EnumType.STRING`._
+  * Fields: `method`, `direction`, `timestamp`, `message`
+  * Enums:
+
+    * `Method`: `EMAIL`, `CALL`, `LINKEDIN`, `IN_PERSON`
+    * `Direction`: `INBOUND`, `OUTBOUND`
+
+* **`ScheduledCommunication`**
+
+  * Fields: `type`, `scheduledFor`, `notes`
+  * Enum: `Type`: `INTERVIEW`, `ONLINE_ASSESSMENT`, `CALL`
+
+---
+
+### 🕒 Tracking & Reminders
+
+* **`ApplicationTimeline`**
+
+  * Fields: `eventType`, `eventTime`, `description`
+  * Enum: `EventType`: `CREATED`, `UPDATED`, `SUBMITTED`, `CANCELLED`
+
+* **`FollowUpReminder`**
+
+  * Fields: `remindOn`, `note`
+  * Links to a `JobApplication`
+
+---
+
+### 🛡️ Auditing
+
+* **`AuditLog`**
+
+  * Fields: `action`, `description`, `performedBy`
+  * Enum: `Action`: `CREATE`, `UPDATE`, `DELETE`
+  * Populated automatically via Spring Data Auditing
+
+---
+
+## 📘 Enum Glossary
+
+| Enum Class                      | Values                                               |
+| ------------------------------- | ---------------------------------------------------- |
+| `Role`                          | `BASIC`                                              |
+| `JobApplication.Status`         | `DRAFT`, `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED` |
+| `ApplicationTimeline.EventType` | `CREATED`, `UPDATED`, `SUBMITTED`, `CANCELLED`       |
+| `AuditLog.Action`               | `CREATE`, `UPDATE`, `DELETE`                         |
+| `CommunicationLog.Method`       | `EMAIL`, `CALL`, `LINKEDIN`, `IN_PERSON`             |
+| `CommunicationLog.Direction`    | `INBOUND`, `OUTBOUND`                                |
+| `Attachment.Type`               | `JOB_DESCRIPTION`, `OFFER_LETTER`, etc.              |
+| `ScheduledCommunication.Type`   | `INTERVIEW`, `ONLINE_ASSESSMENT`, `CALL`             |
 
 ---
 
 ## 🌐 Timezone Policy
 
-All `LocalDateTime` fields are stored and interpreted as **UTC**. This includes:
-- `appliedOn`
-- `eventTime`
-- `timestamp`
-- `remindOn`
-- `scheduledFor`
-- `createdAt`
+All `LocalDateTime` fields are persisted in **UTC**, including:
+
+* `createdAt`, `updatedAt`
+* `appliedOn`
+* `eventTime`
+* `timestamp`
+* `remindOn`
+* `scheduledFor`
 
 ---
 
-## 🗺️ Database Schema Diagram
-
-The following diagram illustrates the entity relationships and foreign key structure:
+## 🗺️ Schema Diagram
 
 📷 [`job_tracker_schema_graph.png`](./job_tracker_schema_graph.png)
 
 ---
 
-## 📄 Full Schema SQL Dump
-
-See the PostgreSQL schema for all table definitions and enum types:
+## 🗃️ SQL Reference
 
 📄 [`schema.sql`](./schema.sql)
 
 ---
 
-## 🧠 Suggestions for Future Enhancements
+## 🛠 Developer Notes
 
-- [ ] Add cardinality labels to ERD (e.g., `1 → *`)
-- [ ] Add Swagger enum documentation
-- [ ] Include test data and entity seeders
-- [ ] Provide `pg_dump` or Hibernate instructions for regenerating schema
+* Prefer `@ManyToOne(optional = false)` for required references
+* Spring Security + `AuditorAwareImpl` auto-populates `createdBy`, `updatedBy`
+* Entities auto-generate timestamps via `AuditingEntityListener`
+* Soft deletes must be respected in all queries
 
 ---
 
-## 🛠 Developer Notes
+## 🧪 Testing Recommendations
 
-- Use `@ManyToOne(optional = false)` for required FK constraints.
-- Enforce constraints using `@NotNull` and DB schema.
-- Sensitive fields (e.g., passwords) are never exposed in DTOs.
-- Enum string values must match exactly with DB definitions.
-- Time fields like `createdAt` and `eventTime` are always server-generated.
+* Use `@DataJpaTest` for entity validation
+* Mock UUIDs and timestamps in unit tests
+* Verify soft delete exclusions manually (`deleted = false`)
+* Test `@PrePersist` logic where applicable
 
---- 
+---
 
 ## 📚 See Also
 
-- [`repository/`](../repository/README.md) — Interfaces used to query and persist these JPA entities.
-- [`service/`](../service/README.md) — Business logic layer that manipulates these models.
-- [`mapper/`](../mapper/README.md) — Handles transformation between these entities and external-facing DTOs.
-- [`dto/`](../dto/README.md) — Serializable objects representing API input/output derived from these models.
-- [`controller/`](../controller/README.md) — REST endpoints exposing operations on these entities.
-- [`handler/`](../handler/README.md) — Global exception handling for model validation and persistence issues.
+* [`repository/`](../repository/README.md) — Custom + standard JPA interfaces
+* [`service/`](../service/README.md) — Business logic and validation
+* [`mapper/`](../mapper/README.md) — DTO conversion logic
+* [`dto/`](../dto/README.md) — API payload structures
+* [`controller/`](../controller/README.md) — REST API endpoints
+* [`handler/`](../handler/README.md) — Exception resolution
 
---- 
-
+---

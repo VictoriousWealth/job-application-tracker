@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.JobSourceCreateDTO;
 import com.nick.job_application_tracker.dto.JobSourceDTO;
-import com.nick.job_application_tracker.service.JobSourceService;
+import com.nick.job_application_tracker.dto.create.JobSourceCreateDTO;
+import com.nick.job_application_tracker.service.inter_face.JobSourceService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -62,7 +63,7 @@ public class JobSourceController {
         @ApiResponse(responseCode = "404", description = "Job source not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<JobSourceDTO> getSourceById(@PathVariable Long id) {
+    public ResponseEntity<JobSourceDTO> getSourceById(@PathVariable UUID id) {
         return jobSourceService.getSourceById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -77,7 +78,7 @@ public class JobSourceController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<JobSourceDTO> updateSource(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody JobSourceCreateDTO updateDTO) {
         return jobSourceService.updateSource(id, updateDTO)
                 .map(ResponseEntity::ok)
@@ -90,7 +91,7 @@ public class JobSourceController {
         @ApiResponse(responseCode = "404", description = "Job source not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSource(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSource(@PathVariable UUID id) {
         jobSourceService.deleteSource(id);
         return ResponseEntity.noContent().build();
     }

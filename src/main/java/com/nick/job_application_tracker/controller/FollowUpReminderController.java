@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
-import com.nick.job_application_tracker.service.FollowUpReminderService;
+import com.nick.job_application_tracker.dto.create.FollowUpReminderCreateDTO;
+import com.nick.job_application_tracker.service.inter_face.FollowUpReminderService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,7 +41,7 @@ public class FollowUpReminderController {
         @ApiResponse(responseCode = "404", description = "Job application not found")
     })
     @GetMapping("/job/{jobAppId}")
-    public ResponseEntity<List<FollowUpReminderDTO>> getForJob(@PathVariable Long jobAppId) {
+    public ResponseEntity<List<FollowUpReminderDTO>> getForJob(@PathVariable UUID jobAppId) {
         return ResponseEntity.ok(service.getByJobAppId(jobAppId));
     }
 
@@ -61,7 +62,7 @@ public class FollowUpReminderController {
         @ApiResponse(responseCode = "404", description = "Reminder not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

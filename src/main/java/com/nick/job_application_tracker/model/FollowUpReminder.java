@@ -2,37 +2,56 @@ package com.nick.job_application_tracker.model;
 
 import java.time.LocalDateTime;
 
+import com.nick.job_application_tracker.model.common.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
+/**
+ * Represents a reminder to follow up on a job application.
+ * Supports saving incomplete (draft) reminders.
+ */
 @Entity
 @Table(name = "follow_up_reminder")
-public class FollowUpReminder {
+public class FollowUpReminder extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "remind_on", nullable = false)
+    @NotNull
+    @Column(name = "remind_on", nullable=false)
     private LocalDateTime remindOn;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "job_application_id")
+    @JoinColumn(name = "job_application_id", nullable = false)
     private JobApplication jobApplication;
 
-    @Column(columnDefinition = "TEXT")
+    @NotBlank
+    @Column(columnDefinition = "TEXT", nullable=false)
     private String note;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
+    // --- Constructors ---
+
+    public FollowUpReminder() {}
+
+    public FollowUpReminder(LocalDateTime remindOn, JobApplication jobApplication, String note) {
+        this.remindOn = remindOn;
+        this.jobApplication = jobApplication;
+        this.note = note;
     }
+
+    // --- Lifecycle Hooks ---
+
+    @PrePersist
+    public void prePersist() {
+        note = note.trim();
+
+    }
+
+    // --- Getters and Setters ---
 
     public LocalDateTime getRemindOn() {
         return remindOn;
@@ -57,4 +76,5 @@ public class FollowUpReminder {
     public void setNote(String note) {
         this.note = note;
     }
+
 }

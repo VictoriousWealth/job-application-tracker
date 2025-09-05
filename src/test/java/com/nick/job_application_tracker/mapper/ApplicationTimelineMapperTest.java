@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.nick.job_application_tracker.dto.ApplicationTimelineDTO;
+import com.nick.job_application_tracker.dto.ApplicationTimelineCreateDTO;
 import com.nick.job_application_tracker.model.ApplicationTimeline;
 import com.nick.job_application_tracker.model.JobApplication;
 
@@ -25,7 +25,7 @@ public class ApplicationTimelineMapperTest {
         entity.setDescription("Technical Interview");
         entity.setJobApplication(job);
 
-        ApplicationTimelineDTO dto = ApplicationTimelineMapper.toDTO(entity);
+        ApplicationTimelineCreateDTO dto = ApplicationTimelineMapper.toDTO(entity);
 
         assertThat(dto.id).isEqualTo(1L);
         assertThat(dto.eventType).isEqualTo("SUBMITTED");
@@ -37,7 +37,7 @@ public class ApplicationTimelineMapperTest {
     @Test
     @DisplayName("Should convert DTO to entity correctly")
     void testToEntity() {
-        ApplicationTimelineDTO dto = new ApplicationTimelineDTO(
+        ApplicationTimelineCreateDTO dto = new ApplicationTimelineCreateDTO(
             99L,
             "SUBMITTED",
             LocalDateTime.of(2024, 6, 1, 9, 0),

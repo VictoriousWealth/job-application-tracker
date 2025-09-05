@@ -4,15 +4,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.nick.job_application_tracker.dto.UserInfoDTO;
+import com.nick.job_application_tracker.dto.special.UserDetailDTO;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
 
 @Component
 public class UserMapper {
 
-    public UserInfoDTO toDTO(User user) {
-        return new UserInfoDTO(
+    public UserDetailDTO toDTO(User user) {
+        return new UserDetailDTO(
             user.getId(),
             user.getEmail(),
             user.isEnabled(),
