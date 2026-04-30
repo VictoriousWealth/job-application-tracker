@@ -9,6 +9,7 @@ public class ScheduledCommunicationResponseDTO {
     private String type;
     private LocalDateTime scheduledFor;
     private String notes;
+    private UUID jobApplicationId;
 
     // --- Getters and Setters ---
 
