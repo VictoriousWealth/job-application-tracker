@@ -1,6 +1,7 @@
 package com.nick.job_application_tracker.service.inter_face;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,9 @@ public class CoverLetterService {
         boolean isNew = (dto.getId() == null);
 
         CoverLetter entity = mapper.toEntity(dto);
+        if (dto.getId() != null) {
+            entity.setId(dto.getId());
+        }
         CoverLetter saved = repo.save(entity);
 
         if (isNew) {
@@ -43,7 +47,12 @@ public class CoverLetterService {
         return mapper.toDTO(saved);
     }
 
-    public void delete(Long id) {
+    public CoverLetter getModelById(UUID id) {
+        return repo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Cover letter not found"));
+    }
+
+    public void delete(UUID id) {
         repo.deleteById(id);
         auditLogService.logDelete("Deleted cover letter with id: " + id);
     }
