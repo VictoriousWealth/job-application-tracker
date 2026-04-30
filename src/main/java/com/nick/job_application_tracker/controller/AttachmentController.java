@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.AttachmentDTO;
+import com.nick.job_application_tracker.dto.create.AttachmentCreateDTO;
+import com.nick.job_application_tracker.dto.response.AttachmentResponseDTO;
 import com.nick.job_application_tracker.dto.special.ErrorResponseDTO;
-import com.nick.job_application_tracker.service.inter_face.AttachmentService;
+import com.nick.job_application_tracker.service.implementation.AttachmentService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,13 +41,13 @@ public class AttachmentController {
     @Operation(summary = "Get attachments for a specific job application")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "List of attachments retrieved",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AttachmentDTO.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AttachmentResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "No attachments found for the given job application",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
     @GetMapping("/job/{jobAppId}")
-    public ResponseEntity<List<AttachmentDTO>> getForJob(@PathVariable UUID jobAppId) {
-        List<AttachmentDTO> attachments = service.getByJobAppId(jobAppId);
+    public ResponseEntity<List<AttachmentResponseDTO>> getForJob(@PathVariable UUID jobAppId) {
+        List<AttachmentResponseDTO> attachments = service.getByJobAppId(jobAppId);
         if (attachments.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -56,14 +57,14 @@ public class AttachmentController {
     @Operation(summary = "Create a new attachment")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Attachment successfully created",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AttachmentDTO.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AttachmentResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Validation failed",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AttachmentDTO create(@Valid @RequestBody AttachmentDTO dto) {
-        return service.save(dto);
+    public AttachmentResponseDTO create(@Valid @RequestBody AttachmentCreateDTO dto) {
+        return service.create(dto);
     }
 
     @Operation(summary = "Delete an attachment by ID")
