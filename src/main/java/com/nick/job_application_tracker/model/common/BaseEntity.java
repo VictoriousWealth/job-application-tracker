@@ -70,10 +70,6 @@ public abstract class BaseEntity {
         this.id = id;
     }
 
-    public void setId(Long id) {
-        this.id = id == null ? null : new UUID(0L, id);
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
