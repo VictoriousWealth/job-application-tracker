@@ -2,6 +2,7 @@ package com.nick.job_application_tracker.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ public class AuditLogServiceTest {
     @Autowired
     private UserRepository userRepo;
 
-    private Long userId;
+    private UUID userId;
 
     @BeforeEach
     void setUp() {
@@ -56,13 +57,9 @@ public class AuditLogServiceTest {
     @Test
     @DisplayName("Should save an audit log and return DTO")
     public void testSaveAuditLog() {
-        AuditLogDTO dto = new AuditLogDTO(
-            null,
-            "CREATE",
-            "Created a new job application",
-            null,
-            null
-        );
+        AuditLogDTO dto = new AuditLogDTO();
+        dto.setAction("CREATE");
+        dto.setDescription("Created a new job application");
 
         AuditLogDTO saved = auditLogService.save(dto);
 
