@@ -65,7 +65,7 @@ public class JobSourceRepositoryTest {
         JobSource source = new JobSource();
         source.setName("Monster");
         source = jobSourceRepository.save(source);
-        Long id = source.getId();
+        var id = source.getId();
 
         jobSourceRepository.deleteById(id);
         Optional<JobSource> found = jobSourceRepository.findById(id);
