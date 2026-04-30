@@ -22,7 +22,7 @@ public class JobSourceMapperTest {
     @DisplayName("Should map JobSource entity to DTO")
     void testToDTO() {
         JobSource source = new JobSource();
-        source.setId(1L);
+        source.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         source.setName("LinkedIn");
 
         JobSourceDTO dto = mapper.toDTO(source);
