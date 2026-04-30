@@ -1,70 +1,49 @@
-# 📈 Job Application Tracker - Test Coverage Checker
+# Scripts
 
-This is a Bash script that checks the Java class-to-test coverage for the **Job Application Tracker** project.
+This directory contains helper scripts for coverage reporting and test scaffolding.
 
-It also optionally runs Gradle tests **per module/folder**!
+## Script Index
 
----
+| Script | Purpose | Notes |
+| --- | --- | --- |
+| `check_test_coverage.sh` | Reports class-to-test coverage by package and optionally runs Gradle tests | Useful as a rough structural signal, not as a substitute for behavioral coverage |
+| `generate_controllers_tests_templates.sh` | Generates starter controller test files | Produces scaffolds that require manual cleanup |
+| `generate_mappers_tests_templates.sh` | Generates starter mapper test files | Produces scaffolds that require manual cleanup |
+| `generate_repositories_tests_templates.sh` | Generates starter repository test files | Produces scaffolds that require manual cleanup |
+| `generate_services_tests_templates.sh` | Generates starter service test files | Produces scaffolds that require manual cleanup |
 
-## 🚀 How to Use
+## Coverage Checker
+
+Run:
 
 ```bash
 ./scripts/check_test_coverage.sh [options]
 ```
 
-### Options
+Options:
 
-| Option | Description |
-|:------:|:------------|
-| `-h`, `--help` | Show this help message and exit |
-| `--show-missing`, `--s-m` | Display production classes that are missing corresponding test classes |
-| `--with-gradle` | Run Gradle tests for each top-level module |
+- `-h`, `--help`: show help
+- `--show-missing`, `--s-m`: list production classes without matching `*Test.java`
+- `--with-gradle`: run Gradle tests per top-level package
 
----
+What it does:
 
-## 📂 Example Usage
+- counts Java classes under `src/main/java/com/nick/job_application_tracker`
+- counts test classes under `src/test/java/com/nick/job_application_tracker`
+- prints package-by-package coverage percentages
+- optionally attempts a Gradle test run for each top-level package
 
-**Check overall coverage:**
-```bash
-./scripts/check_test_coverage.sh
-```
+## Template Generator Scripts
 
-**Check coverage and show missing tests:**
-```bash
-./scripts/check_test_coverage.sh --show-missing
-```
+The generator scripts are meant to create placeholders quickly when a new layer is added. They are useful for bootstrapping package structure, but they do not create production-quality tests.
 
-**Check coverage + run Gradle tests:**
-```bash
-./scripts/check_test_coverage.sh --with-gradle
-```
+After running one of the generators, expect to:
 
-**Show help:**
-```bash
-./scripts/check_test_coverage.sh --help
-```
+- replace placeholder endpoints or assertions
+- fix package-specific setup
+- add mocks, fixtures, and meaningful assertions
+- remove tests that only prove the Spring context starts
 
----
+## Recommendation
 
-## 🛡️ Features
-
-- Folder-by-folder test coverage breakdown
-- Colored output:
-  - ✅ Green: High coverage (90%+)
-  - ⚠️ Yellow: Medium coverage (65%-89%)
-  - ❌ Red: Low coverage (<65%)
-- Gradle test runner for each folder
-- Graceful handling of `CTRL+C` interruptions
-- Skips folders without any tests automatically
-
----
-
-## 📦 Project Structure Expected
-
-```
-src/main/java/com/nick/job_application_tracker/...
-src/test/java/com/nick/job_application_tracker/...
-```
-
----
-
+Treat these scripts as development convenience tools. The long-term standard for this repository should be behavior-driven tests that validate business rules, security boundaries, and persistence behavior.
