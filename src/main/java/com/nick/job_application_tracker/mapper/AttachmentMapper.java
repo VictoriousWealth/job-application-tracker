@@ -67,6 +67,12 @@ public class AttachmentMapper {
         return attachment;
     }
 
+    public Attachment toEntity(com.nick.job_application_tracker.dto.AttachmentDTO dto) {
+        JobApplication jobApplication = new JobApplication();
+        jobApplication.setId(dto.getJobApplicationId());
+        return toEntity(dto, jobApplication);
+    }
+
     public com.nick.job_application_tracker.dto.AttachmentDTO toDTO(Attachment attachment) {
         com.nick.job_application_tracker.dto.AttachmentDTO dto = new com.nick.job_application_tracker.dto.AttachmentDTO();
         dto.setId(attachment.getId());
