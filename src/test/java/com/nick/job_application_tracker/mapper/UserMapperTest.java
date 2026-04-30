@@ -14,7 +14,7 @@ public class UserMapperTest {
     @DisplayName("Should map User entity to UserInfoDTO correctly")
     void testToDTO() {
         User user = new User();
-        user.setId(42L);
+        user.setId(com.nick.job_application_tracker.TestIds.uuid(42));
         user.setEmail("test@example.com");
         user.setEnabled(true);
         user.setRole(Role.BASIC);
