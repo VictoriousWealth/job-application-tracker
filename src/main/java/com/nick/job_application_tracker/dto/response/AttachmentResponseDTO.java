@@ -9,6 +9,7 @@ public class AttachmentResponseDTO {
     private UUID id;
     private Type type;
     private String filePath;
+    private UUID jobApplicationId;
 
     // --- Getters and Setters ---
 
@@ -34,5 +35,13 @@ public class AttachmentResponseDTO {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public UUID getJobApplicationId() {
+        return jobApplicationId;
+    }
+
+    public void setJobApplicationId(UUID jobApplicationId) {
+        this.jobApplicationId = jobApplicationId;
     }
 }
