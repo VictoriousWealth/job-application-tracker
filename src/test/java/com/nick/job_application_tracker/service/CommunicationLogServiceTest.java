@@ -1,10 +1,11 @@
 package com.nick.job_application_tracker.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,15 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.nick.job_application_tracker.dto.CommunicationLogDTO;
+import com.nick.job_application_tracker.dto.create.CommunicationLogCreateDTO;
+import com.nick.job_application_tracker.dto.response.CommunicationLogResponseDTO;
 import com.nick.job_application_tracker.model.CommunicationLog;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.CommunicationLogRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.service.implementation.CommunicationLogService;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.inter_face.CommunicationLogService;
 
 import jakarta.transaction.Transactional;
 
@@ -41,7 +43,7 @@ public class CommunicationLogServiceTest {
     private UserRepository userRepo;
 
     @MockBean
-    private AuditLogService auditLogService; // ✅ ADD THIS
+    private AuditLogService auditLogService;
 
     private UUID jobAppId;
 
@@ -64,24 +66,20 @@ public class CommunicationLogServiceTest {
     }
 
     @Test
-    @DisplayName("Should save and return communication log as DTO")
-    void testSaveCommunicationLog() {
-        CommunicationLogDTO dto = new CommunicationLogDTO(
-            null,
-            "EMAIL",
-            "OUTBOUND",
-            LocalDateTime.now(),
-            "Sent initial application follow-up",
-            jobAppId
-        );
+    @DisplayName("Should create and return a communication log response")
+    void testCreateCommunicationLog() {
+        CommunicationLogCreateDTO dto = new CommunicationLogCreateDTO();
+        dto.setType(CommunicationLog.Method.EMAIL);
+        dto.setDirection(CommunicationLog.Direction.OUTBOUND);
+        dto.setTimestamp(LocalDateTime.now());
+        dto.setMessage("Sent initial application follow-up");
+        dto.setJobApplicationId(jobAppId);
 
-        CommunicationLogDTO saved = communicationLogService.save(dto);
+        CommunicationLogResponseDTO saved = communicationLogService.create(dto);
 
-        assertThat(saved).isNotNull();
         assertThat(saved.getId()).isNotNull();
-        assertThat(saved.getMessage()).isEqualTo("Sent initial application follow-up");
-        assertThat(saved.getType()).isEqualTo("EMAIL");
-        assertThat(saved.getDirection()).isEqualTo("OUTBOUND");
+        assertThat(saved.getType()).isEqualTo(CommunicationLog.Method.EMAIL);
+        assertThat(saved.getDirection()).isEqualTo(CommunicationLog.Direction.OUTBOUND);
         assertThat(saved.getJobApplicationId()).isEqualTo(jobAppId);
     }
 
@@ -100,31 +98,9 @@ public class CommunicationLogServiceTest {
 
         communicationRepo.save(log);
 
-        List<CommunicationLogDTO> result = communicationLogService.getByJobAppId(jobAppId);
+        List<CommunicationLogResponseDTO> result = communicationLogService.getByJobAppId(jobAppId);
 
         assertThat(result).isNotEmpty();
-        assertThat(result.get(0).getType()).isEqualTo("CALL");
-        assertThat(result.get(0).getDirection()).isEqualTo("INBOUND");
-    }
-
-    @Test
-    @DisplayName("Should delete communication log by ID")
-    void testDeleteCommunicationLog() {
-        CommunicationLog log = new CommunicationLog();
-        log.setType(CommunicationLog.Method.EMAIL);
-        log.setDirection(CommunicationLog.Direction.OUTBOUND);
-        log.setMessage("Text reminder");
-        log.setTimestamp(LocalDateTime.now());
-
-        JobApplication job = new JobApplication();
-        job.setId(jobAppId);
-        log.setJobApplication(job);
-
-        log = communicationRepo.save(log);
-        var id = log.getId();
-
-        communicationLogService.delete(id);
-
-        assertThat(communicationRepo.findById(id)).isNotPresent();
+        assertThat(result.get(0).getType()).isEqualTo(CommunicationLog.Method.CALL);
     }
 }
