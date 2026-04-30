@@ -7,6 +7,7 @@ public class CoverLetterDetailDTO {
     private UUID id;
     private String title;
     private String filePath;
+    private String content;
 
     // --- Getters and Setters ---
 
@@ -32,6 +33,14 @@ public class CoverLetterDetailDTO {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }
