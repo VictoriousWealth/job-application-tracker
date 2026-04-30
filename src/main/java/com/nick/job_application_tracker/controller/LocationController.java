@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +52,7 @@ public class LocationController {
     @Operation(summary = "Create a location")
     @PostMapping
     public ResponseEntity<LocationResponseDTO> create(@Valid @RequestBody LocationCreateDTO dto) {
-        return ResponseEntity.ok(locationService.createLocation(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(locationService.createLocation(dto));
     }
 
     @Operation(summary = "Update a location")
