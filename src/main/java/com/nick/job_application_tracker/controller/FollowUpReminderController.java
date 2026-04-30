@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/follow-ups")
@@ -47,13 +49,13 @@ public class FollowUpReminderController {
 
     @Operation(summary = "Create a new follow-up reminder")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Reminder created",
+        @ApiResponse(responseCode = "201", description = "Reminder created",
             content = @Content(schema = @Schema(implementation = FollowUpReminderResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public ResponseEntity<FollowUpReminderResponseDTO> create(@RequestBody FollowUpReminderCreateDTO dto) {
-        return ResponseEntity.ok(service.create(dto));
+    public ResponseEntity<FollowUpReminderResponseDTO> create(@Valid @RequestBody FollowUpReminderCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
     @Operation(summary = "Delete a follow-up reminder by ID")
