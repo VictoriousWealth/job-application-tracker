@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.custom.UserRepositoryCustom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID>, UserRepositoryCustom {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmailAndDeletedFalse(String email);
 
