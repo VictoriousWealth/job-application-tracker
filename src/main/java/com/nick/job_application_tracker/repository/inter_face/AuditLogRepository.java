@@ -2,7 +2,6 @@ package com.nick.job_application_tracker.repository.inter_face;
 
 import com.nick.job_application_tracker.model.AuditLog;
 import com.nick.job_application_tracker.model.AuditLog.Action;
-import com.nick.job_application_tracker.repository.custom.AuditLogRepositoryCustom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface AuditLogRepository extends JpaRepository<AuditLog, UUID>, AuditLogRepositoryCustom {
+public interface AuditLogRepository extends JpaRepository<AuditLog, UUID> {
 
     // Standard access
     Page<AuditLog> findByPerformedByIdAndDeletedFalse(UUID userId, Pageable pageable);
