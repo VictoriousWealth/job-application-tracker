@@ -40,52 +40,19 @@ jobs:
       - name: Compile production and test sources
         run: ./gradlew --no-daemon testClasses
 
-      - name: Run maintained CI suite
-        run: ./gradlew --no-daemon ciTest jacocoCiTestReport
+      - name: Run full test suite
+        run: ./gradlew --no-daemon test jacocoTestReport
 
-      - name: Archive CI test reports
+      - name: Archive test reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ci-test-reports
-          path: build/reports/tests/ciTest
-
-      - name: Archive CI coverage reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ci-coverage-reports
-          path: build/reports/jacoco/jacocoCiTestReport
-
-  legacy-full-suite:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    continue-on-error: true
-
-    env:
-      SPRING_PROFILES_ACTIVE: test
-      JWT_SECRET: ci-jwt-secret-value-with-at-least-thirty-two-bytes
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-          cache: gradle
-
-      - name: Grant permission to Gradle wrapper
-        run: chmod +x gradlew
-
-      - name: Run full legacy suite
-        run: ./gradlew --no-daemon test
-
-      - name: Archive legacy test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: legacy-test-reports
+          name: test-reports
           path: build/reports/tests/test
+
+      - name: Archive coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: build/reports/jacoco
