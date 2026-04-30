@@ -17,20 +17,12 @@ public class CoverLetterDTO {
         this.content = content;
     }
 
-    public CoverLetterDTO(Long id, String title, String filePath, String content) {
-        this(LegacyIdAdapter.fromLong(id), title, filePath, content);
-    }
-
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getTitle() {
