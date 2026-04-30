@@ -15,10 +15,10 @@ public class SkillTrackerMapperTest {
     @DisplayName("Should map SkillTracker entity to DTO correctly")
     void testToDTO() {
         JobApplication jobApp = new JobApplication();
-        jobApp.setId(100L);
+        jobApp.setId(com.nick.job_application_tracker.TestIds.uuid(100));
 
         SkillTracker skill = new SkillTracker();
-        skill.setId(1L);
+        skill.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         skill.setSkillName("Java");
         skill.setJobApplication(jobApp);
 
@@ -34,7 +34,7 @@ public class SkillTrackerMapperTest {
     @DisplayName("Should handle null JobApplication in SkillTracker entity")
     void testToDTONullJobApp() {
         SkillTracker skill = new SkillTracker();
-        skill.setId(2L);
+        skill.setId(com.nick.job_application_tracker.TestIds.uuid(2));
         skill.setSkillName("Python");
         skill.setJobApplication(null); // explicitly null
 
@@ -53,7 +53,7 @@ public class SkillTrackerMapperTest {
         dto.setSkillName("Spring Boot");
 
         JobApplication jobApp = new JobApplication();
-        jobApp.setId(200L);
+        jobApp.setId(com.nick.job_application_tracker.TestIds.uuid(200));
 
         SkillTracker entity = SkillTrackerMapper.toEntity(dto, jobApp);
 
