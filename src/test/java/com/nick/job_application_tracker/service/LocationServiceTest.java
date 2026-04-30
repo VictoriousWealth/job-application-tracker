@@ -82,7 +82,9 @@ public class LocationServiceTest {
     @Test
     @DisplayName("Should create a new location")
     void testCreateLocation() {
-        LocationDTO dto = new LocationDTO(null, "Madrid", "Spain");
+        LocationDTO dto = new LocationDTO();
+        dto.setCity("Madrid");
+        dto.setCountry("Spain");
 
         Location saved = new Location();
         saved.setId(1L);
@@ -120,7 +122,9 @@ public class LocationServiceTest {
     @Test
     @DisplayName("Should return empty when updating non-existing location")
     void testUpdateNonExistingLocation() {
-        LocationDTO dto = new LocationDTO(null, "Nowhere", "Narnia");
+        LocationDTO dto = new LocationDTO();
+        dto.setCity("Nowhere");
+        dto.setCountry("Narnia");
 
         when(locationRepository.findById(100L)).thenReturn(Optional.empty());
 
