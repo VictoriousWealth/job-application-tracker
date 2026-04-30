@@ -24,6 +24,9 @@ public class CoverLetter extends BaseEntity {
     @Column(name = "file_path")
     private String filePath;
 
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
     // --- Constructors ---
 
     public CoverLetter() {}
@@ -57,6 +60,14 @@ public class CoverLetter extends BaseEntity {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }
