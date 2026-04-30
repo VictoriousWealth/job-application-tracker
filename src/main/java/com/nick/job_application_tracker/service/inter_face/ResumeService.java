@@ -50,4 +50,8 @@ public class ResumeService {
         resumeRepository.deleteById(id);
         auditLogService.logDelete("Deleted Resume with ID " + id);
     }
+
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
 }
