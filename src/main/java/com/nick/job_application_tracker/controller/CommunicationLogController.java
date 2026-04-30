@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.CommunicationLogDTO;
-import com.nick.job_application_tracker.service.inter_face.CommunicationLogService;
+import com.nick.job_application_tracker.dto.create.CommunicationLogCreateDTO;
+import com.nick.job_application_tracker.dto.response.CommunicationLogResponseDTO;
+import com.nick.job_application_tracker.service.implementation.CommunicationLogService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,23 +37,23 @@ public class CommunicationLogController {
     @Operation(summary = "Get all communication logs for a job application")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "List of communication logs retrieved",
-            content = @Content(schema = @Schema(implementation = CommunicationLogDTO.class))),
+            content = @Content(schema = @Schema(implementation = CommunicationLogResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "No communication logs found for job ID")
     })
     @GetMapping("/job/{jobAppId}")
-    public List<CommunicationLogDTO> getForJob(@PathVariable UUID jobAppId) {
+    public List<CommunicationLogResponseDTO> getForJob(@PathVariable UUID jobAppId) {
         return service.getByJobAppId(jobAppId);
     }
 
     @Operation(summary = "Create a new communication log")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Communication log created",
-            content = @Content(schema = @Schema(implementation = CommunicationLogDTO.class))),
+            content = @Content(schema = @Schema(implementation = CommunicationLogResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public CommunicationLogDTO create(@RequestBody CommunicationLogDTO dto) {
-        return service.save(dto);
+    public CommunicationLogResponseDTO create(@RequestBody CommunicationLogCreateDTO dto) {
+        return service.create(dto);
     }
 
     @Operation(summary = "Delete a communication log by ID")
