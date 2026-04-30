@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,14 +49,14 @@ public class JobSourceController {
 
     @Operation(summary = "Create a new job source")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Job source created",
+        @ApiResponse(responseCode = "201", description = "Job source created",
             content = @Content(schema = @Schema(implementation = JobSourceResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid request payload")
     })
     @PostMapping
     public ResponseEntity<JobSourceResponseDTO> createSource(@Valid @RequestBody JobSourceCreateDTO createDTO) {
         JobSourceResponseDTO created = jobSourceService.createSource(createDTO);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Operation(summary = "Get a job source by ID")
