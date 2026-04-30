@@ -2,13 +2,13 @@ package com.nick.job_application_tracker.repository.inter_face;
 
 import com.nick.job_application_tracker.model.Attachment;
 import com.nick.job_application_tracker.model.Attachment.Type;
-import com.nick.job_application_tracker.repository.custom.AttachmentRepositoryCustom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -16,7 +16,7 @@ import java.util.UUID;
  * Supports filtering, pagination, soft deletion, and advanced querying.
  */
 public interface AttachmentRepository
-        extends JpaRepository<Attachment, UUID>, AttachmentRepositoryCustom {
+        extends JpaRepository<Attachment, UUID> {
 
     // --- Ownership + soft delete filtering ---
 
@@ -25,6 +25,8 @@ public interface AttachmentRepository
     default List<Attachment> findByJobApplicationId(UUID jobApplicationId) {
         return findByJobApplicationIdAndDeletedFalse(jobApplicationId);
     }
+
+    Optional<Attachment> findByIdAndJobApplicationUserIdAndDeletedFalse(UUID id, UUID userId);
 
     Page<Attachment> findByJobApplicationIdAndDeletedFalse(UUID jobApplicationId, Pageable pageable);
 
