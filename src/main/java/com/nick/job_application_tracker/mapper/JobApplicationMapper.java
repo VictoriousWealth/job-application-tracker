@@ -71,6 +71,36 @@ public class JobApplicationMapper {
             return entity;
         }
 
+    public static JobApplication toEntity(JobApplicationCreateDTO dto) {
+        Location location = null;
+        if (dto.getLocationId() != null || dto.getLocationCity() != null || dto.getLocationCountry() != null) {
+            location = new Location();
+            location.setId(dto.getLocationId());
+            location.setCity(dto.getLocationCity());
+            location.setCountry(dto.getLocationCountry());
+        }
+
+        JobSource jobSource = null;
+        if (dto.getSourceId() != null) {
+            jobSource = new JobSource();
+            jobSource.setId(dto.getSourceId());
+        }
+
+        Resume resume = null;
+        if (dto.getResumeId() != null) {
+            resume = new Resume();
+            resume.setId(dto.getResumeId());
+        }
+
+        CoverLetter coverLetter = null;
+        if (dto.getCoverLetterId() != null) {
+            coverLetter = new CoverLetter();
+            coverLetter.setId(dto.getCoverLetterId());
+        }
+
+        return toEntity(dto, location, jobSource, resume, coverLetter);
+    }
+
     public static JobApplicationResponseDTO toResponseDTO(JobApplication jobApp) {
         JobApplicationResponseDTO dto = new JobApplicationResponseDTO();
         dto.id = jobApp.getId();
@@ -100,6 +130,8 @@ public class JobApplicationMapper {
         dto.deadline = jobApp.getDeadline();
         dto.jobDescription = jobApp.getJobDescription();
         dto.locationId = jobApp.getLocation() != null ? jobApp.getLocation().getId() : null;
+        dto.locationCity = jobApp.getLocation() != null ? jobApp.getLocation().getCity() : null;
+        dto.locationCountry = jobApp.getLocation() != null ? jobApp.getLocation().getCountry() : null;
         dto.resumeId = jobApp.getResume() != null ? jobApp.getResume().getId() : null;
         dto.coverLetterId = jobApp.getCoverLetter() != null ? jobApp.getCoverLetter().getId() : null;
         dto.sourceId = jobApp.getSource() != null ? jobApp.getSource().getId() : null;
