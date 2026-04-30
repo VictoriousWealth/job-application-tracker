@@ -69,7 +69,7 @@ public class SkillTrackerRepositoryTest {
     @Test
     @DisplayName("Should return empty list if JobApplication ID not found")
     public void testFindByInvalidJobApplicationId() {
-        List<SkillTracker> results = skillRepo.findByJobApplicationId(-999L);
+        List<SkillTracker> results = skillRepo.findByJobApplicationId(com.nick.job_application_tracker.TestIds.uuid(-999));
         assertThat(results).isEmpty();
     }
 }
