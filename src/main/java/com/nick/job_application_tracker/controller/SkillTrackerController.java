@@ -2,7 +2,6 @@ package com.nick.job_application_tracker.controller;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,12 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.SkillTrackerCreateDTO;
-import com.nick.job_application_tracker.dto.SkillTrackerDTO;
-import com.nick.job_application_tracker.mapper.SkillTrackerMapper;
-import com.nick.job_application_tracker.model.JobApplication;
-import com.nick.job_application_tracker.service.inter_face.SkillTrackerService;
-import com.nick.job_application_tracker.service.specialised_common.JobApplicationServiceInterface;
+import com.nick.job_application_tracker.dto.create.SkillTrackerCreateDTO;
+import com.nick.job_application_tracker.dto.response.SkillTrackerResponseDTO;
+import com.nick.job_application_tracker.service.implementation.SkillTrackerService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,36 +29,30 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class SkillTrackerController {
 
     private final SkillTrackerService service;
-    private final JobApplicationServiceInterface jobApplicationService;
 
-    public SkillTrackerController(SkillTrackerService service, JobApplicationServiceInterface jobApplicationService) {
+    public SkillTrackerController(SkillTrackerService service) {
         this.service = service;
-        this.jobApplicationService = jobApplicationService;
     }
 
     @Operation(summary = "Get all skills for a specific job application")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Skills retrieved successfully",
-            content = @Content(schema = @Schema(implementation = SkillTrackerDTO.class)))
+            content = @Content(schema = @Schema(implementation = SkillTrackerResponseDTO.class)))
     })
     @GetMapping("/job/{jobAppId}")
-    public List<SkillTrackerDTO> getForJob(@PathVariable UUID jobAppId) {
-        return service.getByJobAppId(jobAppId)
-                      .stream()
-                      .map(SkillTrackerMapper::toDTO)
-                      .collect(Collectors.toList());
+    public List<SkillTrackerResponseDTO> getForJob(@PathVariable UUID jobAppId) {
+        return service.getByJobAppId(jobAppId);
     }
 
     @Operation(summary = "Add a new skill to a job application")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Skill created successfully",
-            content = @Content(schema = @Schema(implementation = SkillTrackerDTO.class))),
+            content = @Content(schema = @Schema(implementation = SkillTrackerResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public SkillTrackerDTO create(@RequestBody SkillTrackerCreateDTO dto) {
-        JobApplication jobApp = jobApplicationService.getModelById(dto.getJobApplicationId());
-        return SkillTrackerMapper.toDTO(service.save(SkillTrackerMapper.toEntity(dto, jobApp)));
+    public SkillTrackerResponseDTO create(@RequestBody SkillTrackerCreateDTO dto) {
+        return service.create(dto);
     }
 
     @Operation(summary = "Delete a skill entry by ID")
