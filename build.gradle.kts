@@ -106,7 +106,7 @@ jacoco {
 tasks.register<JacocoReport>("jacocoCiTestReport") {
     dependsOn(ciTest)
 
-    executionData(ciTest)
+    executionData(fileTree(layout.buildDirectory).include("jacoco/ciTest.exec", "jacoco/ciTest*.exec"))
     sourceSets(sourceSets.main.get())
 
     reports {
