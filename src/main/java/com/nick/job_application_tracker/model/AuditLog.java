@@ -28,6 +28,10 @@ public class AuditLog extends BaseEntity {
         public static Action from(String value) {
             return Action.valueOf(value.toUpperCase());
         }
+
+        public String getName() {
+            return name();
+        }
     }
 
     @NotNull
