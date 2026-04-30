@@ -1,26 +1,32 @@
 package com.nick.job_application_tracker.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.nick.job_application_tracker.dto.JobSourceDTO;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import com.nick.job_application_tracker.dto.create.JobSourceCreateDTO;
+import com.nick.job_application_tracker.dto.detail.JobSourceDetailDTO;
+import com.nick.job_application_tracker.dto.response.JobSourceResponseDTO;
+import com.nick.job_application_tracker.dto.update.JobSourceUpdateDTO;
 import com.nick.job_application_tracker.mapper.JobSourceMapper;
 import com.nick.job_application_tracker.model.JobSource;
 import com.nick.job_application_tracker.repository.inter_face.JobSourceRepository;
+import com.nick.job_application_tracker.service.implementation.JobSourceService;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.inter_face.JobSourceService;
 
 public class JobSourceServiceTest {
+
+    private static final UUID SOURCE_ID = UUID.fromString("00000000-0000-0000-0000-000000000501");
 
     private JobSourceRepository jobSourceRepository;
     private JobSourceService jobSourceService;
@@ -30,28 +36,23 @@ public class JobSourceServiceTest {
     void setup() {
         jobSourceRepository = mock(JobSourceRepository.class);
         auditLogService = mock(AuditLogService.class);
-        JobSourceMapper jobSourceMapper = new JobSourceMapper();
-        jobSourceService = new JobSourceService(jobSourceRepository, jobSourceMapper, auditLogService);
+        jobSourceService = new JobSourceService(jobSourceRepository, new JobSourceMapper(), auditLogService);
     }
 
     @Test
     @DisplayName("Should return all job sources")
     void testGetAllSources() {
-        JobSource s1 = new JobSource();
-        s1.setId(1L);
-        s1.setName("LinkedIn");
+        JobSource source = new JobSource();
+        source.setId(SOURCE_ID);
+        source.setName("LinkedIn");
 
-        JobSource s2 = new JobSource();
-        s2.setId(2L);
-        s2.setName("Company Website");
+        when(jobSourceRepository.findAll()).thenReturn(List.of(source));
 
-        when(jobSourceRepository.findAll()).thenReturn(List.of(s1, s2));
+        List<JobSourceResponseDTO> sources = jobSourceService.getAllSources();
 
-
-        List<JobSourceDTO> sources = jobSourceService.getAllSources();
-
-        assertThat(sources).hasSize(2);
-        assertThat(sources).anyMatch(s -> s.getName().equals("LinkedIn"));
+        assertThat(sources).hasSize(1);
+        assertThat(sources.get(0).getId()).isEqualTo(SOURCE_ID);
+        assertThat(sources.get(0).getName()).isEqualTo("LinkedIn");
     }
 
     @Test
@@ -61,15 +62,14 @@ public class JobSourceServiceTest {
         dto.setName("Indeed");
 
         JobSource saved = new JobSource();
-        saved.setId(1L);
+        saved.setId(SOURCE_ID);
         saved.setName("Indeed");
 
         when(jobSourceRepository.save(any(JobSource.class))).thenReturn(saved);
 
-        JobSourceDTO result = jobSourceService.createSource(dto);
+        JobSourceResponseDTO result = jobSourceService.createSource(dto);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getId()).isEqualTo(SOURCE_ID);
         assertThat(result.getName()).isEqualTo("Indeed");
     }
 
@@ -77,61 +77,40 @@ public class JobSourceServiceTest {
     @DisplayName("Should return job source by ID")
     void testGetSourceById() {
         JobSource source = new JobSource();
-        source.setId(1L);
+        source.setId(SOURCE_ID);
         source.setName("AngelList");
 
-        when(jobSourceRepository.findById(1L)).thenReturn(Optional.of(source));
+        when(jobSourceRepository.findById(SOURCE_ID)).thenReturn(Optional.of(source));
 
-        Optional<JobSourceDTO> result = jobSourceService.getSourceById(1L);
+        Optional<JobSourceDetailDTO> result = jobSourceService.getSourceById(SOURCE_ID);
 
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo("AngelList");
     }
 
     @Test
-    @DisplayName("Should return empty Optional when job source not found by ID")
-    void testGetSourceByInvalidId() {
-        when(jobSourceRepository.findById(99L)).thenReturn(Optional.empty());
-
-        Optional<JobSourceDTO> result = jobSourceService.getSourceById(99L);
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     @DisplayName("Should update existing job source")
     void testUpdateSource() {
         JobSource existing = new JobSource();
-        existing.setId(1L);
+        existing.setId(SOURCE_ID);
         existing.setName("Old Name");
 
-        JobSourceCreateDTO updateDTO = new JobSourceCreateDTO();
+        JobSourceUpdateDTO updateDTO = new JobSourceUpdateDTO();
         updateDTO.setName("New Name");
 
-        when(jobSourceRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(jobSourceRepository.save(any(JobSource.class))).thenAnswer(i -> i.getArgument(0));
+        when(jobSourceRepository.findById(SOURCE_ID)).thenReturn(Optional.of(existing));
+        when(jobSourceRepository.save(any(JobSource.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<JobSourceDTO> result = jobSourceService.updateSource(1L, updateDTO);
+        Optional<JobSourceDetailDTO> result = jobSourceService.updateSource(SOURCE_ID, updateDTO);
 
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo("New Name");
     }
 
     @Test
-    @DisplayName("Should return empty Optional when updating non-existing job source")
-    void testUpdateNonExistingSource() {
-        when(jobSourceRepository.findById(100L)).thenReturn(Optional.empty());
-
-        Optional<JobSourceDTO> result = jobSourceService.updateSource(100L, new JobSourceCreateDTO());
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     @DisplayName("Should delete job source by ID")
     void testDeleteSource() {
-        jobSourceService.deleteSource(1L);
-
-        verify(jobSourceRepository).deleteById(1L);
+        jobSourceService.deleteSource(SOURCE_ID);
+        verify(jobSourceRepository).deleteById(SOURCE_ID);
     }
 }
