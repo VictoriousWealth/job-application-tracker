@@ -79,7 +79,7 @@ public class ApplicationTimelineRepositoryTest {
     @Test
     @DisplayName("Should return empty list when no timelines exist for given JobApplication ID")
     void shouldReturnEmptyListForInvalidJobAppId() {
-        List<ApplicationTimeline> timelines = timelineRepo.findByJobApplicationId(99999L); // unlikely to exist
+        List<ApplicationTimeline> timelines = timelineRepo.findByJobApplicationId(com.nick.job_application_tracker.TestIds.uuid(99999)); // unlikely to exist
         assertThat(timelines).isEmpty();
     }
 }
