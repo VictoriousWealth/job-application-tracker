@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import com.nick.job_application_tracker.service.inter_face.ResumeService;
+import com.nick.job_application_tracker.service.implementation.ResumeService;
 import com.nick.job_application_tracker.service.specialised_common.JobApplicationServiceInterface;
 import com.nick.job_application_tracker.util.SecurityUtils;
 
@@ -29,8 +29,8 @@ import com.nick.job_application_tracker.model.Resume;
 import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
-import com.nick.job_application_tracker.service.inter_face.CoverLetterService;
-import com.nick.job_application_tracker.service.inter_face.JobSourceService;
+import com.nick.job_application_tracker.service.implementation.CoverLetterService;
+import com.nick.job_application_tracker.service.implementation.JobSourceService;
 
 
 @Service
