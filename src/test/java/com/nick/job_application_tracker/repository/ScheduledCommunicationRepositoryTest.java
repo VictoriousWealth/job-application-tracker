@@ -16,7 +16,7 @@ import com.nick.job_application_tracker.model.JobApplication.Status;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.ScheduledCommunication;
 import com.nick.job_application_tracker.model.ScheduledCommunication.Type;
-import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.ScheduledCommunicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 import com.nick.job_application_tracker.model.User;
