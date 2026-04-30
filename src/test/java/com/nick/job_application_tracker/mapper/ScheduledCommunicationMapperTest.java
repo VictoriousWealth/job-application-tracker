@@ -18,10 +18,10 @@ public class ScheduledCommunicationMapperTest {
     @DisplayName("Should map ScheduledCommunication entity to DTO correctly")
     void testToDTO() {
         JobApplication job = new JobApplication();
-        job.setId(42L);
+        job.setId(com.nick.job_application_tracker.TestIds.uuid(42));
 
         ScheduledCommunication entity = new ScheduledCommunication();
-        entity.setId(10L);
+        entity.setId(com.nick.job_application_tracker.TestIds.uuid(10));
         entity.setType(Type.INTERVIEW);
         entity.setScheduledFor(LocalDateTime.of(2025, 5, 10, 15, 30));
         entity.setNotes("Follow up email");
@@ -41,7 +41,7 @@ public class ScheduledCommunicationMapperTest {
     @DisplayName("Should handle null job application in entity when mapping to DTO")
     void testToDTONullJobApp() {
         ScheduledCommunication entity = new ScheduledCommunication();
-        entity.setId(11L);
+        entity.setId(com.nick.job_application_tracker.TestIds.uuid(11));
         entity.setType(Type.CALL);
         entity.setScheduledFor(LocalDateTime.now());
         entity.setNotes("Call scheduled");
@@ -62,7 +62,7 @@ public class ScheduledCommunicationMapperTest {
         dto.setNotes("Initial meeting");
 
         JobApplication jobApp = new JobApplication();
-        jobApp.setId(99L);
+        jobApp.setId(com.nick.job_application_tracker.TestIds.uuid(99));
 
         ScheduledCommunication entity = ScheduledCommunicationMapper.toEntity(dto, jobApp);
 
