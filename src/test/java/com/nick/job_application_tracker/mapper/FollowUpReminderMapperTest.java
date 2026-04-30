@@ -21,7 +21,7 @@ public class FollowUpReminderMapperTest {
         reminder.setNote("Check status");
 
         JobApplication job = new JobApplication();
-        job.setId(42L);
+        job.setId(com.nick.job_application_tracker.TestIds.uuid(42));
         reminder.setJobApplication(job);
 
         FollowUpReminderDTO dto = mapper.toDTO(reminder);
@@ -36,10 +36,10 @@ public class FollowUpReminderMapperTest {
         FollowUpReminderCreateDTO dto = new FollowUpReminderCreateDTO();
         dto.setRemindOn(LocalDateTime.of(2025, 5, 10, 9, 30));
         dto.setNote("Follow up with recruiter");
-        dto.setJobApplicationId(100L);
+        dto.setJobApplicationId(com.nick.job_application_tracker.TestIds.uuid(100));
 
         JobApplication jobApp = new JobApplication();
-        jobApp.setId(100L);
+        jobApp.setId(com.nick.job_application_tracker.TestIds.uuid(100));
 
         FollowUpReminder entity = mapper.toEntity(dto, jobApp);
 
