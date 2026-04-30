@@ -4,11 +4,20 @@ import java.util.UUID;
 
 public class SkillTrackerResponseDTO {
 
+    private UUID id;
     private String skillName;
     private UUID jobApplicationId;
 
 
     // --- Getters and Setters ---
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getSkillName() {
         return skillName;
