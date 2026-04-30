@@ -22,7 +22,7 @@ import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.inter_face.UserService;
+import com.nick.job_application_tracker.service.implementation.UserService;
 
 class UserServiceTest {
 
@@ -44,7 +44,7 @@ class UserServiceTest {
     @DisplayName("Should return user info by email")
     void testGetUserInfoByEmail() {
         User user = new User();
-        user.setId(1L);
+        user.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         user.setEmail("user@example.com");
         user.setEnabled(true);
         user.setRole(Role.BASIC);
@@ -61,14 +61,14 @@ class UserServiceTest {
     @DisplayName("Should return user info by ID")
     void testGetUserInfoById() {
         User user = new User();
-        user.setId(2L);
+        user.setId(com.nick.job_application_tracker.TestIds.uuid(2));
         user.setEmail("id@example.com");
         user.setEnabled(true);
         user.setRole(Role.BASIC);
 
-        when(userRepository.findById(2L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(com.nick.job_application_tracker.TestIds.uuid(2))).thenReturn(Optional.of(user));
 
-        UserDetailDTO dto = userService.getUserInfoById(2L);
+        UserDetailDTO dto = userService.getUserInfoById(com.nick.job_application_tracker.TestIds.uuid(2));
 
         assertThat(dto.getEmail()).isEqualTo("id@example.com");
         assertThat(dto.getRoles()).contains("BASIC");
@@ -78,13 +78,13 @@ class UserServiceTest {
     @DisplayName("Should return all users")
     void testGetAllUsers() {
         User user1 = new User();
-        user1.setId(1L);
+        user1.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         user1.setEmail("one@example.com");
         user1.setEnabled(true);
         user1.setRole(Role.BASIC);
 
         User user2 = new User();
-        user2.setId(2L);
+        user2.setId(com.nick.job_application_tracker.TestIds.uuid(2));
         user2.setEmail("two@example.com");
         user2.setEnabled(false);
         user2.setRole((Role.BASIC));
@@ -102,7 +102,7 @@ class UserServiceTest {
     @DisplayName("Should update user email and password")
     void testUpdateSelf() {
         User user = new User();
-        user.setId(3L);
+        user.setId(com.nick.job_application_tracker.TestIds.uuid(3));
         user.setEmail("old@example.com");
         user.setPassword("oldpass");
         user.setEnabled(true);
@@ -138,15 +138,15 @@ class UserServiceTest {
     @DisplayName("Should update user enabled status")
     void testUpdateEnabledStatus() {
         User user = new User();
-        user.setId(5L);
+        user.setId(com.nick.job_application_tracker.TestIds.uuid(5));
         user.setEmail("admin@example.com");
         user.setEnabled(false);
         user.setRole((Role.BASIC));
 
-        when(userRepository.findById(5L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(com.nick.job_application_tracker.TestIds.uuid(5))).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
-        UserDetailDTO updated = userService.updateEnabledStatus(5L, true);
+        UserDetailDTO updated = userService.updateEnabledStatus(com.nick.job_application_tracker.TestIds.uuid(5), true);
 
         assertThat(updated.isEnabled()).isTrue();
     }
@@ -163,9 +163,9 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw when ID not found")
     void testGetUserByIdThrows() {
-        when(userRepository.findById(999L)).thenReturn(Optional.empty());
+        when(userRepository.findById(com.nick.job_application_tracker.TestIds.uuid(999))).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userService.getUserInfoById(999L))
+        assertThatThrownBy(() -> userService.getUserInfoById(com.nick.job_application_tracker.TestIds.uuid(999)))
                 .isInstanceOf(NoSuchElementException.class);
     }
 }
