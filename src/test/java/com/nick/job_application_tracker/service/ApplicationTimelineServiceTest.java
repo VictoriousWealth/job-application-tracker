@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.nick.job_application_tracker.dto.ApplicationTimelineCreateDTO;
 import com.nick.job_application_tracker.model.ApplicationTimeline;
 import com.nick.job_application_tracker.model.JobApplication;
-import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.ApplicationTimelineRepository;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 import com.nick.job_application_tracker.service.inter_face.ApplicationTimelineService;
