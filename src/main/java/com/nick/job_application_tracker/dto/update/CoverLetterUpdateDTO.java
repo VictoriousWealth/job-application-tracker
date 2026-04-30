@@ -8,6 +8,7 @@ public class CoverLetterUpdateDTO {
     private String title;
     @NotBlank
     private String filePath;
+    private String content;
 
     // Getters and Setters
 
@@ -25,6 +26,14 @@ public class CoverLetterUpdateDTO {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }
