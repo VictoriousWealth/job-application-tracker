@@ -71,7 +71,7 @@ public class ResumeRepositoryTest {
     @Test
     @DisplayName("Should return empty when resume not found")
     public void testFindByIdNotFound() {
-        Optional<Resume> found = resumeRepository.findById(-1L);
+        Optional<Resume> found = resumeRepository.findById(com.nick.job_application_tracker.TestIds.uuid(-1));
         assertThat(found).isEmpty();
     }
 }
