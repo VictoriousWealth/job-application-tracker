@@ -1,6 +1,5 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
-import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.ScheduledCommunication;
 import com.nick.job_application_tracker.repository.custom.ScheduledCommunicationRepositoryCustom;
 
@@ -18,18 +17,6 @@ public interface ScheduledCommunicationRepository extends JpaRepository<Schedule
 
     default java.util.List<ScheduledCommunication> findByJobApplicationId(UUID jobApplicationId) {
         return findByJobApplicationIdAndDeletedFalse(jobApplicationId, Pageable.unpaged()).getContent();
-    }
-
-    default java.util.List<ScheduledCommunication> findByJobApplicationId(Long jobApplicationId) {
-        return findByJobApplicationId(LegacyIdAdapter.fromLong(jobApplicationId));
-    }
-
-    default java.util.Optional<ScheduledCommunication> findById(Long id) {
-        return findById(LegacyIdAdapter.fromLong(id));
-    }
-
-    default void deleteById(Long id) {
-        deleteById(LegacyIdAdapter.fromLong(id));
     }
 
     Page<ScheduledCommunication> findAllByDeletedFalse(Pageable pageable);
