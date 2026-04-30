@@ -6,7 +6,7 @@ import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.nick.job_application_tracker.dto.ApplicationTimelineCreateDTO;
+import com.nick.job_application_tracker.dto.response.ApplicationTimelineResponseDTO;
 import com.nick.job_application_tracker.dto.special.ErrorResponseDTO;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -36,22 +36,22 @@ public class OpenApiConfig {
 
                 switch (httpMethod.name()) {
                     case "GET" -> {
-                        operation.getResponses().addApiResponse("200", successResponse(ApplicationTimelineCreateDTO.class, "Successful GET"));
+                        operation.getResponses().addApiResponse("200", successResponse(ApplicationTimelineResponseDTO.class, "Successful GET"));
                         operation.getResponses().addApiResponse("404", errorResponse(404, "Not Found", "Timeline not found", path));
                     }
                     case "POST" -> {
-                        operation.getResponses().addApiResponse("201", successResponse(ApplicationTimelineCreateDTO.class, "Resource created"));
+                        operation.getResponses().addApiResponse("201", successResponse(ApplicationTimelineResponseDTO.class, "Resource created"));
                         operation.getResponses().addApiResponse("400", errorResponse(400, "Bad Request", "Invalid input", path));
                         operation.getResponses().addApiResponse("409", errorResponse(409, "Conflict", "Duplicate entry", path));
                     }
                     case "PUT" -> {
-                        operation.getResponses().addApiResponse("200", successResponse(ApplicationTimelineCreateDTO.class, "Resource updated"));
+                        operation.getResponses().addApiResponse("200", successResponse(ApplicationTimelineResponseDTO.class, "Resource updated"));
                         operation.getResponses().addApiResponse("400", errorResponse(400, "Bad Request", "Invalid update payload", path));
                         operation.getResponses().addApiResponse("404", errorResponse(404, "Not Found", "Resource to update not found", path));
                         operation.getResponses().addApiResponse("409", errorResponse(409, "Conflict", "Update conflict", path));
                     }
                     case "PATCH" -> {
-                        operation.getResponses().addApiResponse("200", successResponse(ApplicationTimelineCreateDTO.class, "Resource partially updated"));
+                        operation.getResponses().addApiResponse("200", successResponse(ApplicationTimelineResponseDTO.class, "Resource partially updated"));
                         operation.getResponses().addApiResponse("400", errorResponse(400, "Bad Request", "Invalid patch payload", path));
                         operation.getResponses().addApiResponse("404", errorResponse(404, "Not Found", "Resource not found", path));
                     }
