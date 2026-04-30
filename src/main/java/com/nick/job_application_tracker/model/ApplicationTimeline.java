@@ -25,6 +25,9 @@ import jakarta.validation.constraints.NotNull;
 public class ApplicationTimeline extends BaseEntity {
 
     public enum EventType {
+        CREATED,
+        UPDATED,
+        SUBMITTED,
         APPLICATION_CREATED,
         APPLICATION_UPDATED,
         APPLICATION_SUBMITTED,
@@ -32,7 +35,15 @@ public class ApplicationTimeline extends BaseEntity {
 
         @JsonCreator
         public static EventType from(String value) {
-            return EventType.valueOf(value.toUpperCase());
+            return switch (value.toUpperCase()) {
+                case "CREATED" -> CREATED;
+                case "UPDATED" -> UPDATED;
+                case "SUBMITTED" -> SUBMITTED;
+                case "APPLICATION_CREATED" -> APPLICATION_CREATED;
+                case "APPLICATION_UPDATED" -> APPLICATION_UPDATED;
+                case "APPLICATION_SUBMITTED" -> APPLICATION_SUBMITTED;
+                default -> EventType.valueOf(value.toUpperCase());
+            };
         }
     }
 
