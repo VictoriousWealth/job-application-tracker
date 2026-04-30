@@ -19,10 +19,10 @@ public class CommunicationLogMapperTest {
     @Test
     void testToDTO() {
         JobApplication job = new JobApplication();
-        job.setId(100L);
+        job.setId(com.nick.job_application_tracker.TestIds.uuid(100));
 
         CommunicationLog log = new CommunicationLog();
-        log.setId(1L);
+        log.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         log.setType(Method.EMAIL);
         log.setDirection(Direction.OUTBOUND);
         log.setTimestamp(LocalDateTime.now());
@@ -42,12 +42,12 @@ public class CommunicationLogMapperTest {
     @Test
     void testToEntity() {
         CommunicationLogDTO dto = new CommunicationLogDTO();
-        dto.id = 1L;
+        dto.id = com.nick.job_application_tracker.TestIds.uuid(1);
         dto.type = "CALL";
         dto.direction = "INBOUND";
         dto.timestamp = LocalDateTime.of(2023, 5, 1, 10, 0);
         dto.message = "Call received";
-        dto.jobApplicationId = 99L;
+        dto.jobApplicationId = com.nick.job_application_tracker.TestIds.uuid(99);
 
         CommunicationLog entity = mapper.toEntity(dto);
 
