@@ -10,3 +10,10 @@ spring:
 
 logging:
   config: classpath:logback-spring.xml
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:}
+      issuer: ${JWT_ISSUER:JobTrackerApplicationBackend}
+      expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}
