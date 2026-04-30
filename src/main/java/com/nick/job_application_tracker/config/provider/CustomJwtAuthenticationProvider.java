@@ -12,35 +12,43 @@ import org.springframework.stereotype.Component;
 
 import com.nick.job_application_tracker.config.CustomJwtAuthenticationToken;
 import com.nick.job_application_tracker.config.service.JwtService;
+import com.nick.job_application_tracker.model.User;
+import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 
 @Component
 public class CustomJwtAuthenticationProvider implements AuthenticationProvider {
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public CustomJwtAuthenticationProvider(JwtService jwtService) {
+    public CustomJwtAuthenticationProvider(JwtService jwtService, UserRepository userRepository) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        System.out.println("Authenticating " + authentication);
         String token = (String) authentication.getCredentials();
         String username;
-        String role;
         try {
             String[] o = jwtService.validateTokenAndGetUsernameAndRole(token);
             username = o[0];
-            role = o[1];
         } catch (Exception e) {
             throw new AuthenticationException("No such algorithm exist or an invalid key is being used"){};
         }
 
-        if (username == null || role == null) throw new AuthenticationException("Invalid JWT Token"){};
+        if (username == null) throw new AuthenticationException("Invalid JWT Token"){};
 
-        Collection<? extends GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+role));
+        User user = userRepository.findByEmailAndDeletedFalse(username)
+            .orElseThrow(() -> new AuthenticationException("Invalid JWT Token") {});
+        if (!user.isEnabled()) {
+            throw new AuthenticationException("User account is disabled") {};
+        }
+
+        String role = user.getRole().name();
+        Collection<? extends GrantedAuthority> authorities =
+            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
         CustomJwtAuthenticationToken customJwtAuthenticationToken =  new CustomJwtAuthenticationToken(token, username, authorities);
         customJwtAuthenticationToken.setDetails(authentication.getDetails());
-        System.out.println("Authenticated " + customJwtAuthenticationToken);
         return customJwtAuthenticationToken; // Successfully authenticated
     }
 
