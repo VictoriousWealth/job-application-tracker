@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.nick.job_application_tracker.dto.LocationDTO;
 import com.nick.job_application_tracker.dto.create.LocationCreateDTO;
 import com.nick.job_application_tracker.dto.detail.LocationDetailDTO;
 import com.nick.job_application_tracker.dto.response.LocationResponseDTO;
@@ -32,37 +31,29 @@ public class LocationService implements LocationServiceInterface {
         this.auditLogService = auditLogService;
     }
 
-    public List<LocationDTO> getAllLocations() {
+    public List<LocationResponseDTO> getAllLocations() {
         return locationRepository.findAll().stream()
-            .map(LocationMapper::toDTO)
+            .map(LocationMapper::toResponseDTO)
             .toList();
     }
 
-    public Optional<LocationDTO> getLocationById(UUID id) {
-        return locationRepository.findById(id).map(LocationMapper::toDTO);
+    public Optional<LocationDetailDTO> getLocationById(UUID id) {
+        return locationRepository.findById(id).map(LocationMapper::toDetailDTO);
     }
 
-    public Optional<LocationDTO> getLocationById(Long id) {
-        return getLocationById(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
-    }
-
-    public LocationDTO createLocation(LocationDTO dto) {
+    public LocationResponseDTO createLocation(LocationCreateDTO dto) {
         Location saved = locationRepository.save(LocationMapper.toEntity(dto));
         auditLogService.logCreate("Created location with id: " + saved.getId());
-        return LocationMapper.toDTO(saved);
+        return LocationMapper.toResponseDTO(saved);
     }
 
-    public Optional<LocationDTO> updateLocation(UUID id, LocationDTO dto) {
+    public Optional<LocationDetailDTO> updateLocation(UUID id, LocationUpdateDTO dto) {
         return locationRepository.findById(id).map(existing -> {
             LocationMapper.updateEntity(existing, dto);
             Location saved = locationRepository.save(existing);
             auditLogService.logUpdate("Updated location with id: " + saved.getId());
-            return LocationMapper.toDTO(saved);
+            return LocationMapper.toDetailDTO(saved);
         });
-    }
-
-    public Optional<LocationDTO> updateLocation(Long id, LocationDTO dto) {
-        return updateLocation(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id), dto);
     }
 
     public void deleteLocation(UUID id) {
@@ -70,31 +61,15 @@ public class LocationService implements LocationServiceInterface {
         auditLogService.logDelete("Deleted location with id: " + id);
     }
 
-    public void deleteLocation(Long id) {
-        deleteLocation(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
-    }
-
     @Override
     public LocationResponseDTO create(LocationCreateDTO dto) {
-        Location location = new Location();
-        location.setCity(dto.getCity());
-        location.setCountry(dto.getCountry());
-        Location saved = locationRepository.save(location);
-
-        LocationResponseDTO response = new LocationResponseDTO();
-        response.setCity(saved.getCity());
-        response.setCountry(saved.getCountry());
-        return response;
+        return createLocation(dto);
     }
 
     @Override
     public LocationDetailDTO getDetailById(UUID id) {
-        Location location = getModelById(id);
-        LocationDetailDTO dto = new LocationDetailDTO();
-        dto.setId(location.getId());
-        dto.setCity(location.getCity());
-        dto.setCountry(location.getCountry());
-        return dto;
+        return getLocationById(id)
+            .orElseThrow(() -> new NotFoundException("Location not found", null));
     }
 
     @Override
@@ -105,12 +80,7 @@ public class LocationService implements LocationServiceInterface {
 
     @Override
     public Page<LocationResponseDTO> getAll(Pageable pageable) {
-        return locationRepository.findAllByDeletedFalse(pageable).map(location -> {
-            LocationResponseDTO dto = new LocationResponseDTO();
-            dto.setCity(location.getCity());
-            dto.setCountry(location.getCountry());
-            return dto;
-        });
+        return locationRepository.findAllByDeletedFalse(pageable).map(LocationMapper::toResponseDTO);
     }
 
     @Override
@@ -123,16 +93,15 @@ public class LocationService implements LocationServiceInterface {
             location.setCountry(node.get("country").asText());
         }
         locationRepository.save(location);
-        return getDetailById(id);
+        return LocationMapper.toDetailDTO(location);
     }
 
     @Override
     public LocationDetailDTO updateById(UUID id, LocationUpdateDTO dto) {
         Location location = getModelById(id);
-        location.setCity(dto.getCity());
-        location.setCountry(dto.getCountry());
+        LocationMapper.updateEntity(location, dto);
         locationRepository.save(location);
-        return getDetailById(id);
+        return LocationMapper.toDetailDTO(location);
     }
 
     @Override
