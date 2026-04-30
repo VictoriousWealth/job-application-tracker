@@ -3,17 +3,17 @@ package com.nick.job_application_tracker.repository.inter_face;
 import com.nick.job_application_tracker.model.CommunicationLog;
 import com.nick.job_application_tracker.model.CommunicationLog.Method;
 import com.nick.job_application_tracker.model.CommunicationLog.Direction;
-import com.nick.job_application_tracker.repository.custom.CommunicationLogRepositoryCustom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CommunicationLogRepository
-        extends JpaRepository<CommunicationLog, UUID>, CommunicationLogRepositoryCustom {
+        extends JpaRepository<CommunicationLog, UUID> {
 
     // Ownership-based
     Page<CommunicationLog> findByJobApplicationUserIdAndDeletedFalse(UUID userId, Pageable pageable);
@@ -23,6 +23,7 @@ public interface CommunicationLogRepository
     default List<CommunicationLog> findByJobApplicationId(UUID jobAppId) {
         return findByJobApplicationIdAndDeletedFalse(jobAppId, Pageable.unpaged()).getContent();
     }
+    Optional<CommunicationLog> findByIdAndJobApplicationUserIdAndDeletedFalse(UUID id, UUID userId);
     Page<CommunicationLog> findByJobApplicationIdAndIsDraftFalseAndDeletedFalse(UUID jobAppId, Pageable pageable);
 
     // Enum-based filters
