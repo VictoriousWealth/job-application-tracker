@@ -31,11 +31,19 @@ public class ResumeService {
 
     public ResumeDTO save(ResumeDTO dto) {
         Resume resume = ResumeMapper.toEntity(dto);
+        if (dto.getId() != null) {
+            resume.setId(dto.getId());
+        }
         Resume saved = resumeRepository.save(resume);
         
         auditLogService.logCreate("Created Resume with ID " + saved.getId());
         
         return ResumeMapper.toDTO(saved);
+    }
+
+    public Resume getModelById(UUID id) {
+        return resumeRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Resume not found"));
     }
 
     public void delete(UUID id) {
