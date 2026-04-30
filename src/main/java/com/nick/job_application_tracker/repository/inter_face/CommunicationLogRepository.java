@@ -1,6 +1,5 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
-import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.CommunicationLog;
 import com.nick.job_application_tracker.model.CommunicationLog.Method;
 import com.nick.job_application_tracker.model.CommunicationLog.Direction;
@@ -24,18 +23,6 @@ public interface CommunicationLogRepository
     default List<CommunicationLog> findByJobApplicationId(UUID jobAppId) {
         return findByJobApplicationIdAndDeletedFalse(jobAppId, Pageable.unpaged()).getContent();
     }
-    default List<CommunicationLog> findByJobApplicationId(Long jobAppId) {
-        return findByJobApplicationId(LegacyIdAdapter.fromLong(jobAppId));
-    }
-
-    default java.util.Optional<CommunicationLog> findById(Long id) {
-        return findById(LegacyIdAdapter.fromLong(id));
-    }
-
-    default void deleteById(Long id) {
-        deleteById(LegacyIdAdapter.fromLong(id));
-    }
-
     Page<CommunicationLog> findByJobApplicationIdAndIsDraftFalseAndDeletedFalse(UUID jobAppId, Pageable pageable);
 
     // Enum-based filters
