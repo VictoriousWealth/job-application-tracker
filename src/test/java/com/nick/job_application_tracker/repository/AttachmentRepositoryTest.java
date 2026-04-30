@@ -78,7 +78,7 @@ public class AttachmentRepositoryTest {
     @Test
     @DisplayName("Should return empty list for non-existent job application ID")
     public void testFindByInvalidJobApplicationId() {
-        List<Attachment> results = attachmentRepo.findByJobApplicationId(-1L);
+        List<Attachment> results = attachmentRepo.findByJobApplicationId(com.nick.job_application_tracker.TestIds.uuid(-1));
         assertThat(results).isEmpty();
     }
 }
