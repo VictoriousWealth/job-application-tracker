@@ -45,6 +45,10 @@ public class CommunicationLogDetailDTO {
         return timestamp;
     }
 
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public String getMessage() {
         return message;
     }
