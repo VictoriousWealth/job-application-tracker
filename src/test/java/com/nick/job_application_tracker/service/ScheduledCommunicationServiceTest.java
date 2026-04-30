@@ -20,7 +20,7 @@ import com.nick.job_application_tracker.mapper.ScheduledCommunicationMapper;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.ScheduledCommunication;
 import com.nick.job_application_tracker.model.ScheduledCommunication.Type;
-import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.ScheduledCommunicationRepository;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
 import com.nick.job_application_tracker.service.inter_face.ScheduledCommunicationService;
