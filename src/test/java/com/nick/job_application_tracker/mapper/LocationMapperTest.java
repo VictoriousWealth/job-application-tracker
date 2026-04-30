@@ -13,7 +13,7 @@ public class LocationMapperTest {
     @DisplayName("Should map Location entity to DTO")
     void testToDTO() {
         Location location = new Location();
-        location.setId(10L);
+        location.setId(com.nick.job_application_tracker.TestIds.uuid(10));
         location.setCity("Paris");
         location.setCountry("France");
 
@@ -49,7 +49,7 @@ public class LocationMapperTest {
     @Test
     @DisplayName("Should return null when mapping null DTO to Location")
     void testToEntityNull() {
-        Location entity = LocationMapper.toEntity(null);
+        Location entity = LocationMapper.toEntity((LocationDTO) null);
         assertThat(entity).isNull();
     }
 
