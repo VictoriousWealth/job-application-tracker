@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class AuditLogDTO {
-    public Object id;
+    public UUID id;
     public String action;
     public String description;
     public LocalDateTime createdAt;
-    public Object userId;
+    public UUID userId;
 
     public AuditLogDTO() {}
 
@@ -20,26 +20,12 @@ public class AuditLogDTO {
         this.userId = userId;
     }
 
-    public AuditLogDTO(Long id, String action, String description, LocalDateTime timestamp, Long userId) {
-        this(LegacyIdAdapter.fromLong(id), action, description, timestamp, LegacyIdAdapter.fromLong(userId));
-    }
-
     public UUID getId() {
-        if (id instanceof UUID uuid) {
-            return uuid;
-        }
-        if (id instanceof Long legacyId) {
-            return LegacyIdAdapter.fromLong(legacyId);
-        }
-        return null;
+        return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getAction() {
@@ -75,20 +61,10 @@ public class AuditLogDTO {
     }
 
     public UUID getUserId() {
-        if (userId instanceof UUID uuid) {
-            return uuid;
-        }
-        if (userId instanceof Long legacyId) {
-            return LegacyIdAdapter.fromLong(legacyId);
-        }
-        return null;
+        return userId;
     }
 
     public void setUserId(UUID userId) {
         this.userId = userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = LegacyIdAdapter.fromLong(userId);
     }
 }
