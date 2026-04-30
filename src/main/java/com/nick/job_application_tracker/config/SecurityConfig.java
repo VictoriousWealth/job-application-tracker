@@ -26,8 +26,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.nick.job_application_tracker.config.filter.CustomJwtAuthFilter;
 import com.nick.job_application_tracker.config.filter.LoggingFilter;
 import com.nick.job_application_tracker.config.provider.CustomJwtAuthenticationProvider;
-import com.nick.job_application_tracker.config.service.JwtService;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -52,7 +50,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserRepository userRepository, JwtService jwtService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // 🔹 Disable CSRF (only for APIs; keep it enabled for traditional web apps)
         http.csrf(AbstractHttpConfigurer::disable);
 
@@ -62,8 +60,7 @@ public class SecurityConfig {
         // 🔹 Custom Logging Filter (Before AsyncManagerFilter)
         http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
         // 🔹 Authentication Filters
-        http.addFilterBefore(new CustomJwtAuthFilter(jwtService, authenticationManager(), userRepository),
-                UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomJwtAuthFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
         // 🔹 Logout Filter (Enables /logout)
         http.logout(logout -> logout.logoutUrl("/logout").permitAll());
@@ -77,6 +74,10 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/", "/favicon.ico", "/error").permitAll();
             auth.requestMatchers("/api/auth/login", "/api/auth/signup").permitAll();
             auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll(); // OpenAPI docs
+            auth.requestMatchers("/api/users/me").authenticated();
+            auth.requestMatchers("/api/users/me/**").authenticated();
+            auth.requestMatchers("/api/users/**").hasRole("ADMIN");
+            auth.requestMatchers("/api/audit-log/**").hasRole("ADMIN");
             auth.anyRequest().authenticated(); // Protect all other routes
         });
 
