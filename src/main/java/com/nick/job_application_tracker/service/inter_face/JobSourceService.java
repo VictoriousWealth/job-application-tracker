@@ -2,6 +2,7 @@ package com.nick.job_application_tracker.service.inter_face;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -38,12 +39,17 @@ public class JobSourceService {
         return mapper.toDTO(savedSource);
     }
 
-    public Optional<JobSourceDTO> getSourceById(Long id) {
+    public JobSource getModelById(UUID id) {
+        return jobSourceRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Job source not found"));
+    }
+
+    public Optional<JobSourceDTO> getSourceById(UUID id) {
         return jobSourceRepository.findById(id)
                 .map(mapper::toDTO);
     }
 
-    public Optional<JobSourceDTO> updateSource(Long id, JobSourceCreateDTO createDTO) {
+    public Optional<JobSourceDTO> updateSource(UUID id, JobSourceCreateDTO createDTO) {
         return jobSourceRepository.findById(id).map(source -> {
             source.setName(createDTO.getName());
             JobSource updatedSource = jobSourceRepository.save(source);
@@ -52,7 +58,7 @@ public class JobSourceService {
         });
     }
 
-    public void deleteSource(Long id) {
+    public void deleteSource(UUID id) {
         jobSourceRepository.deleteById(id);
         auditLogService.logDelete("Deleted JobSource with ID " + id);
     }
