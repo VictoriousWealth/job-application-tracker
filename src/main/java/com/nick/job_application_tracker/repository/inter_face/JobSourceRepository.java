@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
 import com.nick.job_application_tracker.model.JobSource;
-import com.nick.job_application_tracker.repository.custom.JobSourceRepositoryCustom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface JobSourceRepository extends JpaRepository<JobSource, UUID>, JobSourceRepositoryCustom {
+public interface JobSourceRepository extends JpaRepository<JobSource, UUID> {
+
+    Optional<JobSource> findByIdAndDeletedFalse(UUID id);
 
     Optional<JobSource> findByNameIgnoreCaseAndDeletedFalse(String name);
 
