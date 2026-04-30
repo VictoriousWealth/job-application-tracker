@@ -1,6 +1,5 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
-import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.SkillTracker;
 import com.nick.job_application_tracker.repository.custom.SkillTrackerRepositoryCustom;
 
@@ -18,10 +17,6 @@ public interface SkillTrackerRepository extends JpaRepository<SkillTracker, UUID
 
     default java.util.List<SkillTracker> findByJobApplicationId(UUID jobApplicationId) {
         return findByJobApplicationIdAndDeletedFalse(jobApplicationId, Pageable.unpaged()).getContent();
-    }
-
-    default java.util.List<SkillTracker> findByJobApplicationId(Long jobApplicationId) {
-        return findByJobApplicationId(LegacyIdAdapter.fromLong(jobApplicationId));
     }
 
     Page<SkillTracker> findAllByDeletedFalse(Pageable pageable);
