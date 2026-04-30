@@ -21,6 +21,8 @@ public class JobApplicationCreateDTO {
     public String company;
     public Status status;
     public UUID locationId;
+    public String locationCity;
+    public String locationCountry;
     @NotNull
     public UUID sourceId;
     @NotNull
@@ -65,12 +67,36 @@ public class JobApplicationCreateDTO {
         this.locationId = locationId;
     }
 
+    public void setLocationId(Long locationId) {
+        this.locationId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(locationId);
+    }
+
+    public String getLocationCity() {
+        return locationCity;
+    }
+
+    public void setLocationCity(String locationCity) {
+        this.locationCity = locationCity;
+    }
+
+    public String getLocationCountry() {
+        return locationCountry;
+    }
+
+    public void setLocationCountry(String locationCountry) {
+        this.locationCountry = locationCountry;
+    }
+
     public UUID getSourceId() {
         return sourceId;
     }
 
     public void setSourceId(UUID sourceId) {
         this.sourceId = sourceId;
+    }
+
+    public void setSourceId(Long sourceId) {
+        this.sourceId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(sourceId);
     }
     
     public String getJobDescription() {
@@ -89,12 +115,20 @@ public class JobApplicationCreateDTO {
         this.resumeId = resumeId;
     }
 
+    public void setResumeId(Long resumeId) {
+        this.resumeId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(resumeId);
+    }
+
     public UUID getCoverLetterId() {
         return coverLetterId;
     }
 
     public void setCoverLetterId(UUID coverLetterId) {
         this.coverLetterId = coverLetterId;
+    }
+
+    public void setCoverLetterId(Long coverLetterId) {
+        this.coverLetterId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(coverLetterId);
     }
 
     public String getNotes() {
