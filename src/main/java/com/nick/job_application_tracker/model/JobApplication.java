@@ -29,6 +29,10 @@ public class JobApplication extends BaseEntity {
         public static Status from(String value) {
             return Status.valueOf(value.toUpperCase());
         }
+
+        public String getName() {
+            return name();
+        }
     }
 
     @NotNull
