@@ -82,7 +82,7 @@ public class JobApplicationRepositoryTest {
     @Test
     @DisplayName("Should return empty list for non-existing user ID")
     public void testFindByInvalidUserId() {
-        List<JobApplication> found = jobApplicationRepository.findByUserId(99999L);
+        List<JobApplication> found = jobApplicationRepository.findByUserId(com.nick.job_application_tracker.TestIds.uuid(99999));
         assertThat(found).isEmpty();
     }
 
