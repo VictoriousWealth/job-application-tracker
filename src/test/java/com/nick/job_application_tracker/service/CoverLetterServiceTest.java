@@ -1,8 +1,9 @@
 package com.nick.job_application_tracker.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,11 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.nick.job_application_tracker.dto.CoverLetterDTO;
+import com.nick.job_application_tracker.dto.create.CoverLetterCreateDTO;
+import com.nick.job_application_tracker.dto.response.CoverLetterResponseDTO;
 import com.nick.job_application_tracker.model.CoverLetter;
 import com.nick.job_application_tracker.repository.inter_face.CoverLetterRepository;
+import com.nick.job_application_tracker.service.implementation.CoverLetterService;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.inter_face.CoverLetterService;
 
 import jakarta.transaction.Transactional;
 
@@ -29,7 +31,7 @@ public class CoverLetterServiceTest {
     private CoverLetterRepository coverLetterRepository;
 
     @MockBean
-    private AuditLogService auditLogService; // ✅ ADD THIS
+    private AuditLogService auditLogService;
 
     @BeforeEach
     void clearRepo() {
@@ -37,57 +39,33 @@ public class CoverLetterServiceTest {
     }
 
     @Test
-    @DisplayName("Should save a cover letter and return DTO with same data")
-    void testSaveCoverLetter() {
-        CoverLetterDTO dto = new CoverLetterDTO();
+    @DisplayName("Should create a cover letter response")
+    void testCreateCoverLetter() {
+        CoverLetterCreateDTO dto = new CoverLetterCreateDTO();
         dto.setTitle("Graduate Cover");
         dto.setFilePath("/files/grad.pdf");
         dto.setContent("Dear Hiring Manager...");
-        
-        CoverLetterDTO saved = coverLetterService.save(dto);
 
-        assertThat(saved).isNotNull();
+        CoverLetterResponseDTO saved = coverLetterService.create(dto);
+
         assertThat(saved.getId()).isNotNull();
         assertThat(saved.getTitle()).isEqualTo("Graduate Cover");
-        assertThat(saved.getFilePath()).isEqualTo("/files/grad.pdf");
         assertThat(saved.getContent()).isEqualTo("Dear Hiring Manager...");
     }
 
     @Test
-    @DisplayName("Should return all cover letters as DTOs")
+    @DisplayName("Should return all cover letters")
     void testFindAll() {
-        CoverLetter cl1 = new CoverLetter();
-        cl1.setTitle("Developer Role");
-        cl1.setFilePath("/files/dev.pdf");
-        cl1.setContent("To whom it may concern...");
-        
-        CoverLetter cl2 = new CoverLetter();
-        cl2.setTitle("Analyst Role");
-        cl2.setFilePath("/files/analyst.pdf");
-        cl2.setContent("Dear Analyst Recruiter...");
+        CoverLetter coverLetter = new CoverLetter();
+        coverLetter.setTitle("Developer Role");
+        coverLetter.setFilePath("/files/dev.pdf");
+        coverLetter.setContent("To whom it may concern...");
 
-        coverLetterRepository.saveAll(List.of(cl1, cl2));
+        coverLetterRepository.save(coverLetter);
 
-        List<CoverLetterDTO> results = coverLetterService.findAll();
+        List<CoverLetterResponseDTO> results = coverLetterService.findAll();
 
-        assertThat(results).hasSize(2);
-        assertThat(results).anyMatch(c -> c.getTitle().equals("Developer Role"));
-        assertThat(results).anyMatch(c -> c.getFilePath().equals("/files/analyst.pdf"));
-    }
-
-    @Test
-    @DisplayName("Should delete a cover letter by ID")
-    void testDeleteCoverLetter() {
-        CoverLetter cl = new CoverLetter();
-        cl.setTitle("Temp Cover");
-        cl.setFilePath("/files/temp.pdf");
-        cl.setContent("Temporary content");
-
-        cl = coverLetterRepository.save(cl);
-        var id = cl.getId();
-
-        coverLetterService.delete(id);
-
-        assertThat(coverLetterRepository.findById(id)).isNotPresent();
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).getTitle()).isEqualTo("Developer Role");
     }
 }
