@@ -1,6 +1,5 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
-import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.CoverLetter;
 import com.nick.job_application_tracker.repository.custom.CoverLetterRepositoryCustom;
 
@@ -13,14 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface CoverLetterRepository extends JpaRepository<CoverLetter, UUID>, CoverLetterRepositoryCustom {
-
-    default java.util.Optional<CoverLetter> findById(Long id) {
-        return findById(LegacyIdAdapter.fromLong(id));
-    }
-
-    default void deleteById(Long id) {
-        deleteById(LegacyIdAdapter.fromLong(id));
-    }
 
     Page<CoverLetter> findByCreatedByIdAndDeletedFalse(UUID userId, Pageable pageable);
 
