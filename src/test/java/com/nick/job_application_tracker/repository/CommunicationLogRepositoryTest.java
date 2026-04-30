@@ -79,7 +79,7 @@ public class CommunicationLogRepositoryTest {
     @DisplayName("Should return empty list for non-existent JobApplication ID")
     public void testFindByInvalidJobApplicationId() {
         // When
-        List<CommunicationLog> logs = communicationLogRepo.findByJobApplicationId(-999L);
+        List<CommunicationLog> logs = communicationLogRepo.findByJobApplicationId(com.nick.job_application_tracker.TestIds.uuid(-999));
 
         // Then
         assertThat(logs).isEmpty();
