@@ -9,6 +9,11 @@ This package contains the concrete runtime business services for the application
 - `AttachmentService`, `CommunicationLogService`, `FollowUpReminderService`, and `ScheduledCommunicationService`: application-related supporting records
 - `ApplicationTimelineService` and `AuditLogServiceImpl`: history and audit tracking
 - `JobSourceService`, `LocationService`, `SkillTrackerService`, and `UserService`: supporting domain services
+- `WorkspaceReadService`: shared user-scoped read access across the full workspace
+- `WorkspaceInsightsService`: dashboarding, analytics, and recommendation workflows
+- `CalendarIntegrationService`: event projection and ICS calendar export
+- `WorkspaceExportService`: JSON, CSV, and PDF workspace export generation
+- `ApplicationMatchingService`: resume, cover letter, and skill matching heuristics
 
 ## Responsibility
 
