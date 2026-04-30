@@ -16,6 +16,14 @@ public interface UserRepository extends JpaRepository<User, UUID>, UserRepositor
 
     Optional<User> findByEmailAndDeletedFalse(String email);
 
+    default Optional<User> findByEmail(String email) {
+        return findByEmailAndDeletedFalse(email);
+    }
+
+    default Optional<User> findById(Long id) {
+        return findById(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
+
     Page<User> findAllByDeletedFalse(Pageable pageable);
 
     Page<User> findAllByDeletedTrue(Pageable pageable);
