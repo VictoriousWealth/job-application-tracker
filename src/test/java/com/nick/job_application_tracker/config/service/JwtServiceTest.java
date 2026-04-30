@@ -5,15 +5,21 @@ import java.util.Base64;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class JwtServiceTest {
 
-    @Autowired
     private JwtService jwtService;
+
+    @BeforeEach
+    void setUp() {
+        jwtService = new JwtService(
+            "test-jwt-secret-value-with-at-least-thirty-two-bytes",
+            "JobTrackerApplicationBackend",
+            3600
+        );
+    }
 
     @Test
     void testGenerateAndValidateToken() throws Exception {
