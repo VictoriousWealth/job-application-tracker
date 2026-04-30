@@ -41,6 +41,10 @@ public class ScheduledCommunicationService {
             .orElseThrow(() -> new RuntimeException("ScheduledCommunication not found"));
     }
 
+    public ScheduledCommunicationDTO getById(Long id) {
+        return getById(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
+
     public ScheduledCommunicationDTO create(ScheduledCommunicationCreateDTO dto) {
         JobApplication jobApp = jobAppRepository.findById(dto.getJobApplicationId())
             .orElseThrow(() -> new RuntimeException("Job Application not found"));
@@ -55,5 +59,9 @@ public class ScheduledCommunicationService {
     public void delete(UUID id) {
         repository.deleteById(id);
         auditLogService.logDelete("Deleted ScheduledCommunication with ID " + id);
+    }
+
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
     }
 }
