@@ -45,7 +45,7 @@ public class CoverLetterRepositoryTest {
     @Test
     @DisplayName("Should return empty Optional for non-existent ID")
     public void testFindByNonExistentId() {
-        Optional<CoverLetter> found = coverLetterRepository.findById(-1L);
+        Optional<CoverLetter> found = coverLetterRepository.findById(com.nick.job_application_tracker.TestIds.uuid(-1));
         assertThat(found).isNotPresent();
     }
 
