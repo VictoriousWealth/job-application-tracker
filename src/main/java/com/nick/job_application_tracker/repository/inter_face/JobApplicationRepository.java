@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
 import com.nick.job_application_tracker.model.JobApplication;
-import com.nick.job_application_tracker.repository.custom.JobApplicationRepositoryCustom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,7 @@ import java.util.UUID;
  * Includes support for pagination, filtering, searching, and soft deletion.
  */
 @Repository
-public interface JobApplicationRepository extends JpaRepository<JobApplication, UUID>, JobApplicationRepositoryCustom {
+public interface JobApplicationRepository extends JpaRepository<JobApplication, UUID> {
 
     // --- Basic ownership + soft delete filtering ---
 
