@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nick.job_application_tracker.dto.special.UserDetailDTO;
 import com.nick.job_application_tracker.dto.special.UserUpdateDTO;
-import com.nick.job_application_tracker.service.inter_face.UserService;
+import com.nick.job_application_tracker.service.implementation.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
