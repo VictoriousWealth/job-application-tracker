@@ -11,7 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.JobApplication.Status;
-import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.SkillTrackerRepository;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 import com.nick.job_application_tracker.model.SkillTracker;
