@@ -74,7 +74,7 @@ public class FollowUpReminderRepositoryTest {
     @Test
     @DisplayName("Should return empty list for non-existent job application ID")
     public void testFindByInvalidJobApplicationId() {
-        List<FollowUpReminder> reminders = reminderRepo.findByJobApplicationId(-999L);
+        List<FollowUpReminder> reminders = reminderRepo.findByJobApplicationId(com.nick.job_application_tracker.TestIds.uuid(-999));
         assertThat(reminders).isEmpty();
     }
 
