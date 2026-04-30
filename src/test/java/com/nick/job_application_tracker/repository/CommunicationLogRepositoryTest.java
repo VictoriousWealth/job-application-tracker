@@ -13,7 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import com.nick.job_application_tracker.model.CommunicationLog;
 import com.nick.job_application_tracker.model.CommunicationLog.Direction;
 import com.nick.job_application_tracker.model.CommunicationLog.Method;
-import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.CommunicationLogRepository;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 import com.nick.job_application_tracker.model.JobApplication;
