@@ -1,117 +1,44 @@
-# 🎮 Controller Layer — `com.nick.job_application_tracker.controller`
+# Controller Layer
 
-This directory contains the **REST controllers** that define the **HTTP API endpoints** of the JobTrackr application.
+This package contains the REST API entry points for the backend.
 
-Controllers serve as the main **entry points for client requests**. They handle HTTP input, apply validation, call the appropriate services, and return results using DTOs. All core business logic resides in the service layer.
+## Responsibility
 
----
+Controllers should:
 
-## 🔐 Authentication and User Management
+- define endpoint paths and HTTP methods
+- accept validated DTOs
+- delegate business rules to services
+- return stable response DTOs
+- avoid embedding persistence or domain logic directly
 
-* [`AuthController.java`](./AuthController.java)
-  Handles **user signup, login, token refresh**, and `/me` endpoint for retrieving authenticated user info.
-* [`UserController.java`](./UserController.java)
-  Supports **self-service actions** (update, deactivate via `/me`) and **admin user management** (list, enable/disable users).
+## Target Endpoint Groups
 
----
+- `AuthController`: signup, login, token refresh, and current-user auth state
+- `UserController`: profile management and admin-visible account operations
+- `JobApplicationController`: core application CRUD, paging, and lifecycle updates
+- `ResumeController`: reusable resume management
+- `CoverLetterController`: reusable cover letter management
+- `AttachmentController`: extra file records tied to applications
+- `CommunicationLogController`: recruiter and employer communication history
+- `ScheduledCommunicationController`: interviews, calls, and assessments
+- `FollowUpReminderController`: next-action reminders
+- `ApplicationTimelineController`: application milestone history
+- `SkillTrackerController`: skills tied to an application
+- `JobSourceController`: normalized origin/source records
+- `LocationController`: normalized location records
+- `AuditLogController`: audit visibility and operational history
 
-## 💼 Core Application Controllers
+## Design Expectations
 
-* [`JobApplicationController.java`](./JobApplicationController.java)
-  Create, list, and fetch job applications by ID.
-* [`FollowUpReminderController.java`](./FollowUpReminderController.java)
-  Manage reminders to follow up on job applications.
-* [`ScheduledCommunicationController.java`](./ScheduledCommunicationController.java)
-  Schedule events like **interviews** or **coding assessments**.
-* [`SkillTrackerController.java`](./SkillTrackerController.java)
-  Track **skills** associated with job applications.
-* [`ApplicationTimelineController.java`](./ApplicationTimelineController.java)
-  Log application **timeline events** like submission, interviews, or cancellation.
+In the finished system, controllers should expose:
 
----
+- consistent `/api/...` routing
+- pageable list responses where collections can grow
+- authenticated user scoping for user-owned resources
+- explicit admin-only routes for administrative actions
+- structured error responses via the global exception handler
 
-## 📁 Supporting Data Controllers
+## Notes On Current State
 
-* [`JobSourceController.java`](./JobSourceController.java)
-  Manage job sources such as **LinkedIn**, **Indeed**, and **referrals**.
-* [`LocationController.java`](./LocationController.java)
-  Handle **city/country** metadata tied to job postings.
-* [`ResumeController.java`](./ResumeController.java)
-  Upload, list, and delete **resumes**.
-* [`CoverLetterController.java`](./CoverLetterController.java)
-  Manage user cover letters.
-* [`AttachmentController.java`](./AttachmentController.java)
-  Manage uploaded **attachments** like offer letters or descriptions.
-
----
-
-## 📜 Logging and Auditing
-
-* [`AuditLogController.java`](./AuditLogController.java)
-  Read-only access to system-wide audit trail entries.
-* [`CommunicationLogController.java`](./CommunicationLogController.java)
-  Log email, phone, in-person, or LinkedIn communications with employers.
-
----
-
-## 🧩 Design Notes
-
-* ✅ All controllers:
-
-  * Use `@RestController` and follow RESTful conventions
-  * Return `ResponseEntity<?>` for precise control over HTTP responses
-  * Validate inputs using `@Valid`
-  * Group paths under `/api/...` consistently
-* 🔐 JWT authentication is required for most endpoints and injected via Spring Security's `SecurityContextHolder`
-* ⚙️ Authorization logic (e.g. admin checks) is implemented at the service level
-* 🎯 Swagger/OpenAPI annotations (e.g. `@Operation`, `@ApiResponse`) are **supported** and **recommended**
-
----
-
-## ⚠️ Global Error Handling
-
-All exceptions are handled uniformly by [`GlobalExceptionHandler`](../handler/GlobalExceptionHandler.java), returning structured `ErrorResponseDTO` output like:
-
-```json
-{
-  "status": 403,
-  "error": "Forbidden",
-  "message": "You are not allowed to update this resource",
-  "path": "/api/users/7",
-  "timestamp": "2025-06-15T12:34:56.123Z"
-}
-```
-
----
-
-## 📁 File Structure
-
-```
-📦 controller/
- ┣ 📄 AuthController.java
- ┣ 📄 UserController.java
- ┣ 📄 JobApplicationController.java
- ┣ 📄 FollowUpReminderController.java
- ┣ 📄 ScheduledCommunicationController.java
- ┣ 📄 SkillTrackerController.java
- ┣ 📄 ApplicationTimelineController.java
- ┣ 📄 JobSourceController.java
- ┣ 📄 LocationController.java
- ┣ 📄 ResumeController.java
- ┣ 📄 CoverLetterController.java
- ┣ 📄 AttachmentController.java
- ┣ 📄 CommunicationLogController.java
- ┗ 📄 AuditLogController.java
-```
-
----
-
-## 📚 See Also
-
-* [`GlobalExceptionHandler`](../handler/GlobalExceptionHandler.java) — Centralized error handling
-* [`ErrorResponseDTO`](../dto/ErrorResponseDTO.java) — Unified error response structure
-* [`dto/`](../dto/) — Input/output object definitions
-* [`service/`](../service/) — Business logic layer beneath controllers
-* [`mapper/`](../mapper/) — Conversion utilities between DTOs and entities
-
----
+The package already expresses the intended API surface, but some controllers still reflect in-progress refactoring. Use this README as the target responsibility map for the controller layer.
