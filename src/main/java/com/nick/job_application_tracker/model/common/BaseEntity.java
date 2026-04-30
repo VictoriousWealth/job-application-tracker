@@ -51,6 +51,9 @@ public abstract class BaseEntity {
     @Column(name = "deleted_at")
     protected LocalDateTime deletedAt;
 
+    @Column(name = "is_draft", nullable = false)
+    protected boolean isDraft = false;
+
     // --- Soft Delete Method ---
     public void softDelete() {
         this.deleted = true;
@@ -67,20 +70,40 @@ public abstract class BaseEntity {
         this.id = id;
     }
 
+    public void setId(Long id) {
+        this.id = id == null ? null : new UUID(0L, id);
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public String getCreatedBy() {
         return createdBy;
     }
 
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public String getUpdatedBy() {
         return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Long getVersion() {
@@ -105,5 +128,13 @@ public abstract class BaseEntity {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public boolean isDraft() {
+        return isDraft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.isDraft = draft;
     }
 }
