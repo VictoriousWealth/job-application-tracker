@@ -15,6 +15,8 @@ public class JobApplicationDetailDTO {
     public String company;
     public Status status;
     public UUID locationId;
+    public String locationCity;
+    public String locationCountry;
     public UUID sourceId;
     public String jobDescription;
     public UUID resumeId;
@@ -63,6 +65,22 @@ public class JobApplicationDetailDTO {
 
     public void setLocationId(UUID locationId) {
         this.locationId = locationId;
+    }
+
+    public String getLocationCity() {
+        return locationCity;
+    }
+
+    public void setLocationCity(String locationCity) {
+        this.locationCity = locationCity;
+    }
+
+    public String getLocationCountry() {
+        return locationCountry;
+    }
+
+    public void setLocationCountry(String locationCountry) {
+        this.locationCountry = locationCountry;
     }
 
     public UUID getSourceId() {
