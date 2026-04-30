@@ -18,20 +18,12 @@ public class FollowUpReminderDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public FollowUpReminderDTO(Long id, LocalDateTime remindOn, String note, Long jobApplicationId) {
-        this(LegacyIdAdapter.fromLong(id), remindOn, note, LegacyIdAdapter.fromLong(jobApplicationId));
-    }
-
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public LocalDateTime getRemindOn() {
@@ -58,7 +50,4 @@ public class FollowUpReminderDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = LegacyIdAdapter.fromLong(jobApplicationId);
-    }
 }
