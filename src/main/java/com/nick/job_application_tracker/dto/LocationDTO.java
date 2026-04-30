@@ -15,20 +15,12 @@ public class LocationDTO {
         this.country = country;
     }
 
-    public LocationDTO(Long id, String city, String country) {
-        this(LegacyIdAdapter.fromLong(id), city, country);
-    }
-
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getCity() {
