@@ -1,10 +1,11 @@
 # Response DTOs
 
-This package contains lightweight response models used for list endpoints and create responses.
+This package contains lightweight response models used for list endpoints, create responses, and computed read-only views such as analytics and exports.
 
 ## Contents
 
 - response DTOs for the main business entities such as job applications, resumes, cover letters, reminders, communications, and metadata
+- computed response DTOs for dashboard summaries, analytics, recommendations, calendar events, matching results, and workspace exports
 
 ## Responsibility
 
