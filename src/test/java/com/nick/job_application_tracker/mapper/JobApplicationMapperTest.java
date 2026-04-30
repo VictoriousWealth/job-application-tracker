@@ -24,9 +24,9 @@ public class JobApplicationMapperTest {
         dto.setNotes("Applied through referral");
         dto.setLocationCity("London");
         dto.setLocationCountry("UK");
-        dto.setSourceId(1L);
-        dto.setResumeId(2L);
-        dto.setCoverLetterId(3L);
+        dto.setSourceId(com.nick.job_application_tracker.TestIds.uuid(1));
+        dto.setResumeId(com.nick.job_application_tracker.TestIds.uuid(2));
+        dto.setCoverLetterId(com.nick.job_application_tracker.TestIds.uuid(3));
 
         JobApplication entity = JobApplicationMapper.toEntity(dto);
 
@@ -38,7 +38,7 @@ public class JobApplicationMapperTest {
     @Test
     void testToResponseDTO() {
         JobApplication jobApp = new JobApplication();
-        jobApp.setId(1L);
+        jobApp.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         jobApp.setCompany("Amazon");
         jobApp.setJobTitle("Backend Developer");
         jobApp.setStatus(JobApplication.Status.INTERVIEW);
@@ -54,7 +54,7 @@ public class JobApplicationMapperTest {
     @Test
     void testToDetailDTO() {
         JobApplication jobApp = new JobApplication();
-        jobApp.setId(2L);
+        jobApp.setId(com.nick.job_application_tracker.TestIds.uuid(2));
         jobApp.setCompany("Google");
         jobApp.setJobTitle("Cloud Engineer");
         jobApp.setStatus(JobApplication.Status.REJECTED);
@@ -67,16 +67,16 @@ public class JobApplicationMapperTest {
         jobApp.setLocation(location);
 
         JobSource source = new JobSource();
-        source.setId(7L);
+        source.setId(com.nick.job_application_tracker.TestIds.uuid(7));
         source.setName("Referral");
         jobApp.setSource(source);
 
         Resume resume = new Resume();
-        resume.setId(8L);
+        resume.setId(com.nick.job_application_tracker.TestIds.uuid(8));
         jobApp.setResume(resume);
 
         CoverLetter coverLetter = new CoverLetter();
-        coverLetter.setId(9L);
+        coverLetter.setId(com.nick.job_application_tracker.TestIds.uuid(9));
         jobApp.setCoverLetter(coverLetter);
 
         JobApplicationDetailDTO dto = JobApplicationMapper.toDetailDTO(jobApp);
