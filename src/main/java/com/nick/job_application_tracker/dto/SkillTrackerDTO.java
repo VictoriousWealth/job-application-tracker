@@ -15,20 +15,12 @@ public class SkillTrackerDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public SkillTrackerDTO(Long id, String skillName, Long jobApplicationId) {
-        this(LegacyIdAdapter.fromLong(id), skillName, LegacyIdAdapter.fromLong(jobApplicationId));
-    }
-
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getSkillName() {
@@ -47,7 +39,4 @@ public class SkillTrackerDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = LegacyIdAdapter.fromLong(jobApplicationId);
-    }
 }
