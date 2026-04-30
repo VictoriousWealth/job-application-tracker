@@ -20,20 +20,12 @@ public class ScheduledCommunicationDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public ScheduledCommunicationDTO(Long id, String type, LocalDateTime scheduledFor, String notes, Long jobApplicationId) {
-        this(LegacyIdAdapter.fromLong(id), type, scheduledFor, notes, LegacyIdAdapter.fromLong(jobApplicationId));
-    }
-
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getType() {
@@ -68,7 +60,4 @@ public class ScheduledCommunicationDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = LegacyIdAdapter.fromLong(jobApplicationId);
-    }
 }
