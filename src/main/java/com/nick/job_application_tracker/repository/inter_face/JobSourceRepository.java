@@ -1,5 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
+import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.JobSource;
 import com.nick.job_application_tracker.repository.custom.JobSourceRepositoryCustom;
 
@@ -13,6 +14,14 @@ import java.util.UUID;
 
 @Repository
 public interface JobSourceRepository extends JpaRepository<JobSource, UUID>, JobSourceRepositoryCustom {
+
+    default Optional<JobSource> findById(Long id) {
+        return findById(LegacyIdAdapter.fromLong(id));
+    }
+
+    default void deleteById(Long id) {
+        deleteById(LegacyIdAdapter.fromLong(id));
+    }
 
     Optional<JobSource> findByNameIgnoreCaseAndDeletedFalse(String name);
 
