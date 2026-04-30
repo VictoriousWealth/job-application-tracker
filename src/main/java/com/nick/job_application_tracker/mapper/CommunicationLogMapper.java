@@ -57,5 +57,30 @@ public class CommunicationLogMapper {
         return dto;
     }
 
+    public CommunicationLog toEntity(com.nick.job_application_tracker.dto.CommunicationLogDTO dto, JobApplication jobApplication) {
+        CommunicationLog log = new CommunicationLog();
+        if (dto.getId() != null) {
+            log.setId(dto.getId());
+        }
+        log.setType(dto.getType() == null ? null : CommunicationLog.Method.valueOf(dto.getType()));
+        log.setDirection(dto.getDirection() == null ? null : CommunicationLog.Direction.valueOf(dto.getDirection()));
+        log.setTimestamp(dto.getTimestamp());
+        log.setMessage(dto.getMessage());
+        log.setJobApplication(jobApplication);
+        return log;
+    }
+
+    public com.nick.job_application_tracker.dto.CommunicationLogDTO toDTO(CommunicationLog communicationLog) {
+        com.nick.job_application_tracker.dto.CommunicationLogDTO dto =
+            new com.nick.job_application_tracker.dto.CommunicationLogDTO();
+        dto.setId(communicationLog.getId());
+        dto.setType(communicationLog.getType() == null ? null : communicationLog.getType().name());
+        dto.setDirection(communicationLog.getDirection() == null ? null : communicationLog.getDirection().name());
+        dto.setTimestamp(communicationLog.getTimestamp());
+        dto.setMessage(communicationLog.getMessage());
+        dto.setJobApplicationId(communicationLog.getJobApplication() == null ? null : communicationLog.getJobApplication().getId());
+        return dto;
+    }
+
     
 }
