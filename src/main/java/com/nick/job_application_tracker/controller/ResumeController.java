@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.ResumeDTO;
-import com.nick.job_application_tracker.service.inter_face.ResumeService;
+import com.nick.job_application_tracker.dto.create.ResumeCreateDTO;
+import com.nick.job_application_tracker.dto.response.ResumeResponseDTO;
+import com.nick.job_application_tracker.service.implementation.ResumeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,21 +36,21 @@ public class ResumeController {
 
     @Operation(summary = "Get all resumes")
     @ApiResponse(responseCode = "200", description = "List of resumes",
-        content = @Content(schema = @Schema(implementation = ResumeDTO.class)))
+        content = @Content(schema = @Schema(implementation = ResumeResponseDTO.class)))
     @GetMapping
-    public List<ResumeDTO> getAll() {
+    public List<ResumeResponseDTO> getAll() {
         return resumeService.findAll();
     }
 
     @Operation(summary = "Upload a new resume")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Resume uploaded successfully",
-            content = @Content(schema = @Schema(implementation = ResumeDTO.class))),
+            content = @Content(schema = @Schema(implementation = ResumeResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public ResumeDTO upload(@RequestBody ResumeDTO resumeDTO) {
-        return resumeService.save(resumeDTO);
+    public ResumeResponseDTO upload(@RequestBody ResumeCreateDTO resumeDTO) {
+        return resumeService.create(resumeDTO);
     }
 
     @Operation(summary = "Delete a resume by ID")
