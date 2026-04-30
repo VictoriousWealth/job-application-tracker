@@ -1,5 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
+import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.repository.custom.JobApplicationRepositoryCustom;
 
@@ -23,6 +24,26 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     // --- Basic ownership + soft delete filtering ---
 
     Optional<JobApplication> findByIdAndUserIdAndDeletedFalse(UUID id, UUID userId);
+
+    default Optional<JobApplication> findById(Long id) {
+        return findById(LegacyIdAdapter.fromLong(id));
+    }
+
+    default void deleteById(Long id) {
+        deleteById(LegacyIdAdapter.fromLong(id));
+    }
+
+    default List<JobApplication> findByUserId(UUID userId) {
+        return findByUserIdAndDeletedFalse(userId);
+    }
+
+    default List<JobApplication> findByUserId(Long userId) {
+        return findByUserIdAndDeletedFalse(LegacyIdAdapter.fromLong(userId));
+    }
+
+    default List<JobApplication> findByStatus(JobApplication.Status status) {
+        return findByStatusAndDeletedFalse(status);
+    }
 
     List<JobApplication> findByUserIdAndDeletedFalse(UUID userId);
 
