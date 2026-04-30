@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.ApplicationTimelineCreateDTO;
+import com.nick.job_application_tracker.dto.create.ApplicationTimelineCreateDTO;
+import com.nick.job_application_tracker.dto.detail.ApplicationTimelineDetailDTO;
+import com.nick.job_application_tracker.dto.response.ApplicationTimelineResponseDTO;
 import com.nick.job_application_tracker.dto.special.ErrorResponseDTO;
-import com.nick.job_application_tracker.service.inter_face.ApplicationTimelineService;
+import com.nick.job_application_tracker.dto.update.ApplicationTimelineUpdateDTO;
+import com.nick.job_application_tracker.service.implementation.ApplicationTimelineService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,11 +48,11 @@ public class ApplicationTimelineController {
     @Operation(summary = "Get timeline events for a specific job application")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Successfully retrieved timeline events",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineCreateDTO.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Job application not found",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
-    public ResponseEntity<List<ApplicationTimelineCreateDTO>> getForJob(@PathVariable UUID jobAppId) {
+    public ResponseEntity<List<ApplicationTimelineResponseDTO>> getForJob(@PathVariable UUID jobAppId) {
         return ResponseEntity.ok(service.getByJobAppId(jobAppId));
     }
 
@@ -57,12 +60,12 @@ public class ApplicationTimelineController {
     @Operation(summary = "Create a new timeline event")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Timeline event created",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineCreateDTO.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineDetailDTO.class))),
         @ApiResponse(responseCode = "400", description = "Validation error",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
-    public ResponseEntity<ApplicationTimelineCreateDTO> create(@Valid @RequestBody ApplicationTimelineCreateDTO dto) {
-        ApplicationTimelineCreateDTO saved = service.save(dto);
+    public ResponseEntity<ApplicationTimelineDetailDTO> create(@Valid @RequestBody ApplicationTimelineCreateDTO dto) {
+        ApplicationTimelineDetailDTO saved = service.create(dto);
         return ResponseEntity
                 .created(URI.create("/api/timelines/" + saved.getId()))
                 .body(saved);
@@ -84,13 +87,13 @@ public class ApplicationTimelineController {
     @Operation(summary = "Replace a timeline event")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Timeline event updated",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineCreateDTO.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineDetailDTO.class))),
         @ApiResponse(responseCode = "404", description = "Timeline event not found",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
-    public ResponseEntity<ApplicationTimelineCreateDTO> update(
+    public ResponseEntity<ApplicationTimelineDetailDTO> update(
             @PathVariable UUID id,
-            @Valid @RequestBody ApplicationTimelineCreateDTO dto) {
+            @Valid @RequestBody ApplicationTimelineUpdateDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
@@ -98,11 +101,11 @@ public class ApplicationTimelineController {
     @Operation(summary = "Partially update a timeline event")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Timeline event partially updated",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineCreateDTO.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplicationTimelineDetailDTO.class))),
         @ApiResponse(responseCode = "404", description = "Timeline event not found",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
-    public ResponseEntity<ApplicationTimelineCreateDTO> patch(
+    public ResponseEntity<ApplicationTimelineDetailDTO> patch(
             @PathVariable UUID id,
             @RequestBody Map<String, Object> updates) {
         return ResponseEntity.ok(service.patch(id, updates));
