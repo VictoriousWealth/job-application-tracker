@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.ScheduledCommunicationCreateDTO;
-import com.nick.job_application_tracker.dto.ScheduledCommunicationDTO;
-import com.nick.job_application_tracker.service.inter_face.ScheduledCommunicationService;
+import com.nick.job_application_tracker.dto.create.ScheduledCommunicationCreateDTO;
+import com.nick.job_application_tracker.dto.detail.ScheduledCommunicationDetailDTO;
+import com.nick.job_application_tracker.dto.response.ScheduledCommunicationResponseDTO;
+import com.nick.job_application_tracker.service.implementation.ScheduledCommunicationService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,31 +37,31 @@ public class ScheduledCommunicationController {
 
     @Operation(summary = "Get all scheduled communications")
     @ApiResponse(responseCode = "200", description = "List of scheduled events",
-        content = @Content(schema = @Schema(implementation = ScheduledCommunicationDTO.class)))
+        content = @Content(schema = @Schema(implementation = ScheduledCommunicationResponseDTO.class)))
     @GetMapping
-    public ResponseEntity<List<ScheduledCommunicationDTO>> getAll() {
+    public ResponseEntity<List<ScheduledCommunicationResponseDTO>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
     @Operation(summary = "Get a scheduled communication by ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Event found",
-            content = @Content(schema = @Schema(implementation = ScheduledCommunicationDTO.class))),
+            content = @Content(schema = @Schema(implementation = ScheduledCommunicationDetailDTO.class))),
         @ApiResponse(responseCode = "404", description = "Event not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduledCommunicationDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<ScheduledCommunicationDetailDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
     @Operation(summary = "Create a new scheduled communication")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Event created successfully",
-            content = @Content(schema = @Schema(implementation = ScheduledCommunicationDTO.class))),
+            content = @Content(schema = @Schema(implementation = ScheduledCommunicationResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public ResponseEntity<ScheduledCommunicationDTO> create(@RequestBody ScheduledCommunicationCreateDTO dto) {
+    public ResponseEntity<ScheduledCommunicationResponseDTO> create(@RequestBody ScheduledCommunicationCreateDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
