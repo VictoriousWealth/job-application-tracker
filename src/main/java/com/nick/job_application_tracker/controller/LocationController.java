@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.LocationDTO;
+import com.nick.job_application_tracker.dto.create.LocationCreateDTO;
+import com.nick.job_application_tracker.dto.detail.LocationDetailDTO;
+import com.nick.job_application_tracker.dto.response.LocationResponseDTO;
+import com.nick.job_application_tracker.dto.update.LocationUpdateDTO;
 import com.nick.job_application_tracker.service.implementation.LocationService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,13 +36,13 @@ public class LocationController {
 
     @Operation(summary = "Get all locations")
     @GetMapping
-    public ResponseEntity<List<LocationDTO>> getAll() {
+    public ResponseEntity<List<LocationResponseDTO>> getAll() {
         return ResponseEntity.ok(locationService.getAllLocations());
     }
 
     @Operation(summary = "Get a location by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<LocationDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<LocationDetailDTO> getById(@PathVariable UUID id) {
         return locationService.getLocationById(id)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
@@ -47,13 +50,13 @@ public class LocationController {
 
     @Operation(summary = "Create a location")
     @PostMapping
-    public ResponseEntity<LocationDTO> create(@Valid @RequestBody LocationDTO dto) {
+    public ResponseEntity<LocationResponseDTO> create(@Valid @RequestBody LocationCreateDTO dto) {
         return ResponseEntity.ok(locationService.createLocation(dto));
     }
 
     @Operation(summary = "Update a location")
     @PutMapping("/{id}")
-    public ResponseEntity<LocationDTO> update(@PathVariable UUID id, @Valid @RequestBody LocationDTO dto) {
+    public ResponseEntity<LocationDetailDTO> update(@PathVariable UUID id, @Valid @RequestBody LocationUpdateDTO dto) {
         return locationService.updateLocation(id, dto)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
