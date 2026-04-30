@@ -5,11 +5,20 @@ import java.util.UUID;
 
 public class FollowUpReminderResponseDTO {
 
+    private UUID id;
     private LocalDateTime remindOn;
     private UUID jobApplicationId;
     private String note;
 
     // --- Getters and Setters ---
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public LocalDateTime getRemindOn() {
         return remindOn;
