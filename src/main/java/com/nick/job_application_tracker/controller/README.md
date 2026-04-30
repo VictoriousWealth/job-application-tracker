@@ -28,6 +28,10 @@ Controllers should:
 - `JobSourceController`: normalized origin/source records
 - `LocationController`: normalized location records
 - `AuditLogController`: audit visibility and operational history
+- `InsightsController`: dashboard summaries, conversion analytics, and next-step recommendations
+- `CalendarController`: upcoming event views and ICS calendar export
+- `ExportController`: workspace export in JSON, CSV, and PDF formats
+- `MatchingController`: document and skill fit analysis for a job application
 
 ## Design Expectations
 
