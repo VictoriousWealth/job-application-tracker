@@ -42,8 +42,4 @@ public class FollowUpReminderCreateDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(jobApplicationId);
-    }
-
 }
