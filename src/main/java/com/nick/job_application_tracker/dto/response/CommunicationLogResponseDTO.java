@@ -8,6 +8,7 @@ import com.nick.job_application_tracker.model.CommunicationLog.Method;
 
 public class CommunicationLogResponseDTO {
     
+    private UUID id;
     private Method type;
     private Direction direction;
     private LocalDateTime timestamp;
@@ -15,6 +16,14 @@ public class CommunicationLogResponseDTO {
     private UUID jobApplicationId;
 
     // Getters and setters
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public Method getType() {
         return type;
@@ -34,6 +43,10 @@ public class CommunicationLogResponseDTO {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getMessage() {
