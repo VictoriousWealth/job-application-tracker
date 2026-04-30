@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.CoverLetterDTO;
-import com.nick.job_application_tracker.service.inter_face.CoverLetterService;
+import com.nick.job_application_tracker.dto.create.CoverLetterCreateDTO;
+import com.nick.job_application_tracker.dto.response.CoverLetterResponseDTO;
+import com.nick.job_application_tracker.service.implementation.CoverLetterService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,21 +36,21 @@ public class CoverLetterController {
 
     @Operation(summary = "Get all cover letters for the current user")
     @ApiResponse(responseCode = "200", description = "List of cover letters",
-        content = @Content(schema = @Schema(implementation = CoverLetterDTO.class)))
+        content = @Content(schema = @Schema(implementation = CoverLetterResponseDTO.class)))
     @GetMapping
-    public List<CoverLetterDTO> getAll() {
+    public List<CoverLetterResponseDTO> getAll() {
         return coverLetterService.findAll();
     }
 
     @Operation(summary = "Upload or save a new cover letter")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Cover letter saved",
-            content = @Content(schema = @Schema(implementation = CoverLetterDTO.class))),
+            content = @Content(schema = @Schema(implementation = CoverLetterResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid request")
     })
     @PostMapping
-    public ResponseEntity<CoverLetterDTO> save(@RequestBody CoverLetterDTO dto) {
-        return ResponseEntity.ok(coverLetterService.save(dto));
+    public ResponseEntity<CoverLetterResponseDTO> save(@RequestBody CoverLetterCreateDTO dto) {
+        return ResponseEntity.ok(coverLetterService.create(dto));
     }
 
     @Operation(summary = "Delete a cover letter by ID")
