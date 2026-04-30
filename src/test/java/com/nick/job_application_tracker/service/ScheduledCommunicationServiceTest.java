@@ -1,29 +1,30 @@
 package com.nick.job_application_tracker.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.nick.job_application_tracker.dto.ScheduledCommunicationCreateDTO;
-import com.nick.job_application_tracker.dto.ScheduledCommunicationDTO;
-import com.nick.job_application_tracker.mapper.ScheduledCommunicationMapper;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.nick.job_application_tracker.dto.create.ScheduledCommunicationCreateDTO;
+import com.nick.job_application_tracker.dto.detail.ScheduledCommunicationDetailDTO;
+import com.nick.job_application_tracker.dto.response.ScheduledCommunicationResponseDTO;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.ScheduledCommunication;
 import com.nick.job_application_tracker.model.ScheduledCommunication.Type;
 import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.ScheduledCommunicationRepository;
+import com.nick.job_application_tracker.service.implementation.ScheduledCommunicationService;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.inter_face.ScheduledCommunicationService;
 
 public class ScheduledCommunicationServiceTest {
 
@@ -43,46 +44,40 @@ public class ScheduledCommunicationServiceTest {
     @Test
     @DisplayName("Should return all scheduled communications")
     void testGetAll() {
-        ScheduledCommunication sc1 = new ScheduledCommunication();
-        sc1.setId(1L);
-        sc1.setType(Type.CALL);
-        sc1.setScheduledFor(LocalDateTime.now());
+        ScheduledCommunication entity = new ScheduledCommunication();
+        entity.setId(com.nick.job_application_tracker.TestIds.uuid(1));
+        entity.setType(Type.INTERVIEW);
+        entity.setScheduledFor(LocalDateTime.now());
 
-        ScheduledCommunication sc2 = new ScheduledCommunication();
-        sc2.setId(2L);
-        sc2.setType(Type.INTERVIEW);
-        sc2.setScheduledFor(LocalDateTime.now());
+        when(repository.findAll()).thenReturn(List.of(entity));
 
-        when(repository.findAll()).thenReturn(List.of(sc1, sc2));
+        List<ScheduledCommunicationResponseDTO> result = service.getAll();
 
-        List<ScheduledCommunicationDTO> result = service.getAll();
-
-        assertThat(result).hasSize(2);
-        assertThat(result).anyMatch(dto -> dto.getType().equals("CALL"));
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getType()).isEqualTo("INTERVIEW");
     }
 
     @Test
     @DisplayName("Should return scheduled communication by ID")
     void testGetById() {
-        ScheduledCommunication sc = new ScheduledCommunication();
-        sc.setId(1L);
-        sc.setType(Type.INTERVIEW);
-        sc.setScheduledFor(LocalDateTime.of(2025, 5, 1, 12, 0));
+        ScheduledCommunication entity = new ScheduledCommunication();
+        entity.setId(com.nick.job_application_tracker.TestIds.uuid(1));
+        entity.setType(Type.INTERVIEW);
+        entity.setScheduledFor(LocalDateTime.of(2025, 5, 1, 12, 0));
 
-        when(repository.findById(1L)).thenReturn(Optional.of(sc));
+        when(repository.findById(com.nick.job_application_tracker.TestIds.uuid(1))).thenReturn(Optional.of(entity));
 
-        ScheduledCommunicationDTO result = service.getById(1L);
+        ScheduledCommunicationDetailDTO result = service.getById(com.nick.job_application_tracker.TestIds.uuid(1));
 
-        assertThat(result).isNotNull();
         assertThat(result.getType()).isEqualTo("INTERVIEW");
     }
 
     @Test
     @DisplayName("Should throw error if scheduled communication not found")
     void testGetByIdNotFound() {
-        when(repository.findById(100L)).thenReturn(Optional.empty());
+        when(repository.findById(com.nick.job_application_tracker.TestIds.uuid(100))).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.getById(100L))
+        assertThatThrownBy(() -> service.getById(com.nick.job_application_tracker.TestIds.uuid(100)))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("ScheduledCommunication not found");
     }
@@ -91,31 +86,34 @@ public class ScheduledCommunicationServiceTest {
     @DisplayName("Should create a scheduled communication")
     void testCreate() {
         JobApplication jobApp = new JobApplication();
-        jobApp.setId(1L);
+        jobApp.setId(com.nick.job_application_tracker.TestIds.uuid(1));
 
         ScheduledCommunicationCreateDTO dto = new ScheduledCommunicationCreateDTO();
         dto.setType("INTERVIEW");
         dto.setNotes("Technical interview");
         dto.setScheduledFor(LocalDateTime.of(2025, 5, 10, 15, 0));
-        dto.setJobApplicationId(1L);
+        dto.setJobApplicationId(jobApp.getId());
 
-        ScheduledCommunication saved = ScheduledCommunicationMapper.toEntity(dto, jobApp);
-        saved.setId(99L);
+        ScheduledCommunication saved = new ScheduledCommunication();
+        saved.setId(com.nick.job_application_tracker.TestIds.uuid(99));
+        saved.setType(Type.INTERVIEW);
+        saved.setScheduledFor(dto.getScheduledFor());
+        saved.setNotes(dto.getNotes());
+        saved.setJobApplication(jobApp);
 
-        when(jobAppRepo.findById(1L)).thenReturn(Optional.of(jobApp));
+        when(jobAppRepo.findById(jobApp.getId())).thenReturn(Optional.of(jobApp));
         when(repository.save(any(ScheduledCommunication.class))).thenReturn(saved);
 
-        ScheduledCommunicationDTO result = service.create(dto);
+        ScheduledCommunicationResponseDTO result = service.create(dto);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(99L);
+        assertThat(result.getId()).isEqualTo(saved.getId());
         assertThat(result.getType()).isEqualTo("INTERVIEW");
     }
 
     @Test
     @DisplayName("Should delete scheduled communication by ID")
     void testDelete() {
-        service.delete(15L);
-        verify(repository).deleteById(15L);
+        service.delete(com.nick.job_application_tracker.TestIds.uuid(15));
+        verify(repository).deleteById(com.nick.job_application_tracker.TestIds.uuid(15));
     }
 }
