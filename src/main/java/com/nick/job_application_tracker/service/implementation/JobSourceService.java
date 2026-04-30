@@ -5,12 +5,15 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.create.JobSourceCreateDTO;
 import com.nick.job_application_tracker.dto.detail.JobSourceDetailDTO;
 import com.nick.job_application_tracker.dto.response.JobSourceResponseDTO;
 import com.nick.job_application_tracker.dto.update.JobSourceUpdateDTO;
+import com.nick.job_application_tracker.exception.client_exception.ConflictException;
+import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
 import com.nick.job_application_tracker.mapper.JobSourceMapper;
 import com.nick.job_application_tracker.model.JobSource;
 import com.nick.job_application_tracker.repository.inter_face.JobSourceRepository;
@@ -30,12 +33,17 @@ public class JobSourceService {
     }
 
     public List<JobSourceResponseDTO> getAllSources() {
-        return jobSourceRepository.findAll().stream()
+        return jobSourceRepository.findAllByDeletedFalse(Pageable.unpaged()).getContent().stream()
                 .map(mapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     public JobSourceResponseDTO createSource(JobSourceCreateDTO createDTO) {
+        jobSourceRepository.findByNameIgnoreCaseAndDeletedFalse(createDTO.getName())
+            .ifPresent(existing -> {
+                throw new ConflictException("Job source already exists");
+            });
+
         JobSource source = mapper.toEntity(createDTO);
         JobSource savedSource = jobSourceRepository.save(source);
         auditLogService.logCreate("Created JobSource with ID " + savedSource.getId() + " and name '" + savedSource.getName() + "'");
@@ -43,17 +51,22 @@ public class JobSourceService {
     }
 
     public JobSource getModelById(UUID id) {
-        return jobSourceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Job source not found"));
+        return jobSourceRepository.findByIdAndDeletedFalse(id)
+            .orElseThrow(() -> new NotFoundException("Job source not found", null));
     }
 
     public Optional<JobSourceDetailDTO> getSourceById(UUID id) {
-        return jobSourceRepository.findById(id)
+        return jobSourceRepository.findByIdAndDeletedFalse(id)
                 .map(mapper::toDetailDTO);
     }
 
     public Optional<JobSourceDetailDTO> updateSource(UUID id, JobSourceUpdateDTO updateDTO) {
-        return jobSourceRepository.findById(id).map(source -> {
+        return jobSourceRepository.findByIdAndDeletedFalse(id).map(source -> {
+            jobSourceRepository.findByNameIgnoreCaseAndDeletedFalse(updateDTO.getName())
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new ConflictException("Job source already exists");
+                });
             mapper.updateEntityWithDTOInfo(source, updateDTO);
             JobSource updatedSource = jobSourceRepository.save(source);
             auditLogService.logUpdate("Updated JobSource with ID " + updatedSource.getId() + " to name '" + updatedSource.getName() + "'");
@@ -62,7 +75,9 @@ public class JobSourceService {
     }
 
     public void deleteSource(UUID id) {
-        jobSourceRepository.deleteById(id);
+        JobSource source = getModelById(id);
+        source.softDelete();
+        jobSourceRepository.save(source);
         auditLogService.logDelete("Deleted JobSource with ID " + id);
     }
 }
