@@ -70,6 +70,12 @@ public class CommunicationLogMapper {
         return log;
     }
 
+    public CommunicationLog toEntity(com.nick.job_application_tracker.dto.CommunicationLogDTO dto) {
+        JobApplication jobApplication = new JobApplication();
+        jobApplication.setId(dto.getJobApplicationId());
+        return toEntity(dto, jobApplication);
+    }
+
     public com.nick.job_application_tracker.dto.CommunicationLogDTO toDTO(CommunicationLog communicationLog) {
         com.nick.job_application_tracker.dto.CommunicationLogDTO dto =
             new com.nick.job_application_tracker.dto.CommunicationLogDTO();
