@@ -19,10 +19,10 @@ class AuditLogMapperTest {
     @Test
     void testToDTO() {
         User user = new User();
-        user.setId(42L);
+        user.setId(com.nick.job_application_tracker.TestIds.uuid(42));
 
         AuditLog log = new AuditLog();
-        log.setId(1L);
+        log.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         log.setAction(Action.CREATE);
         log.setDescription("Created a new application");
         log.setCreatedAt(LocalDateTime.of(2023, 10, 5, 12, 0));
@@ -42,14 +42,14 @@ class AuditLogMapperTest {
     void testToEntity() {
         // Arrange
         AuditLogDTO dto = new AuditLogDTO();
-        dto.id = 2L;
+        dto.id = com.nick.job_application_tracker.TestIds.uuid(2);
         dto.action = "UPDATE";
         dto.description = "Updated the resume";
         dto.createdAt = LocalDateTime.of(2024, 1, 1, 9, 30); // should be ignored
-        dto.userId = 99L; // should be ignored
+        dto.userId = com.nick.job_application_tracker.TestIds.uuid(99); // should be ignored
 
         User mockUser = new User();
-        mockUser.setId(123L);
+        mockUser.setId(com.nick.job_application_tracker.TestIds.uuid(123));
 
         // Act
         AuditLog log = mapper.toEntity(dto, mockUser);
@@ -73,7 +73,7 @@ class AuditLogMapperTest {
         dto.description = "Some log";
 
         User user = new User();
-        user.setId(1L);
+        user.setId(com.nick.job_application_tracker.TestIds.uuid(1));
 
         // Act + Assert
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
