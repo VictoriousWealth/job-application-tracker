@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.JobSourceDTO;
 import com.nick.job_application_tracker.dto.create.JobSourceCreateDTO;
-import com.nick.job_application_tracker.service.inter_face.JobSourceService;
+import com.nick.job_application_tracker.dto.detail.JobSourceDetailDTO;
+import com.nick.job_application_tracker.dto.response.JobSourceResponseDTO;
+import com.nick.job_application_tracker.dto.update.JobSourceUpdateDTO;
+import com.nick.job_application_tracker.service.implementation.JobSourceService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,32 +40,32 @@ public class JobSourceController {
 
     @Operation(summary = "Get all job sources")
     @ApiResponse(responseCode = "200", description = "List of job sources",
-        content = @Content(schema = @Schema(implementation = JobSourceDTO.class)))
+        content = @Content(schema = @Schema(implementation = JobSourceResponseDTO.class)))
     @GetMapping
-    public ResponseEntity<List<JobSourceDTO>> getAllSources() {
+    public ResponseEntity<List<JobSourceResponseDTO>> getAllSources() {
         return ResponseEntity.ok(jobSourceService.getAllSources());
     }
 
     @Operation(summary = "Create a new job source")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Job source created",
-            content = @Content(schema = @Schema(implementation = JobSourceDTO.class))),
+            content = @Content(schema = @Schema(implementation = JobSourceResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid request payload")
     })
     @PostMapping
-    public ResponseEntity<JobSourceDTO> createSource(@Valid @RequestBody JobSourceCreateDTO createDTO) {
-        JobSourceDTO created = jobSourceService.createSource(createDTO);
+    public ResponseEntity<JobSourceResponseDTO> createSource(@Valid @RequestBody JobSourceCreateDTO createDTO) {
+        JobSourceResponseDTO created = jobSourceService.createSource(createDTO);
         return ResponseEntity.ok(created);
     }
 
     @Operation(summary = "Get a job source by ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Job source found",
-            content = @Content(schema = @Schema(implementation = JobSourceDTO.class))),
+            content = @Content(schema = @Schema(implementation = JobSourceDetailDTO.class))),
         @ApiResponse(responseCode = "404", description = "Job source not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<JobSourceDTO> getSourceById(@PathVariable UUID id) {
+    public ResponseEntity<JobSourceDetailDTO> getSourceById(@PathVariable UUID id) {
         return jobSourceService.getSourceById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -72,14 +74,14 @@ public class JobSourceController {
     @Operation(summary = "Update a job source by ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Job source updated",
-            content = @Content(schema = @Schema(implementation = JobSourceDTO.class))),
+            content = @Content(schema = @Schema(implementation = JobSourceDetailDTO.class))),
         @ApiResponse(responseCode = "404", description = "Job source not found"),
         @ApiResponse(responseCode = "400", description = "Invalid update payload")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<JobSourceDTO> updateSource(
+    public ResponseEntity<JobSourceDetailDTO> updateSource(
             @PathVariable UUID id,
-            @Valid @RequestBody JobSourceCreateDTO updateDTO) {
+            @Valid @RequestBody JobSourceUpdateDTO updateDTO) {
         return jobSourceService.updateSource(id, updateDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
