@@ -13,7 +13,7 @@ public class ResumeMapperTest {
     @DisplayName("Should convert Resume entity to DTO")
     void testToDTO() {
         Resume resume = new Resume();
-        resume.setId(5L);
+        resume.setId(com.nick.job_application_tracker.TestIds.uuid(5));
         resume.setFilePath("/resumes/dev_resume.pdf");
 
         ResumeDTO dto = ResumeMapper.toDTO(resume);
