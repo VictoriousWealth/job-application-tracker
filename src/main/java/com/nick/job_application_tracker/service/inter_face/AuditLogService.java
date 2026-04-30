@@ -22,7 +22,13 @@ public interface AuditLogService {
         log(AuditLog.Action.DELETE, description);
     }
 
-    List<AuditLogDTO> getAll();
+    List<AuditLogDTO> findAll();
+
+    default List<AuditLogDTO> getAll() {
+        return findAll();
+    }
 
     AuditLogDTO getById(UUID id);
+
+    AuditLogDTO save(AuditLogDTO dto);
 }
