@@ -40,6 +40,10 @@ public class FollowUpReminderService {
             .toList();
     }
 
+    public List<FollowUpReminderDTO> getByJobAppId(Long jobAppId) {
+        return getByJobAppId(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(jobAppId));
+    }
+
     public FollowUpReminderDTO save(FollowUpReminderCreateDTO dto) {
         JobApplication application = jobApplicationRepository.findById(dto.getJobApplicationId())
             .orElseThrow(() -> new IllegalArgumentException("Job Application not found"));
@@ -55,5 +59,9 @@ public class FollowUpReminderService {
     public void delete(UUID id) {
         repo.deleteById(id);
         auditLogService.logDelete("Deleted follow-up reminder with id: " + id);
+    }
+
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
     }
 }
