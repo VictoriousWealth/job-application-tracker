@@ -13,6 +13,7 @@ import com.nick.job_application_tracker.dto.create.LocationCreateDTO;
 import com.nick.job_application_tracker.dto.detail.LocationDetailDTO;
 import com.nick.job_application_tracker.dto.response.LocationResponseDTO;
 import com.nick.job_application_tracker.dto.update.LocationUpdateDTO;
+import com.nick.job_application_tracker.exception.client_exception.ConflictException;
 import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
 import com.nick.job_application_tracker.mapper.LocationMapper;
 import com.nick.job_application_tracker.model.Location;
@@ -32,23 +33,34 @@ public class LocationService implements LocationServiceInterface {
     }
 
     public List<LocationResponseDTO> getAllLocations() {
-        return locationRepository.findAll().stream()
+        return locationRepository.findAllByDeletedFalse(Pageable.unpaged()).getContent().stream()
             .map(LocationMapper::toResponseDTO)
             .toList();
     }
 
     public Optional<LocationDetailDTO> getLocationById(UUID id) {
-        return locationRepository.findById(id).map(LocationMapper::toDetailDTO);
+        return locationRepository.findByIdAndDeletedFalse(id).map(LocationMapper::toDetailDTO);
     }
 
     public LocationResponseDTO createLocation(LocationCreateDTO dto) {
+        locationRepository.findByCityIgnoreCaseAndCountryIgnoreCaseAndDeletedFalse(dto.getCity(), dto.getCountry())
+            .ifPresent(existing -> {
+                throw new ConflictException("Location already exists");
+            });
         Location saved = locationRepository.save(LocationMapper.toEntity(dto));
         auditLogService.logCreate("Created location with id: " + saved.getId());
         return LocationMapper.toResponseDTO(saved);
     }
 
     public Optional<LocationDetailDTO> updateLocation(UUID id, LocationUpdateDTO dto) {
-        return locationRepository.findById(id).map(existing -> {
+        return locationRepository.findByIdAndDeletedFalse(id).map(existing -> {
+            if (dto.getCity() != null && dto.getCountry() != null) {
+                locationRepository.findByCityIgnoreCaseAndCountryIgnoreCaseAndDeletedFalse(dto.getCity(), dto.getCountry())
+                    .filter(candidate -> !candidate.getId().equals(id))
+                    .ifPresent(candidate -> {
+                        throw new ConflictException("Location already exists");
+                    });
+            }
             LocationMapper.updateEntity(existing, dto);
             Location saved = locationRepository.save(existing);
             auditLogService.logUpdate("Updated location with id: " + saved.getId());
@@ -57,8 +69,22 @@ public class LocationService implements LocationServiceInterface {
     }
 
     public void deleteLocation(UUID id) {
-        locationRepository.deleteById(id);
+        Location location = getModelById(id);
+        location.softDelete();
+        locationRepository.save(location);
         auditLogService.logDelete("Deleted location with id: " + id);
+    }
+
+    public Location findOrCreate(String city, String country) {
+        return locationRepository.findByCityIgnoreCaseAndCountryIgnoreCaseAndDeletedFalse(city, country)
+            .orElseGet(() -> {
+                Location location = new Location();
+                location.setCity(city);
+                location.setCountry(country);
+                Location saved = locationRepository.save(location);
+                auditLogService.logCreate("Created location with id: " + saved.getId());
+                return saved;
+            });
     }
 
     @Override
@@ -74,7 +100,7 @@ public class LocationService implements LocationServiceInterface {
 
     @Override
     public Location getModelById(UUID id) {
-        return locationRepository.findById(id)
+        return locationRepository.findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new NotFoundException("Location not found", null));
     }
 
@@ -93,6 +119,7 @@ public class LocationService implements LocationServiceInterface {
             location.setCountry(node.get("country").asText());
         }
         locationRepository.save(location);
+        auditLogService.logUpdate("Updated location with id: " + location.getId());
         return LocationMapper.toDetailDTO(location);
     }
 
@@ -101,6 +128,7 @@ public class LocationService implements LocationServiceInterface {
         Location location = getModelById(id);
         LocationMapper.updateEntity(location, dto);
         locationRepository.save(location);
+        auditLogService.logUpdate("Updated location with id: " + location.getId());
         return LocationMapper.toDetailDTO(location);
     }
 
