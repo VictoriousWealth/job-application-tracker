@@ -2,6 +2,7 @@ package com.nick.job_application_tracker.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import com.nick.job_application_tracker.dto.CommunicationLogDTO;
 import com.nick.job_application_tracker.model.CommunicationLog;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.JobApplication.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
 import com.nick.job_application_tracker.repository.inter_face.CommunicationLogRepository;
 import com.nick.job_application_tracker.repository.inter_face.UserRepository;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
@@ -42,7 +43,7 @@ public class CommunicationLogServiceTest {
     @MockBean
     private AuditLogService auditLogService; // ✅ ADD THIS
 
-    private Long jobAppId;
+    private UUID jobAppId;
 
     @BeforeEach
     void setup() {
@@ -120,7 +121,7 @@ public class CommunicationLogServiceTest {
         log.setJobApplication(job);
 
         log = communicationRepo.save(log);
-        Long id = log.getId();
+        var id = log.getId();
 
         communicationLogService.delete(id);
 
