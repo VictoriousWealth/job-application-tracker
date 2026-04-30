@@ -22,10 +22,10 @@ public class AttachmentMapperTest {
     @DisplayName("Should map Attachment to AttachmentDTO")
     void testToDTO() {
         JobApplication job = new JobApplication();
-        job.setId(42L);
+        job.setId(com.nick.job_application_tracker.TestIds.uuid(42));
 
         Attachment attachment = new Attachment();
-        attachment.setId(1L);
+        attachment.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         attachment.setType(Attachment.Type.JOB_DESCRIPTION);
         attachment.setFilePath("/files/resume.pdf");
         attachment.setJobApplication(job);
@@ -42,7 +42,12 @@ public class AttachmentMapperTest {
     @Test
     @DisplayName("Should map AttachmentDTO to Attachment")
     void testToEntity() {
-        AttachmentDTO dto = new AttachmentDTO(1L, "OFFER_LETTER", "/files/offer.pdf", 99L);
+        AttachmentDTO dto = new AttachmentDTO(
+            com.nick.job_application_tracker.TestIds.uuid(1),
+            "OFFER_LETTER",
+            "/files/offer.pdf",
+            com.nick.job_application_tracker.TestIds.uuid(99)
+        );
 
         Attachment entity = mapper.toEntity(dto);
 
