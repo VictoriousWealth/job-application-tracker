@@ -56,4 +56,8 @@ public class CoverLetterService {
         repo.deleteById(id);
         auditLogService.logDelete("Deleted cover letter with id: " + id);
     }
+
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
 }
