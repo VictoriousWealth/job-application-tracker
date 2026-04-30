@@ -14,7 +14,7 @@ public class CoverLetterMapperTest {
     @Test
     void testToDTO() {
         CoverLetter cl = new CoverLetter();
-        cl.setId(10L);
+        cl.setId(com.nick.job_application_tracker.TestIds.uuid(10));
         cl.setTitle("My Cover Letter");
         cl.setFilePath("/path/cover.pdf");
         cl.setContent("Dear Hiring Manager...");
@@ -30,7 +30,12 @@ public class CoverLetterMapperTest {
 
     @Test
     void testToEntity() {
-        CoverLetterDTO dto = new CoverLetterDTO(20L, "Internship Letter", "/docs/intern.pdf", "Excited to apply...");
+        CoverLetterDTO dto = new CoverLetterDTO(
+            com.nick.job_application_tracker.TestIds.uuid(20),
+            "Internship Letter",
+            "/docs/intern.pdf",
+            "Excited to apply..."
+        );
 
         CoverLetter cl = mapper.toEntity(dto);
 
