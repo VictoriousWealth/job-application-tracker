@@ -47,11 +47,7 @@ public class AttachmentController {
     })
     @GetMapping("/job/{jobAppId}")
     public ResponseEntity<List<AttachmentResponseDTO>> getForJob(@PathVariable UUID jobAppId) {
-        List<AttachmentResponseDTO> attachments = service.getByJobAppId(jobAppId);
-        if (attachments.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(attachments);
+        return ResponseEntity.ok(service.getByJobAppId(jobAppId));
     }
 
     @Operation(summary = "Create a new attachment")
@@ -62,9 +58,8 @@ public class AttachmentController {
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AttachmentResponseDTO create(@Valid @RequestBody AttachmentCreateDTO dto) {
-        return service.create(dto);
+    public ResponseEntity<AttachmentResponseDTO> create(@Valid @RequestBody AttachmentCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
     @Operation(summary = "Delete an attachment by ID")
