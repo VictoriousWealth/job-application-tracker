@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/cover-letters")
@@ -44,13 +46,13 @@ public class CoverLetterController {
 
     @Operation(summary = "Upload or save a new cover letter")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Cover letter saved",
+        @ApiResponse(responseCode = "201", description = "Cover letter saved",
             content = @Content(schema = @Schema(implementation = CoverLetterResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid request")
     })
     @PostMapping
-    public ResponseEntity<CoverLetterResponseDTO> save(@RequestBody CoverLetterCreateDTO dto) {
-        return ResponseEntity.ok(coverLetterService.create(dto));
+    public ResponseEntity<CoverLetterResponseDTO> save(@Valid @RequestBody CoverLetterCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(coverLetterService.create(dto));
     }
 
     @Operation(summary = "Delete a cover letter by ID")
