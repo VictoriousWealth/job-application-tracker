@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class CommunicationLogDTO {
-    public Object id;
+    public UUID id;
     public String type;
     public String direction;
     public LocalDateTime timestamp;
     public String message;
-    public Object jobApplicationId;
+    public UUID jobApplicationId;
 
     public CommunicationLogDTO() {}
 
@@ -22,26 +22,12 @@ public class CommunicationLogDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public CommunicationLogDTO(Long id, String type, String direction, LocalDateTime timestamp, String message, Long jobApplicationId) {
-        this(LegacyIdAdapter.fromLong(id), type, direction, timestamp, message, LegacyIdAdapter.fromLong(jobApplicationId));
-    }
-
     public UUID getId() {
-        if (id instanceof UUID uuid) {
-            return uuid;
-        }
-        if (id instanceof Long legacyId) {
-            return LegacyIdAdapter.fromLong(legacyId);
-        }
-        return null;
+        return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getType() {
@@ -77,20 +63,10 @@ public class CommunicationLogDTO {
     }
 
     public UUID getJobApplicationId() {
-        if (jobApplicationId instanceof UUID uuid) {
-            return uuid;
-        }
-        if (jobApplicationId instanceof Long legacyId) {
-            return LegacyIdAdapter.fromLong(legacyId);
-        }
-        return null;
+        return jobApplicationId;
     }
 
     public void setJobApplicationId(UUID jobApplicationId) {
         this.jobApplicationId = jobApplicationId;
-    }
-
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = LegacyIdAdapter.fromLong(jobApplicationId);
     }
 }
