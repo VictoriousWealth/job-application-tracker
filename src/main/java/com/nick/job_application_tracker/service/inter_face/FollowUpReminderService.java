@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.service.inter_face;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
@@ -34,7 +35,7 @@ public class FollowUpReminderService {
     }
 
     public List<FollowUpReminderDTO> getByJobAppId(UUID jobAppId) {
-        return repo.findByJobApplicationId(jobAppId).stream()
+        return repo.findByJobApplicationIdAndDeletedFalse(jobAppId, Pageable.unpaged()).getContent().stream()
             .map(mapper::toDTO)
             .toList();
     }
