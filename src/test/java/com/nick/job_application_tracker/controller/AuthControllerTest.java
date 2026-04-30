@@ -63,7 +63,7 @@ public class AuthControllerTest {
         Mockito.when(passwordEncoder.encode(request.password)).thenReturn("encodedPassword");
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
-            user.setId(1L); 
+            user.setId(com.nick.job_application_tracker.TestIds.uuid(1)); 
             user.setRole((Role.BASIC));
             return user;
         });
