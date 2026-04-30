@@ -46,7 +46,7 @@ public class ScheduledCommunicationMapper {
     
     public static ScheduledCommunication toEntity(ScheduledCommunicationCreateDTO dto, JobApplication jobApp) {
         ScheduledCommunication entity = new ScheduledCommunication();
-        entity.setType(Type.valueOf(dto.getType())); 
+        entity.setType(Type.from(dto.getType()));
         entity.setScheduledFor(dto.getScheduledFor());
         entity.setNotes(dto.getNotes());
         entity.setJobApplication(jobApp);
@@ -58,7 +58,7 @@ public class ScheduledCommunicationMapper {
         JobApplication jobApp
     ) {
         ScheduledCommunication entity = new ScheduledCommunication();
-        entity.setType(Type.valueOf(dto.getType()));
+        entity.setType(Type.from(dto.getType()));
         entity.setScheduledFor(dto.getScheduledFor());
         entity.setNotes(dto.getNotes());
         entity.setJobApplication(jobApp);
@@ -70,7 +70,7 @@ public class ScheduledCommunicationMapper {
         ScheduledCommunicationUpdateDTO dto,
         JobApplication jobApp
     ) {
-        entity.setType(Type.valueOf(dto.getType()));
+        entity.setType(Type.from(dto.getType()));
         entity.setScheduledFor(dto.getScheduledFor());
         entity.setNotes(dto.getNotes());
         entity.setJobApplication(jobApp);
