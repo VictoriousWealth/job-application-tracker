@@ -65,8 +65,55 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+val ciTestIncludes = listOf(
+    "**/JobApplicationTrackerApplicationTests.class",
+    "**/JwtServiceTest.class",
+    "**/CommunicationLogControllerTest.class",
+    "**/CoverLetterControllerTest.class",
+    "**/FollowUpReminderControllerTest.class",
+    "**/JobApplicationControllerTest.class",
+    "**/JobSourceControllerTest.class",
+    "**/LocationControllerTest.class",
+    "**/ResumeControllerTest.class",
+    "**/ScheduledCommunicationControllerTest.class",
+    "**/SkillTrackerControllerTest.class",
+    "**/UserControllerTest.class",
+    "**/InsightsControllerTest.class",
+    "**/CalendarControllerTest.class",
+    "**/ExportControllerTest.class",
+    "**/MatchingControllerTest.class",
+    "**/WorkspaceInsightsServiceTest.class",
+    "**/ApplicationMatchingServiceTest.class",
+    "**/CalendarIntegrationServiceTest.class",
+    "**/WorkspaceExportServiceTest.class"
+)
+
+val ciTest by tasks.registering(Test::class) {
+    description = "Runs the maintained behavior-focused CI suite."
+    group = "verification"
+    useJUnitPlatform()
+    include(ciTestIncludes)
+    reports {
+        junitXml.required.set(true)
+        html.required.set(true)
+    }
+}
+
 jacoco {
     toolVersion = "0.8.10"
+}
+
+tasks.register<JacocoReport>("jacocoCiTestReport") {
+    dependsOn(ciTest)
+
+    executionData(ciTest)
+    sourceSets(sourceSets.main.get())
+
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.required.set(true)
+    }
 }
 
 tasks.jacocoTestReport {
