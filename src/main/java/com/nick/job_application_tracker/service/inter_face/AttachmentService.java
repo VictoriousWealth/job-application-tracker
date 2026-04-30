@@ -50,9 +50,17 @@ public class AttachmentService {
         auditLogService.logDelete("Deleted Attachment with ID " + id);
     }
 
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
+
     public List<AttachmentDTO> getByJobAppId(UUID jobAppId) {
         return repository.findByJobApplicationIdAndDeletedFalse(jobAppId).stream()
             .map(mapper::toDTO)
             .toList();
+    }
+
+    public List<AttachmentDTO> getByJobAppId(Long jobAppId) {
+        return getByJobAppId(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(jobAppId));
     }
 }
