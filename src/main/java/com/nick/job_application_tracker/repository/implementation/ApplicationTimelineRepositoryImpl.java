@@ -5,9 +5,6 @@ import com.nick.job_application_tracker.repository.custom.ApplicationTimelineRep
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -21,7 +18,7 @@ public class ApplicationTimelineRepositoryImpl implements ApplicationTimelineRep
     private EntityManager entityManager;
 
     @Override
-    public Page<ApplicationTimeline> findRecentEventsByUser(UUID userId, LocalDateTime since, Pageable pageable) {
+    public List<ApplicationTimeline> findRecentEventsByUser(UUID userId, LocalDateTime since) {
         String jpql = """
             SELECT at
             FROM ApplicationTimeline at
@@ -34,25 +31,8 @@ public class ApplicationTimelineRepositoryImpl implements ApplicationTimelineRep
 
         TypedQuery<ApplicationTimeline> query = entityManager.createQuery(jpql, ApplicationTimeline.class)
                 .setParameter("userId", userId)
-                .setParameter("since", since)
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize());
-
-        List<ApplicationTimeline> results = query.getResultList();
-
-        Long total = entityManager.createQuery("""
-            SELECT COUNT(at)
-            FROM ApplicationTimeline at
-            WHERE at.jobApplication.user.id = :userId
-              AND at.deleted = false
-              AND at.eventTime >= :since
-              AND at.isDraft = false
-        """, Long.class)
-                .setParameter("userId", userId)
-                .setParameter("since", since)
-                .getSingleResult();
-
-        return new PageImpl<>(results, pageable, total);
+                .setParameter("since", since);
+        return query.getResultList();
     }
 
     @Override
