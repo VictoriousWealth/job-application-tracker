@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,11 +40,12 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserRepository userRepository, JwtService jwtService) {
+    public AuthController(UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Operation(summary = "User signup")
@@ -83,6 +84,9 @@ public class AuthController {
         }
 
         User user = userOpt.get();
+        if (!user.isEnabled()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User account is disabled.");
+        }
         if (!passwordEncoder.matches(request.password, user.getPassword())) {
             return ResponseEntity.status(401).body("Invalid credentials.");
         }
@@ -141,6 +145,9 @@ public class AuthController {
         User user = userRepository.findByEmailAndDeletedFalse(email).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        if (!user.isEnabled()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User account is disabled.");
         }
 
         String role = user.getRoles().iterator().next().name();
