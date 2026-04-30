@@ -14,10 +14,6 @@ public class ResumeDTO {
         this.filePath = filePath;
     }
 
-    public ResumeDTO(Long id, String filePath) {
-        this(LegacyIdAdapter.fromLong(id), filePath);
-    }
-
     public ResumeDTO(UUID id, String title, String filePath) {
         this.id = id;
         this.title = title;
@@ -30,10 +26,6 @@ public class ResumeDTO {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getTitle() {
