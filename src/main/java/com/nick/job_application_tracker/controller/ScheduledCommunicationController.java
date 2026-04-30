@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/scheduled-communications")
@@ -56,13 +58,13 @@ public class ScheduledCommunicationController {
 
     @Operation(summary = "Create a new scheduled communication")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Event created successfully",
+        @ApiResponse(responseCode = "201", description = "Event created successfully",
             content = @Content(schema = @Schema(implementation = ScheduledCommunicationResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public ResponseEntity<ScheduledCommunicationResponseDTO> create(@RequestBody ScheduledCommunicationCreateDTO dto) {
-        return ResponseEntity.ok(service.create(dto));
+    public ResponseEntity<ScheduledCommunicationResponseDTO> create(@Valid @RequestBody ScheduledCommunicationCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
     @Operation(summary = "Delete a scheduled communication by ID")
