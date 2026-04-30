@@ -55,7 +55,7 @@ public class JobSourceRepositoryTest {
     @Test
     @DisplayName("Should return empty for non-existent ID")
     public void testFindByInvalidId() {
-        Optional<JobSource> found = jobSourceRepository.findById(-1L);
+        Optional<JobSource> found = jobSourceRepository.findById(com.nick.job_application_tracker.TestIds.uuid(-1));
         assertThat(found).isNotPresent();
     }
 
