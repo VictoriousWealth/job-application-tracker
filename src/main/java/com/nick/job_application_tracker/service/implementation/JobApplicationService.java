@@ -35,9 +35,6 @@ import com.nick.job_application_tracker.service.inter_face.JobSourceService;
 
 @Service
 public class JobApplicationService implements JobApplicationServiceInterface{
-
-    private final User user;
-    
     private static final Supplier<NotFoundException> EXCEPTION_SUPPLIER = () -> new NotFoundException("Job application not found", null);
 
     @SuppressWarnings("unused")
@@ -60,11 +57,11 @@ public class JobApplicationService implements JobApplicationServiceInterface{
         this.jobSourceService = jobSourceService;
         this.jobApplicationRepository = jobApplicationRepository;
         this.userRepository = userRepository;
-        this.user = SecurityUtils.getCurrentUserOrThrow(userRepository);
     }
 
     @Override
     public JobApplicationResponseDTO create(JobApplicationCreateDTO dto) {
+        User user = getCurrentUser();
         JobSource jobSource = jobSourceService.getModelById(dto.getSourceId());
         Location location = null;
         Resume resume = null;
@@ -84,7 +81,7 @@ public class JobApplicationService implements JobApplicationServiceInterface{
             resume = resumeService.getModelById(resumeId);
         } // if statement here bc u can dis-associate a resume from this entity
 
-        if (dto.getCoverLetterId() == null) {
+        if (dto.getCoverLetterId() != null) {
             //  we need to check if the company exists
             // if not, throw an exception
             UUID coverLetterId = dto.getCoverLetterId();
@@ -108,18 +105,21 @@ public class JobApplicationService implements JobApplicationServiceInterface{
 
     @Override
     public JobApplication getModelById(UUID id) {
+        User user = getCurrentUser();
         return jobApplicationRepository.findByIdAndUserIdAndDeletedFalse(id, user.getId())
             .orElseThrow(EXCEPTION_SUPPLIER);
     }
 
     @Override
     public Page<JobApplicationResponseDTO> getAll(Pageable pageable) {
+        User user = getCurrentUser();
         Page<JobApplication> jobApplications = jobApplicationRepository.findByUserIdAndDeletedFalse(user.getId(), pageable);
         return jobApplications.map(JobApplicationMapper::toResponseDTO);
     }
 
     @Override
     public JobApplicationDetailDTO patchById(UUID id, JsonNode node) {
+        User user = getCurrentUser();
         JobApplication jobApplication = jobApplicationRepository.findByIdAndUserIdAndDeletedFalse(id, user.getId())
             .orElseThrow(EXCEPTION_SUPPLIER);
         
@@ -182,6 +182,7 @@ public class JobApplicationService implements JobApplicationServiceInterface{
 
     @Override
     public JobApplicationDetailDTO updateById(UUID id, JobApplicationUpdateDTO dto) {
+        User user = getCurrentUser();
         // Fetch the existing entity
         JobApplication jobApplication = jobApplicationRepository.findByIdAndUserIdAndDeletedFalse(id, user.getId())
             .orElseThrow(EXCEPTION_SUPPLIER);
@@ -213,12 +214,17 @@ public class JobApplicationService implements JobApplicationServiceInterface{
 
     @Override
     public String deleteById(UUID id) {
+        User user = getCurrentUser();
         // Fetch the existing entity
         JobApplication jobApplication = jobApplicationRepository.findByIdAndUserIdAndDeletedFalse(id, user.getId())
             .orElseThrow(EXCEPTION_SUPPLIER);
         jobApplication.setDeleted(true);
         jobApplicationRepository.save(jobApplication);
         return "No Content";
+    }
+
+    private User getCurrentUser() {
+        return SecurityUtils.getCurrentUserOrThrow(userRepository);
     }
 
 }
