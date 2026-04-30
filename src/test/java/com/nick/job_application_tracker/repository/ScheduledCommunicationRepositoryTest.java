@@ -69,7 +69,7 @@ public class ScheduledCommunicationRepositoryTest {
     @Test
     @DisplayName("Should return empty list when job application ID not found")
     public void testFindByJobApplicationIdNotFound() {
-        List<ScheduledCommunication> results = communicationRepo.findByJobApplicationId(-1L);
+        List<ScheduledCommunication> results = communicationRepo.findByJobApplicationId(com.nick.job_application_tracker.TestIds.uuid(-1));
         assertThat(results).isEmpty();
     }
 
