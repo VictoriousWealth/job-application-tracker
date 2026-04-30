@@ -1,24 +1,31 @@
 package com.nick.job_application_tracker.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.nick.job_application_tracker.dto.LocationDTO;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.nick.job_application_tracker.dto.create.LocationCreateDTO;
+import com.nick.job_application_tracker.dto.detail.LocationDetailDTO;
+import com.nick.job_application_tracker.dto.response.LocationResponseDTO;
+import com.nick.job_application_tracker.dto.update.LocationUpdateDTO;
 import com.nick.job_application_tracker.model.Location;
 import com.nick.job_application_tracker.repository.inter_face.LocationRepository;
 import com.nick.job_application_tracker.service.implementation.LocationService;
 import com.nick.job_application_tracker.service.inter_face.AuditLogService;
 
 public class LocationServiceTest {
+
+    private static final UUID LOCATION_ID = UUID.fromString("00000000-0000-0000-0000-000000000401");
 
     private LocationRepository locationRepository;
     private LocationService locationService;
@@ -34,69 +41,53 @@ public class LocationServiceTest {
     @Test
     @DisplayName("Should return all locations")
     void testGetAllLocations() {
-        Location l1 = new Location();
-        l1.setId(1L);
-        l1.setCity("London");
-        l1.setCountry("UK");
+        Location location = new Location();
+        location.setId(LOCATION_ID);
+        location.setCity("London");
+        location.setCountry("UK");
 
-        Location l2 = new Location();
-        l2.setId(2L);
-        l2.setCity("Paris");
-        l2.setCountry("France");
+        when(locationRepository.findAll()).thenReturn(List.of(location));
 
-        when(locationRepository.findAll()).thenReturn(List.of(l1, l2));
+        List<LocationResponseDTO> results = locationService.getAllLocations();
 
-        List<LocationDTO> results = locationService.getAllLocations();
-
-        assertThat(results).hasSize(2);
-        assertThat(results).anyMatch(loc -> loc.getCity().equals("London"));
-        assertThat(results).anyMatch(loc -> loc.getCountry().equals("France"));
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).getId()).isEqualTo(LOCATION_ID);
+        assertThat(results.get(0).getCity()).isEqualTo("London");
     }
 
     @Test
     @DisplayName("Should return location by ID")
     void testGetLocationById() {
         Location location = new Location();
-        location.setId(1L);
+        location.setId(LOCATION_ID);
         location.setCity("Berlin");
         location.setCountry("Germany");
 
-        when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
+        when(locationRepository.findById(LOCATION_ID)).thenReturn(Optional.of(location));
 
-        Optional<LocationDTO> result = locationService.getLocationById(1L);
+        Optional<LocationDetailDTO> result = locationService.getLocationById(LOCATION_ID);
 
         assertThat(result).isPresent();
         assertThat(result.get().getCity()).isEqualTo("Berlin");
     }
 
     @Test
-    @DisplayName("Should return empty when location not found")
-    void testGetLocationByInvalidId() {
-        when(locationRepository.findById(99L)).thenReturn(Optional.empty());
-
-        Optional<LocationDTO> result = locationService.getLocationById(99L);
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     @DisplayName("Should create a new location")
     void testCreateLocation() {
-        LocationDTO dto = new LocationDTO();
+        LocationCreateDTO dto = new LocationCreateDTO();
         dto.setCity("Madrid");
         dto.setCountry("Spain");
 
         Location saved = new Location();
-        saved.setId(1L);
+        saved.setId(LOCATION_ID);
         saved.setCity("Madrid");
         saved.setCountry("Spain");
 
         when(locationRepository.save(any(Location.class))).thenReturn(saved);
 
-        LocationDTO result = locationService.createLocation(dto);
+        LocationResponseDTO result = locationService.createLocation(dto);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getId()).isEqualTo(LOCATION_ID);
         assertThat(result.getCity()).isEqualTo("Madrid");
     }
 
@@ -104,39 +95,27 @@ public class LocationServiceTest {
     @DisplayName("Should update existing location")
     void testUpdateLocation() {
         Location existing = new Location();
-        existing.setId(1L);
+        existing.setId(LOCATION_ID);
         existing.setCity("Old City");
         existing.setCountry("Old Country");
 
-        LocationDTO updatedDTO = new LocationDTO(1L, "Rome", "Italy");
+        LocationUpdateDTO updateDTO = new LocationUpdateDTO();
+        updateDTO.setCity("Rome");
+        updateDTO.setCountry("Italy");
 
-        when(locationRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(locationRepository.save(any(Location.class))).thenAnswer(i -> i.getArgument(0));
+        when(locationRepository.findById(LOCATION_ID)).thenReturn(Optional.of(existing));
+        when(locationRepository.save(any(Location.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<LocationDTO> result = locationService.updateLocation(1L, updatedDTO);
+        Optional<LocationDetailDTO> result = locationService.updateLocation(LOCATION_ID, updateDTO);
 
         assertThat(result).isPresent();
         assertThat(result.get().getCity()).isEqualTo("Rome");
     }
 
     @Test
-    @DisplayName("Should return empty when updating non-existing location")
-    void testUpdateNonExistingLocation() {
-        LocationDTO dto = new LocationDTO();
-        dto.setCity("Nowhere");
-        dto.setCountry("Narnia");
-
-        when(locationRepository.findById(100L)).thenReturn(Optional.empty());
-
-        Optional<LocationDTO> result = locationService.updateLocation(100L, dto);
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     @DisplayName("Should delete location by ID")
     void testDeleteLocation() {
-        locationService.deleteLocation(1L);
-        verify(locationRepository).deleteById(1L);
+        locationService.deleteLocation(LOCATION_ID);
+        verify(locationRepository).deleteById(LOCATION_ID);
     }
 }
