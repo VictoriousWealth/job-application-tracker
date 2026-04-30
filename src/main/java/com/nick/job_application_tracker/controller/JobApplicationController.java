@@ -140,7 +140,7 @@ public class JobApplicationController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<JobApplicationDetailDTO> updateById(@PathVariable UUID id, @RequestBody JobApplicationUpdateDTO dto) {
-        return ResponseEntity.ok(jobApplicationService.update(id, dto));
+        return ResponseEntity.ok(jobApplicationService.updateById(id, dto));
     }
 
 
