@@ -17,20 +17,12 @@ public class AttachmentDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public AttachmentDTO(Long id, String type, String filePath, Long jobApplicationId) {
-        this(LegacyIdAdapter.fromLong(id), type, filePath, LegacyIdAdapter.fromLong(jobApplicationId));
-    }
-
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getType() {
@@ -57,7 +49,4 @@ public class AttachmentDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = LegacyIdAdapter.fromLong(jobApplicationId);
-    }
 }
