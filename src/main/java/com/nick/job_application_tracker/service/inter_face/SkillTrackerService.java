@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.service.inter_face;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.model.SkillTracker;
@@ -20,7 +21,11 @@ public class SkillTrackerService {
     }
 
     public List<SkillTracker> getByJobAppId(UUID jobAppId) {
-        return repo.findByJobApplicationId(jobAppId);
+        return repo.findByJobApplicationIdAndDeletedFalse(jobAppId, Pageable.unpaged()).getContent();
+    }
+
+    public List<SkillTracker> getByJobAppId(Long jobAppId) {
+        return getByJobAppId(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(jobAppId));
     }
 
     public SkillTracker save(SkillTracker skill) {
@@ -32,5 +37,9 @@ public class SkillTrackerService {
     public void delete(UUID id) {
         repo.deleteById(id);
         auditLogService.logDelete("Deleted SkillTracker with ID " + id);
+    }
+
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
     }
 }
