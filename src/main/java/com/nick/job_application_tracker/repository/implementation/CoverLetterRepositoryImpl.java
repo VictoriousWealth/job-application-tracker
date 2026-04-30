@@ -24,14 +24,14 @@ public class CoverLetterRepositoryImpl implements CoverLetterRepositoryCustom {
     public Page<CoverLetter> findRecentByUser(UUID userId, LocalDateTime since, Pageable pageable) {
         String jpql = """
             SELECT c FROM CoverLetter c
-            WHERE c.createdBy.id = :userId
+            WHERE c.createdBy = :createdBy
               AND c.deleted = false
               AND c.createdAt >= :since
             ORDER BY c.createdAt DESC
         """;
 
         List<CoverLetter> results = entityManager.createQuery(jpql, CoverLetter.class)
-            .setParameter("userId", userId)
+            .setParameter("createdBy", userId.toString())
             .setParameter("since", since)
             .setFirstResult((int) pageable.getOffset())
             .setMaxResults(pageable.getPageSize())
@@ -40,11 +40,11 @@ public class CoverLetterRepositoryImpl implements CoverLetterRepositoryCustom {
         Long total = entityManager.createQuery("""
             SELECT COUNT(c)
             FROM CoverLetter c
-            WHERE c.createdBy.id = :userId
+            WHERE c.createdBy = :createdBy
               AND c.deleted = false
               AND c.createdAt >= :since
         """, Long.class)
-            .setParameter("userId", userId)
+            .setParameter("createdBy", userId.toString())
             .setParameter("since", since)
             .getSingleResult();
 
@@ -55,14 +55,14 @@ public class CoverLetterRepositoryImpl implements CoverLetterRepositoryCustom {
     public Page<CoverLetter> searchByTitle(UUID userId, String keyword, Pageable pageable) {
         String jpql = """
             SELECT c FROM CoverLetter c
-            WHERE c.createdBy.id = :userId
+            WHERE c.createdBy = :createdBy
               AND LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
               AND c.deleted = false
             ORDER BY c.createdAt DESC
         """;
 
         List<CoverLetter> results = entityManager.createQuery(jpql, CoverLetter.class)
-            .setParameter("userId", userId)
+            .setParameter("createdBy", userId.toString())
             .setParameter("keyword", keyword)
             .setFirstResult((int) pageable.getOffset())
             .setMaxResults(pageable.getPageSize())
@@ -71,11 +71,11 @@ public class CoverLetterRepositoryImpl implements CoverLetterRepositoryCustom {
         Long total = entityManager.createQuery("""
             SELECT COUNT(c)
             FROM CoverLetter c
-            WHERE c.createdBy.id = :userId
+            WHERE c.createdBy = :createdBy
               AND LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
               AND c.deleted = false
         """, Long.class)
-            .setParameter("userId", userId)
+            .setParameter("createdBy", userId.toString())
             .setParameter("keyword", keyword)
             .getSingleResult();
 
