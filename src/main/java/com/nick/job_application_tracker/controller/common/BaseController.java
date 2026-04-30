@@ -3,6 +3,7 @@ package com.nick.job_application_tracker.controller.common;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.nick.job_application_tracker.service.common.BaseService;
+import com.nick.job_application_tracker.service.common.ServiceInterface;
 
 import jakarta.validation.Valid;
 
@@ -22,7 +23,7 @@ public abstract class BaseController<
         ResponseDTO,
         DetailDTO,
         UpdateDTO,
-        Service extends BaseService<CreateDTO, ResponseDTO, DetailDTO, UpdateDTO>> {
+        Service extends ServiceInterface<CreateDTO, ResponseDTO, UpdateDTO, DetailDTO, ?>> {
 
     private final Service service;
 
@@ -48,7 +49,7 @@ public abstract class BaseController<
 
     @GetMapping("/{id}")
     public ResponseEntity<DetailDTO> getById(@PathVariable UUID id) {
-        return ResponseEntity.status(200).body(service.getById(id));
+        return ResponseEntity.status(200).body(service.getDetailById(id));
     }
 
     @GetMapping
@@ -68,7 +69,7 @@ public abstract class BaseController<
 
     @PutMapping("/{id}")
     public ResponseEntity<DetailDTO> updateById(@PathVariable UUID id, @RequestBody UpdateDTO dto) {
-        return ResponseEntity.ok(service.update(id, dto));
+        return ResponseEntity.ok(service.updateById(id, dto));
     }
 
 
