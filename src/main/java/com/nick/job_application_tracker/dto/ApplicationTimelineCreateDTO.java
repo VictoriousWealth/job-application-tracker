@@ -20,20 +20,12 @@ public class ApplicationTimelineCreateDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public ApplicationTimelineCreateDTO(Long id, String eventType, LocalDateTime eventTime, String description, Long jobApplicationId) {
-        this(LegacyIdAdapter.fromLong(id), eventType, eventTime, description, LegacyIdAdapter.fromLong(jobApplicationId));
-    }
-
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setId(Long id) {
-        this.id = LegacyIdAdapter.fromLong(id);
     }
 
     public String getEventType() {
@@ -68,7 +60,4 @@ public class ApplicationTimelineCreateDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = LegacyIdAdapter.fromLong(jobApplicationId);
-    }
 }
