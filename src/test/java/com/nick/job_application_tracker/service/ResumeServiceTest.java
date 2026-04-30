@@ -54,7 +54,8 @@ public class ResumeServiceTest {
     @Test
     @DisplayName("Should save and return a resume")
     void testSave() {
-        ResumeDTO dto = new ResumeDTO(null, "/new/path/resume.pdf");
+        ResumeDTO dto = new ResumeDTO();
+        dto.setFilePath("/new/path/resume.pdf");
         Resume entity = new Resume();
         entity.setFilePath("/new/path/resume.pdf");
 
