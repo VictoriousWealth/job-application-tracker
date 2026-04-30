@@ -59,7 +59,7 @@ public class CoverLetterRepositoryTest {
         coverLetter = coverLetterRepository.save(coverLetter);
 
         // When
-        Long id = coverLetter.getId();
+        var id = coverLetter.getId();
         coverLetterRepository.deleteById(id);
         Optional<CoverLetter> found = coverLetterRepository.findById(id);
 
