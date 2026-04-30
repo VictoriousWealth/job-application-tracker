@@ -14,6 +14,8 @@ public interface SkillTrackerRepository extends JpaRepository<SkillTracker, UUID
 
     Page<SkillTracker> findByJobApplicationIdAndDeletedFalse(UUID jobApplicationId, Pageable pageable);
 
+    Page<SkillTracker> findByJobApplicationUserIdAndDeletedFalse(UUID userId, Pageable pageable);
+
     default java.util.List<SkillTracker> findByJobApplicationId(UUID jobApplicationId) {
         return findByJobApplicationIdAndDeletedFalse(jobApplicationId, Pageable.unpaged()).getContent();
     }
