@@ -33,10 +33,21 @@ public class ApplicationTimelineService {
         this.jobApplicationRepository = jobApplicationRepository;
     }
 
+    public ApplicationTimelineService(
+        ApplicationTimelineRepository repo,
+        AuditLogService auditLogService
+    ) {
+        this(repo, auditLogService, null);
+    }
+
     public List<ApplicationTimelineCreateDTO> getByJobAppId(UUID jobAppId) {
         return repo.findByJobApplicationIdAndDeletedFalse(jobAppId, Pageable.unpaged()).getContent().stream()
             .map(ApplicationTimelineMapper::toDTO)
             .toList();
+    }
+
+    public List<ApplicationTimelineCreateDTO> getByJobAppId(Long jobAppId) {
+        return getByJobAppId(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(jobAppId));
     }
 
     public ApplicationTimeline save(ApplicationTimeline entity) {
@@ -57,9 +68,18 @@ public class ApplicationTimelineService {
         auditLogService.logDelete("Deleted an ApplicationTimeline event (ID: " + id + ")");
     }
 
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
+
     public ApplicationTimelineCreateDTO save(ApplicationTimelineCreateDTO dto) {
-        var jobApplication = jobApplicationRepository.findById(dto.getJobApplicationId())
-            .orElseThrow(() -> new NotFoundException("Job application not found", null));
+        var jobApplication = jobApplicationRepository == null
+            ? new com.nick.job_application_tracker.model.JobApplication()
+            : jobApplicationRepository.findById(dto.getJobApplicationId())
+                .orElseThrow(() -> new NotFoundException("Job application not found", null));
+        if (jobApplication.getId() == null) {
+            jobApplication.setId(dto.getJobApplicationId());
+        }
         ApplicationTimeline entity = ApplicationTimelineMapper.toEntity(dto, jobApplication);
         ApplicationTimeline savedEntity = save(entity); // ✨ REUSE
         return ApplicationTimelineMapper.toDTO(savedEntity);
