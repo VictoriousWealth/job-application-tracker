@@ -39,7 +39,10 @@ public class CoverLetterServiceTest {
     @Test
     @DisplayName("Should save a cover letter and return DTO with same data")
     void testSaveCoverLetter() {
-        CoverLetterDTO dto = new CoverLetterDTO(null, "Graduate Cover", "/files/grad.pdf", "Dear Hiring Manager...");
+        CoverLetterDTO dto = new CoverLetterDTO();
+        dto.setTitle("Graduate Cover");
+        dto.setFilePath("/files/grad.pdf");
+        dto.setContent("Dear Hiring Manager...");
         
         CoverLetterDTO saved = coverLetterService.save(dto);
 
@@ -81,7 +84,7 @@ public class CoverLetterServiceTest {
         cl.setContent("Temporary content");
 
         cl = coverLetterRepository.save(cl);
-        Long id = cl.getId();
+        var id = cl.getId();
 
         coverLetterService.delete(id);
 
