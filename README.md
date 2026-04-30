@@ -1,132 +1,88 @@
-# 💼 JobTrackr – Full-Stack Job Application Tracker
+# JobTrackr Backend
 
-[![Build Status](https://github.com/VictoriousWealth/job-application-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/VictoriousWealth/job-application-tracker/actions/workflows/ci.yml)
-[![Coverage Checker](https://img.shields.io/badge/Test%20Coverage-Available-green?style=flat-square)](./scripts/README.md)
-[![Gradle Tests](https://img.shields.io/badge/Gradle%20Tests-Supported-blue?style=flat-square)](https://gradle.org/)
-[![Built with Java](https://img.shields.io/badge/Built%20with-Java%2017-blueviolet?style=flat-square)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](./LICENSE)
+This repository is the Spring Boot backend for a job application tracking system. The finished product is meant to let a user manage the full lifecycle of a job search in one place: applications, resumes, cover letters, communications, reminders, interviews, attachments, skills, audit history, and reporting-ready metadata.
 
-**JobTrackr** is a comprehensive system designed to streamline and manage every part of the job search process — tracking applications, managing resumes and cover letters, logging communication, setting follow-ups, and organizing timelines.  
-It is built for real-world use with a secure backend, a clean modular design, and future-ready architecture.
+## Status
 
----
+The documentation in this repository describes the intended completed system.
 
-## 📌 Table of Contents
+The implementation itself is still in transition and does not yet fully match the target design described here. Treat the docs as the product and architecture reference, not as a guarantee that every code path is already complete.
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [System Overview](#system-overview)
-- [Testing and Code Quality](#testing-and-code-quality)
-- [Scripts](#scripts)
-- [Folder Structure](#folder-structure)
-- [Future Plans](#future-plans)
+## Target Capabilities
 
----
+- User signup, login, session/token lifecycle, and profile management
+- End-to-end job application tracking from draft to offer or rejection
+- Reusable document library for resumes, cover letters, and attachments
+- Communication history across email, phone, LinkedIn, and in-person touchpoints
+- Scheduling and reminder workflows for interviews, assessments, and follow-ups
+- Searchable metadata for sources, locations, and skills
+- Auditable CRUD activity and administrator visibility into user/account state
+- API-first design suitable for a future web or mobile client
 
-## 🌟 Features
+## Documentation Map
 
-- ✅ Secure JWT-based user authentication
-- ✅ Advanced job application tracking
-- ✅ Resume and cover letter management
-- ✅ Timeline and event tracking
-- ✅ Recruiter communication logs
-- ✅ Reminder and notification system
-- ✅ Audit logging for all key actions
-- ✅ Attach important documents (offers, rejections, prep material)
-- ✅ Structured data models for sources, locations, and skills
-- ✅ Extendable and AI-ready backend
+- [docs/README.md](./docs/README.md): documentation index
+- [docs/SYSTEM_FEATURES.md](./docs/SYSTEM_FEATURES.md): complete target feature set, expected results, and expected effects
+- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md): target architecture and package responsibilities
+- [HELP.md](./HELP.md): developer quickstart and local setup
+- [CVREADME.md](./CVREADME.md): concise architecture summary for portfolio or interview use
+- [scripts/README.md](./scripts/README.md): developer utility scripts
 
----
+Package-level READMEs are also present under `src/main/java/com/nick/job_application_tracker/...` for controllers, DTOs, models, repositories, services, configuration, exceptions, handlers, and utilities.
 
-## ⚙️ Tech Stack
+## Tech Stack
 
-| Layer         | Technology                        |
-|---------------|------------------------------------|
-| Backend       | Spring Boot (Java)                |
-| Database      | PostgreSQL                        |
-| ORM           | Spring Data JPA + Hibernate        |
-| Security      | Spring Security + JWT             |
-| Build Tool    | Gradle                            |
-| Docs          | Swagger/OpenAPI (Planned)         |
-| Deployment    | Render / Heroku (Planned)         |
+- Java 17
+- Spring Boot 3
+- Spring Web
+- Spring Security
+- Spring Data JPA
+- PostgreSQL
+- Gradle Kotlin DSL
+- OpenAPI / Swagger
+- Logback with JSON logging
 
----
+## Repository Shape
 
-## 🧠 System Overview
+The codebase is organized around standard Spring backend layers:
 
-JobTrackr models the real-world complexity of job hunting:
-- Track applications to roles with detailed metadata
-- Manage communications across multiple channels (email, calls, LinkedIn)
-- Schedule interviews and assessments
-- Attach and organize supporting files
-- Normalize locations, sources, and skills for analytics and filtering
-- Log all significant actions for transparency and auditability
+- `controller`: HTTP endpoints
+- `service`: business logic and orchestration
+- `repository`: persistence and custom queries
+- `model`: JPA entities and enums
+- `dto`: request and response contracts
+- `config`: security, JWT, OpenAPI, auditing, and filters
+- `handler`: centralized exception handling
+- `scripts`: utility scripts for testing coverage and scaffolding
+- `docs`: product and architecture documentation
 
-Built with an enterprise architecture mindset, prioritizing **security**, **extendability**, and **real usability**.
+## Local Development
 
----
+See [HELP.md](./HELP.md) for the full setup guide. At a minimum, local development expects:
 
-## 🧪 Testing and Code Quality
+- Java 17
+- PostgreSQL
+- environment variables or a `.env` file for:
+  - `SPRING_PROFILES_ACTIVE`
+  - `POSTGRES_HOST`
+  - `POSTGRES_PORT`
+  - `POSTGRES_DB`
+  - `POSTGRES_USER`
+  - `POSTGRES_PASSWORD`
 
-Testing is built into the development lifecycle:
-- **Per-class test coverage** is tracked with a custom script.
-- **Gradle integration** to run tests by module or globally.
-- **Test Coverage Metrics** are output with colored progress bars.
-- **Auditability**: Changes are logged through the `AuditLog` model.
-
-### 🛠️ Check Test Coverage
-Run the custom coverage checker:
+Typical commands:
 
 ```bash
-./scripts/check_test_coverage.sh
+./gradlew test
+./gradlew bootRun
 ```
 
-Options:
-- `--show-missing` or `--s-m` → Also show classes without corresponding tests.
-- `--with-gradle` → Automatically run Gradle tests for each major package/folder.
-- `-h` or `--help` → Show usage information.
+## Product Direction
 
-Example:
+The intended finished system is more than a CRUD demo. It is meant to become an operational workspace for job searching:
 
-```bash
-./scripts/check_test_coverage.sh --show-missing --with-gradle
-```
-
----
-
-## 🧹 Scripts
-
-| Script | Description |
-|:------|:------------|
-| [`scripts/check_test_coverage.sh`](./scripts/README.md) | Calculates Java class test coverage. Shows per-folder breakdowns. Integrates with Gradle test runner. |
-
-📖 See [`scripts/README.md`](./scripts/README.md) for **full usage instructions and options**.
-
----
-
-## 📂 Folder Structure (Backend)
-
-TBC (To be completed once frontend and backend stabilization is done)
-
----
-
-## 🔮 Future Plans
-
-- Analytics dashboard (conversion rates, offers vs rejections)
-- Calendar-based event management
-- Resume and Job Matching AI (Skill-based scoring)
-- Export capabilities (CSV, PDF)
-- GraphQL migration option
-- Full frontend client (React)
-
----
-
-## 👋 Want to Contribute?
-
-The project will soon open for external contributions. Stay tuned for the contribution guide!
-
----
-
-# 🚀 Let's make job tracking seamless!
-
----
+- a single source of truth for every application
+- fewer missed follow-ups and deadlines
+- consistent document reuse and version tracking
+- cleaner historical records for reflection, analytics, and reporting
+- a backend foundation for future dashboards, exports, and AI-assisted features
