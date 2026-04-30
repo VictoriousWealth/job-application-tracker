@@ -16,10 +16,10 @@ public class ApplicationTimelineMapperTest {
     @DisplayName("Should convert entity to DTO correctly")
     void testToDTO() {
         JobApplication job = new JobApplication();
-        job.setId(42L);
+        job.setId(com.nick.job_application_tracker.TestIds.uuid(42));
 
         ApplicationTimeline entity = new ApplicationTimeline();
-        entity.setId(1L);
+        entity.setId(com.nick.job_application_tracker.TestIds.uuid(1));
         entity.setEventType(ApplicationTimeline.EventType.SUBMITTED);
         entity.setEventTime(LocalDateTime.of(2024, 5, 10, 14, 30));
         entity.setDescription("Technical Interview");
@@ -38,11 +38,11 @@ public class ApplicationTimelineMapperTest {
     @DisplayName("Should convert DTO to entity correctly")
     void testToEntity() {
         ApplicationTimelineCreateDTO dto = new ApplicationTimelineCreateDTO(
-            99L,
+            com.nick.job_application_tracker.TestIds.uuid(99),
             "SUBMITTED",
             LocalDateTime.of(2024, 6, 1, 9, 0),
             "Received offer letter",
-            101L
+            com.nick.job_application_tracker.TestIds.uuid(101)
         );
 
         ApplicationTimeline entity = ApplicationTimelineMapper.toEntity(dto);
