@@ -1,7 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
 import com.nick.job_application_tracker.model.ApplicationTimeline;
-import com.nick.job_application_tracker.repository.custom.ApplicationTimelineRepositoryCustom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -16,7 +16,7 @@ import java.util.UUID;
  * Supports pagination, filtering, soft deletes, and draft-aware querying.
  */
 public interface ApplicationTimelineRepository
-        extends JpaRepository<ApplicationTimeline, UUID>, ApplicationTimelineRepositoryCustom {
+        extends JpaRepository<ApplicationTimeline, UUID> {
 
     // --- Ownership + soft delete filtering ---
 
@@ -25,6 +25,8 @@ public interface ApplicationTimelineRepository
     default List<ApplicationTimeline> findByJobApplicationId(UUID jobApplicationId) {
         return findByJobApplicationIdAndDeletedFalse(jobApplicationId, Pageable.unpaged()).getContent();
     }
+
+    Optional<ApplicationTimeline> findByIdAndJobApplicationUserIdAndDeletedFalse(UUID id, UUID userId);
 
     Page<ApplicationTimeline> findByJobApplicationUserIdAndDeletedFalse(UUID userId, Pageable pageable);
 
