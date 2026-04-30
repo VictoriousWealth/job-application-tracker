@@ -42,6 +42,10 @@ public class LocationService implements LocationServiceInterface {
         return locationRepository.findById(id).map(LocationMapper::toDTO);
     }
 
+    public Optional<LocationDTO> getLocationById(Long id) {
+        return getLocationById(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
+
     public LocationDTO createLocation(LocationDTO dto) {
         Location saved = locationRepository.save(LocationMapper.toEntity(dto));
         auditLogService.logCreate("Created location with id: " + saved.getId());
@@ -57,9 +61,17 @@ public class LocationService implements LocationServiceInterface {
         });
     }
 
+    public Optional<LocationDTO> updateLocation(Long id, LocationDTO dto) {
+        return updateLocation(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id), dto);
+    }
+
     public void deleteLocation(UUID id) {
         locationRepository.deleteById(id);
         auditLogService.logDelete("Deleted location with id: " + id);
+    }
+
+    public void deleteLocation(Long id) {
+        deleteLocation(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
     }
 
     @Override
