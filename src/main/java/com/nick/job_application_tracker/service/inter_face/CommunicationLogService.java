@@ -38,6 +38,10 @@ public class CommunicationLogService {
             .toList();
     }
 
+    public List<CommunicationLogDTO> getByJobAppId(Long jobAppId) {
+        return getByJobAppId(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(jobAppId));
+    }
+
     public CommunicationLogDTO save(CommunicationLogDTO dto) {
         var jobApplication = jobApplicationRepository.findById(dto.getJobApplicationId())
             .orElseThrow(() -> new IllegalArgumentException("Job Application not found"));
@@ -56,5 +60,9 @@ public class CommunicationLogService {
     public void delete(UUID id) {
         repo.deleteById(id);
         auditLogService.logDelete("Deleted CommunicationLog ID " + id);
+    }
+
+    public void delete(Long id) {
+        delete(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
     }
 }
