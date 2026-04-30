@@ -23,12 +23,12 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
         String jpql = """
             SELECT r FROM Resume r
             WHERE r.deleted = false
-              AND r.createdBy = :userId
+              AND r.createdBy = :createdBy
               AND LOWER(r.filePath) LIKE LOWER(CONCAT('%', :keyword, '%'))
         """;
 
         List<Resume> results = entityManager.createQuery(jpql, Resume.class)
-                .setParameter("userId", userId.toString())
+                .setParameter("createdBy", userId.toString())
                 .setParameter("keyword", keyword)
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
@@ -37,10 +37,10 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
         Long total = entityManager.createQuery("""
             SELECT COUNT(r) FROM Resume r
             WHERE r.deleted = false
-              AND r.createdBy = :userId
+              AND r.createdBy = :createdBy
               AND LOWER(r.filePath) LIKE LOWER(CONCAT('%', :keyword, '%'))
         """, Long.class)
-                .setParameter("userId", userId.toString())
+                .setParameter("createdBy", userId.toString())
                 .setParameter("keyword", keyword)
                 .getSingleResult();
 
@@ -52,13 +52,13 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
         String jpql = """
             SELECT r FROM Resume r
             WHERE r.deleted = false
-              AND r.createdBy = :userId
+              AND r.createdBy = :createdBy
               AND r.createdAt >= :since
             ORDER BY r.createdAt DESC
         """;
 
         List<Resume> results = entityManager.createQuery(jpql, Resume.class)
-                .setParameter("userId", userId.toString())
+                .setParameter("createdBy", userId.toString())
                 .setParameter("since", since)
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
@@ -67,10 +67,10 @@ public class ResumeRepositoryImpl implements ResumeRepositoryCustom {
         Long total = entityManager.createQuery("""
             SELECT COUNT(r) FROM Resume r
             WHERE r.deleted = false
-              AND r.createdBy = :userId
+              AND r.createdBy = :createdBy
               AND r.createdAt >= :since
         """, Long.class)
-                .setParameter("userId", userId.toString())
+                .setParameter("createdBy", userId.toString())
                 .setParameter("since", since)
                 .getSingleResult();
 
