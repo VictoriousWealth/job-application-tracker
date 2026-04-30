@@ -87,7 +87,7 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid credentials.");
         }
 
-        String role = user.getRoles().iterator().next().getName();
+        String role = user.getRoles().iterator().next().name();
         String token = jwtService.generateToken(user.getEmail(), role);
         return ResponseEntity.ok(new JwtResponse(token));
     }
