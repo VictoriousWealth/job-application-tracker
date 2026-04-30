@@ -1,5 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
+import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.ApplicationTimeline;
 import com.nick.job_application_tracker.repository.custom.ApplicationTimelineRepositoryCustom;
 
@@ -21,6 +22,14 @@ public interface ApplicationTimelineRepository
     // --- Ownership + soft delete filtering ---
 
     Page<ApplicationTimeline> findByJobApplicationIdAndDeletedFalse(UUID jobApplicationId, Pageable pageable);
+
+    default List<ApplicationTimeline> findByJobApplicationId(UUID jobApplicationId) {
+        return findByJobApplicationIdAndDeletedFalse(jobApplicationId, Pageable.unpaged()).getContent();
+    }
+
+    default List<ApplicationTimeline> findByJobApplicationId(Long jobApplicationId) {
+        return findByJobApplicationId(LegacyIdAdapter.fromLong(jobApplicationId));
+    }
 
     Page<ApplicationTimeline> findByJobApplicationUserIdAndDeletedFalse(UUID userId, Pageable pageable);
 
