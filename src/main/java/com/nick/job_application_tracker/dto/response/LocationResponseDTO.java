@@ -8,10 +8,19 @@ import com.nick.job_application_tracker.model.Location;
  * {@link Location}
  */
 public class LocationResponseDTO {
+    private UUID id;
     private String city;
     private String country;
 
     // Getters and Setters
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
     
     public String getCity() {
         return city;
