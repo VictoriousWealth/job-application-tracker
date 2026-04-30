@@ -44,6 +44,7 @@ public class AttachmentMapper {
         dto.setId(attachment.getId());
         dto.setType(attachment.getType());
         dto.setFilePath(attachment.getFilePath());
+        dto.setJobApplicationId(attachment.getJobApplication() == null ? null : attachment.getJobApplication().getId());
         return dto;
     }
 
