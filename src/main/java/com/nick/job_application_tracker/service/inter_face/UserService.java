@@ -38,6 +38,10 @@ public class UserService {
         return mapper.toDTO(user);
     }
 
+    public UserDetailDTO getUserInfoById(Long id) {
+        return getUserInfoById(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
+
     public List<UserDetailDTO> getAllUsers() {
         return repo.findAll().stream()
                 .map(mapper::toDTO)
@@ -83,5 +87,9 @@ public class UserService {
         auditLogService.logUpdate("Updated enabled status for user with id: " + saved.getId());
 
         return mapper.toDTO(saved);
+    }
+
+    public UserDetailDTO updateEnabledStatus(Long id, Boolean enabled) {
+        return updateEnabledStatus(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id), enabled);
     }
 }
