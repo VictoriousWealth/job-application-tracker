@@ -67,10 +67,6 @@ public class JobApplicationCreateDTO {
         this.locationId = locationId;
     }
 
-    public void setLocationId(Long locationId) {
-        this.locationId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(locationId);
-    }
-
     public String getLocationCity() {
         return locationCity;
     }
@@ -95,10 +91,6 @@ public class JobApplicationCreateDTO {
         this.sourceId = sourceId;
     }
 
-    public void setSourceId(Long sourceId) {
-        this.sourceId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(sourceId);
-    }
-    
     public String getJobDescription() {
         return jobDescription;
     }
@@ -115,20 +107,12 @@ public class JobApplicationCreateDTO {
         this.resumeId = resumeId;
     }
 
-    public void setResumeId(Long resumeId) {
-        this.resumeId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(resumeId);
-    }
-
     public UUID getCoverLetterId() {
         return coverLetterId;
     }
 
     public void setCoverLetterId(UUID coverLetterId) {
         this.coverLetterId = coverLetterId;
-    }
-
-    public void setCoverLetterId(Long coverLetterId) {
-        this.coverLetterId = com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(coverLetterId);
     }
 
     public String getNotes() {
