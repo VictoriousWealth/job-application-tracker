@@ -78,6 +78,6 @@ public class SkillTrackerServiceTest {
     void testDelete() {
         Long id = 77L;
         service.delete(id);
-        verify(repo).deleteById(id);
+        verify(repo).deleteById(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
     }
 }
