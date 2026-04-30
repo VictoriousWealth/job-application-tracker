@@ -49,6 +49,10 @@ public class JobSourceService {
                 .map(mapper::toDTO);
     }
 
+    public Optional<JobSourceDTO> getSourceById(Long id) {
+        return getSourceById(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
+    }
+
     public Optional<JobSourceDTO> updateSource(UUID id, JobSourceCreateDTO createDTO) {
         return jobSourceRepository.findById(id).map(source -> {
             source.setName(createDTO.getName());
@@ -58,8 +62,16 @@ public class JobSourceService {
         });
     }
 
+    public Optional<JobSourceDTO> updateSource(Long id, JobSourceCreateDTO createDTO) {
+        return updateSource(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id), createDTO);
+    }
+
     public void deleteSource(UUID id) {
         jobSourceRepository.deleteById(id);
         auditLogService.logDelete("Deleted JobSource with ID " + id);
+    }
+
+    public void deleteSource(Long id) {
+        deleteSource(com.nick.job_application_tracker.dto.LegacyIdAdapter.fromLong(id));
     }
 }
