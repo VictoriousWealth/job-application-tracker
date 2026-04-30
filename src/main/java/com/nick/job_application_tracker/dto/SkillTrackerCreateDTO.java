@@ -24,7 +24,4 @@ public class SkillTrackerCreateDTO {
         this.jobApplicationId = jobApplicationId;
     }
 
-    public void setJobApplicationId(Long jobApplicationId) {
-        this.jobApplicationId = LegacyIdAdapter.fromLong(jobApplicationId);
-    }
 }
