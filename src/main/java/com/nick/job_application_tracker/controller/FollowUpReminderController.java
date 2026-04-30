@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nick.job_application_tracker.dto.FollowUpReminderDTO;
 import com.nick.job_application_tracker.dto.create.FollowUpReminderCreateDTO;
-import com.nick.job_application_tracker.service.inter_face.FollowUpReminderService;
+import com.nick.job_application_tracker.dto.response.FollowUpReminderResponseDTO;
+import com.nick.job_application_tracker.service.implementation.FollowUpReminderService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,23 +37,23 @@ public class FollowUpReminderController {
     @Operation(summary = "Get all follow-up reminders for a specific job application")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Follow-up reminders retrieved",
-            content = @Content(schema = @Schema(implementation = FollowUpReminderDTO.class))),
+            content = @Content(schema = @Schema(implementation = FollowUpReminderResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Job application not found")
     })
     @GetMapping("/job/{jobAppId}")
-    public ResponseEntity<List<FollowUpReminderDTO>> getForJob(@PathVariable UUID jobAppId) {
+    public ResponseEntity<List<FollowUpReminderResponseDTO>> getForJob(@PathVariable UUID jobAppId) {
         return ResponseEntity.ok(service.getByJobAppId(jobAppId));
     }
 
     @Operation(summary = "Create a new follow-up reminder")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Reminder created",
-            content = @Content(schema = @Schema(implementation = FollowUpReminderDTO.class))),
+            content = @Content(schema = @Schema(implementation = FollowUpReminderResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public ResponseEntity<FollowUpReminderDTO> create(@RequestBody FollowUpReminderCreateDTO dto) {
-        return ResponseEntity.ok(service.save(dto));
+    public ResponseEntity<FollowUpReminderResponseDTO> create(@RequestBody FollowUpReminderCreateDTO dto) {
+        return ResponseEntity.ok(service.create(dto));
     }
 
     @Operation(summary = "Delete a follow-up reminder by ID")
