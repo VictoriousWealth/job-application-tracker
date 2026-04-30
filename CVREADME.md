@@ -1,153 +1,67 @@
-Of course\! Here's a complete documentation explaining the "Band Management System" codebase.
+This Java codebase, named "job-application-tracker", is a Spring Boot REST API designed to help users track their job applications. It uses a clean, layered architecture and follows best practices like DTOs, JPA for data persistence, and JWT for security.
 
-This document provides a comprehensive overview of the Band Management System, a Java Spring Boot application designed for managing the members, inventory, and activities of a musical band.
+Key Architectural Layers
+The application is structured into several distinct layers, which is a common practice in modern backend development. This separation of concerns makes the code easier to manage, test, and scale.
 
------
+controller: This is the presentation layer. It handles incoming HTTP requests, calls the appropriate service methods, and returns HTTP responses. Each controller is responsible for a single domain entity (e.g., JobApplicationController handles all requests related to job applications). The API uses annotations from OpenAPI (@Tag, @Operation, @ApiResponse) for automatic API documentation generation (Swagger UI).
 
-## 1\. Project Overview
+service: The business logic layer. Services contain the core logic for the application. They interact with repositories to fetch and save data, apply business rules, and manage transactions. This layer is further divided into an implementation and an inter_face package, promoting the use of interfaces for dependency injection.
 
-The **Band Management System** is a web application that serves as a central hub for a community band. It provides distinct functionalities for different user roles: regular **Members** (parents), **Committee** members, and a **Director**.
+repository: The data access layer. Repositories are responsible for communicating with the database. They extend JpaRepository, providing standard CRUD functionality, and also contain custom methods defined in the custom and implementation packages for more complex queries.
 
-The system's core features include:
+model: This layer contains the JPA entities (@Entity). These classes represent the database tables and define the relationships between them. The BaseEntity class is a crucial component here, as it provides common fields like id, createdAt, updatedAt, and supports soft deletion.
 
-  * **User Management**: Registration, login, and role-based access control.
-  * **Member & Family Management**: Members can manage their own details and add/view their children's profiles.
-  * **Inventory Control**: Committee members and the Director can manage the band's inventory of instruments, sheet music, and miscellaneous items.
-  * **Loan System**: A system for tracking the loan and return of instruments to both adult and child members.
-  * **Performance Management**: The ability to schedule performances, create playlists, and for members to confirm their participation.
-  * **Administrative Functions**: The Director has overarching control to manage band rosters, committee members, and approve/deny requests.
+dto (Data Transfer Objects): These are plain Java objects used to transfer data between the different layers of the application and the client. The codebase uses a fine-grained approach with separate DTOs for different use cases:
 
-### Technology Stack
+create: For creating new resources (input validation).
 
-  * **Backend**: Java 21+ with the Spring Boot framework.
-  * **Security**: Spring Security for authentication and role-based authorization.
-  * **Database**: Spring Data JPA for object-relational mapping (ORM), likely with a relational database like PostgreSQL or H2.
-  * **Frontend**: Thymeleaf for server-side template rendering, along with standard HTML, CSS, and JavaScript for client-side interactivity.
-  * **Build Tool**: Gradle for dependency management and building the project.
-  * **Testing**: JUnit 5 and Mockito for unit and integration testing.
+update: For full updates (PUT requests).
 
------
+detail: For returning a full, detailed representation of a resource.
 
-## 2\. Project Structure
+response: For returning a concise representation, typically used in list views.
 
-The codebase follows a standard layered architecture, separating concerns into distinct packages.
+config: This package handles application configuration, particularly for security and OpenAPI documentation.
 
-```plaintext
-.
-├── build.gradle              // Gradle build script
-├── gradlew, gradlew.bat      // Gradle Wrapper scripts
-├── Procfile, system.properties // Heroku deployment files
-├── src
-│   ├── main
-│   │   ├── java/uk/ac/sheffield/team28/team28
-│   │   │   ├── Team28Application.java  // Main application entry point
-│   │   │   ├── config                  // Security configuration
-│   │   │   ├── controller              // MVC Controllers (handle web requests)
-│   │   │   ├── dto                     // Data Transfer Objects
-│   │   │   ├── model                   // JPA Entities (database tables)
-│   │   │   ├── repository              // Spring Data JPA Repositories (database access)
-│   │   │   └── service                 // Business logic layer
-│   │   └── resources
-│   │       ├── application.properties  // Application configuration
-│   │       ├── static                  // CSS, JavaScript, images
-│   │       └── templates               // Thymeleaf HTML views
-│   └── test                          // Unit and integration tests
-└── ...
-```
+exception: A custom exception hierarchy for handling different types of errors (e.g., ClientException, ServerException). This allows for consistent and structured error responses.
 
------
+handler: The GlobalExceptionHandler is a centralized place to catch and handle all exceptions thrown by the application, translating them into appropriate HTTP status codes and standardized error responses.
 
-## 3\. Backend Architecture (MVC & Service Layer)
+Core Functionality and Features
+Security and Authentication
+The application uses JSON Web Tokens (JWT) for authentication, managed by a custom Spring Security configuration.
 
-The application is built on the Model-View-Controller (MVC) pattern, with a service layer handling the business logic.
+SecurityConfig.java: This class sets up the security filter chain. It disables CSRF (common for stateless APIs), configures CORS, and defines which endpoints are public and which require authentication.
 
-### 3.1. Model (`model` package)
+CustomJwtAuthFilter.java: A custom filter that intercepts all incoming requests. It checks for a Bearer token in the Authorization header. If found, it validates the token using JwtService and sets the authenticated user in the SecurityContextHolder. This allows subsequent layers of the application to know who the current user is.
 
-These are the core data structures, represented as JPA entities that map directly to database tables.
+CustomJwtAuthenticationProvider.java: This class is responsible for authenticating the CustomJwtAuthenticationToken. It uses the JwtService to validate the token's signature and payload.
 
-  * `Member`: The central user entity. It stores login credentials, personal details, and role (`MemberType`: **ADULT**, **COMMITTEE**, **DIRECTOR**). It has a one-to-many relationship with `ChildMember`.
-  * `ChildMember`: Represents a child linked to a parent `Member`. They can be assigned to a `BandInPractice`.
-  * `Item`: A generic base entity for any inventory item. Key properties include `itemType` (**Instrument**, **Music**, **Misc**).
-  * `Instrument`, `Music`, `Misc`: These entities extend the concept of an `Item` with specific attributes (e.g., an `Instrument` has a `serialNumber`).
-  * `Loan`: Tracks an `Item` being loaned to either a `Member` or a `ChildMember`, including loan and return dates.
-  * `Performance`: Defines a band event with a name, venue, date, and the band involved. It holds a playlist (a list of `Music` entities) and tracks participation.
-  * `MemberParticipation`: A join table entity linking a `Member` to a `Performance` and storing whether they will participate.
-  * `Request`: Stores a user's request to update their account details, which must be approved by a Director.
+JwtService.java: This service contains the logic for creating and validating JWTs. It verifies the token's integrity (isTokenTampered), checks if it's expired (isTokenExpired), and extracts the user's email and role.
 
-### 3.2. Repository (`repository` package)
+AuthController.java: Provides public endpoints for user signup and login. Upon successful login, it returns a JWT. It also has endpoints to get the current user's details and refresh a token.
 
-These are Spring Data JPA interfaces that provide an abstraction layer for database operations. They offer built-in CRUD (Create, Read, Update, Delete) methods and allow for the definition of custom database queries using either method naming conventions or the `@Query` annotation.
+Data Persistence and Auditing
+The application uses JPA with a UUID-based primary key and soft-deletion.
 
-### 3.3. Service (`service` package)
+BaseEntity.java: All JPA models extend this class, which provides automatic creation/update timestamps (@CreatedDate, @LastModifiedDate), and a soft-delete mechanism (deleted boolean flag). This is a great feature for retaining historical data and implementing a "recycle bin" functionality without permanent data loss.
 
-This layer contains the application's business logic. Controllers delegate tasks to services, which then coordinate with repositories to manipulate data.
+JpaAuditingConfig.java and AuditorAwareImpl.java: These classes work together to automatically populate the createdBy and updatedBy fields in the BaseEntity based on the authenticated user's email.
 
-  * `MemberService`: Manages all logic related to members, including registration, finding users, role changes (promotion/demotion), and band assignments.
-  * `CustomUserDetailsService`: A core part of Spring Security. It implements the `UserDetailsService` interface to fetch user data (`Member`) from the database during the authentication process.
-  * `LoanService`: Encapsulates the rules for loaning and returning instruments, ensuring an item cannot be loaned out if it's already on loan.
-  * `PerformanceService`: Handles the creation of performances and the logic for members to opt in or out of participation.
-  * Other services (`InstrumentService`, `MusicService`, `RequestService`, etc.) manage the business logic for their respective domains.
+repository package: Contains interfaces that extend JpaRepository for standard CRUD methods, along with custom methods for more specific queries. The implementation package holds the custom query logic, often written in JPQL (Java Persistence Query Language).
 
-### 3.4. Controller (`controller` package)
+Core Business Logic (Services)
+The services manage the business rules and coordinate data flow between the controllers and repositories. A key pattern is that most methods take a DTO as input and return a DTO as output, ensuring a clear separation from the internal data models.
 
-Controllers are the entry point for user interactions. They handle incoming HTTP requests, call the appropriate service methods, and return a view (Thymeleaf template) or data (JSON) to the user.
+JobApplicationService.java: This is the main service for the application, handling the core logic of creating, reading, updating, and deleting job applications. It validates the existence of related entities like Location, JobSource, Resume, and CoverLetter before creating a new application.
 
-  * `AuthController`: Manages the public-facing registration and login endpoints.
-  * `DashboardController`: The primary controller for logged-in users, displaying a dashboard tailored to their role and band membership.
-  * `DirectorController`: Provides endpoints for the Director to perform high-level administrative tasks, such as managing all members, committee roles, and band rosters.
-  * `CommitteeController`: Handles the committee-specific dashboard, focusing on inventory management.
-  * `AccountDetailsController`: Allows users to view and request changes to their personal information.
-  * `PerformanceController`, `LoanController`, `ItemController`, `MusicController`: These are primarily `@RestController`s that serve JSON data, often used by frontend JavaScript to dynamically update parts of a page without a full reload (AJAX).
+Other services (e.g., ApplicationTimelineService, AttachmentService) follow a similar pattern, managing their specific domain entities.
 
-### 3.5. Configuration & Security (`config` and `security` packages)
+Utilities and Scripts
+util/SecurityUtils.java: A utility class to easily retrieve the currently authenticated user from the Spring Security context, ensuring that all actions are tied to a specific user.
 
-  * `SecurityConfig.java`: This is the heart of the application's security. It defines:
-      * **Authorization Rules**: Specifies which URLs are publicly accessible (`/auth/login`, `/auth/register`) and which require specific roles (`/committee/**` requires COMMITTEE or DIRECTOR, `/director/**` requires DIRECTOR).
-      * **Login Form**: Configures the custom login page, the URL for processing login attempts, the redirect URL on success, and a `CustomAuthenticationFailureHandler`.
-      * **Password Encoding**: Declares a `BCryptPasswordEncoder` bean, ensuring all passwords are securely hashed before being stored.
-  * `CustomAuthenticationFailureHandler.java`: Provides user-friendly error messages on the login page if authentication fails.
+scripts directory: Contains shell scripts, likely for automating common development tasks like generating boilerplate code for new controllers, mappers, or services. This is a sign of a well-organized and developer-friendly project.
 
------
+build.gradle.kts: The Gradle build file, written in Kotlin DSL, which manages project dependencies, build tasks, and plugins (e.g., Spring Boot, JPA, OpenAPI, etc.).
 
-## 4\. Frontend (Views & Static Assets)
-
-The user interface is built with Thymeleaf for server-side rendering, enhanced with client-side JavaScript.
-
-  * **`templates` Directory**: Contains all the HTML files.
-      * **Views**: Pages like `dashboard.html`, `login.html`, and `committee-dashboard.html` define the structure of what the user sees.
-      * **Fragments (`fragments/`)**: Reusable HTML snippets like `navbar.html` and `footer.html` are included in multiple pages to avoid code duplication.
-  * **`static` Directory**:
-      * **CSS (`css/`)**: Stylesheets for the application's look and feel.
-      * **JavaScript (`js/`)**: Client-side scripts that add dynamic behavior. For example, `dashboardLoan.js` likely handles the AJAX calls to the `LoanController` to process instrument loans without reloading the entire dashboard. `confirmDelete.js` provides confirmation dialogs before a user deletes an item.
-
------
-
-## 5\. Key Workflows
-
-### User Authentication
-
-1.  A new user navigates to `/auth/register`. The `AuthController` displays the `register.html` view.
-2.  The user submits the form. `AuthController` calls `MemberService` to validate the data (e.g., check if the email is already in use, validate password strength) and save the new `Member`.
-3.  The user goes to `/auth/login`. On submission, Spring Security intercepts the request.
-4.  It uses `CustomUserDetailsService` to fetch the `Member` from the database by email.
-5.  It compares the submitted password with the hashed password in the database using the `BCryptPasswordEncoder`.
-6.  On success, the user is redirected to `/dashboard`. On failure, they are sent back to the login page with an error message via the `CustomAuthenticationFailureHandler`.
-
-### Loaning an Instrument
-
-1.  A Committee member or Director is on the `committee-dashboard.html` page.
-2.  They select an instrument and a member to loan it to.
-3.  A JavaScript function (e.g., in `dashboardLoan.js`) sends a POST request to the `/loans/loanAction` endpoint, handled by `LoanController`.
-4.  `LoanController` calls `LoanService`, which validates that the instrument is in storage.
-5.  `LoanService` creates a new `Loan` record and updates the `Item`'s `inStorage` status to `false`.
-6.  The controller then redirects back to the dashboard, which now reflects the updated loan status.
-
------
-
-## 6\. Testing
-
-The `src/test` directory demonstrates a commitment to quality assurance with a robust testing suite.
-
-  * **Controller Tests (`@WebMvcTest`)**: These tests focus on the web layer. They mock the service layer to verify that controllers handle requests correctly, return the right views, and have proper security configurations.
-  * **Service Tests (Plain JUnit/Mockito)**: These are unit tests for the business logic. They mock the repository layer to ensure that services perform their logic correctly in isolation.
-  * **Repository Tests (`@DataJpaTest`)**: These are integration tests that check if the JPA repositories are correctly configured to interact with an in-memory or test database.
+This codebase is a solid foundation for a robust, maintainable, and scalable backend application. It demonstrates a strong understanding of Spring Boot, REST API design, and modern software development principles.
