@@ -1,5 +1,6 @@
 package com.nick.job_application_tracker.repository.inter_face;
 
+import com.nick.job_application_tracker.dto.LegacyIdAdapter;
 import com.nick.job_application_tracker.model.Attachment;
 import com.nick.job_application_tracker.model.Attachment.Type;
 import com.nick.job_application_tracker.repository.custom.AttachmentRepositoryCustom;
@@ -21,6 +22,14 @@ public interface AttachmentRepository
     // --- Ownership + soft delete filtering ---
 
     List<Attachment> findByJobApplicationIdAndDeletedFalse(UUID jobApplicationId);
+
+    default List<Attachment> findByJobApplicationId(UUID jobApplicationId) {
+        return findByJobApplicationIdAndDeletedFalse(jobApplicationId);
+    }
+
+    default List<Attachment> findByJobApplicationId(Long jobApplicationId) {
+        return findByJobApplicationIdAndDeletedFalse(LegacyIdAdapter.fromLong(jobApplicationId));
+    }
 
     Page<Attachment> findByJobApplicationIdAndDeletedFalse(UUID jobApplicationId, Pageable pageable);
 
