@@ -4,6 +4,13 @@ public class UserUpdateDTO {
     public String email;
     public String password;
     public boolean enabled;
+
+    public UserUpdateDTO() {}
+
+    public UserUpdateDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
     
     // getters and setters
 
