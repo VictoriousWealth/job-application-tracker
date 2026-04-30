@@ -41,8 +41,10 @@ public class CommunicationLogMapper {
 
     public static CommunicationLogResponseDTO toResponseDTO(CommunicationLog communicationLog) {
         CommunicationLogResponseDTO dto = new CommunicationLogResponseDTO();
+        dto.setId(communicationLog.getId());
         dto.setDirection(communicationLog.getDirection());
         dto.setMessage(communicationLog.getMessage());
+        dto.setTimestamp(communicationLog.getTimestamp());
         dto.setType(communicationLog.getType());
         dto.setJobApplicationId(communicationLog.getJobApplication() == null ? null : communicationLog.getJobApplication().getId());
         return dto;
@@ -53,6 +55,8 @@ public class CommunicationLogMapper {
         dto.setId(log.getId());
         dto.setDirection(log.getDirection());
         dto.setType(log.getType());
+        dto.setTimestamp(log.getTimestamp());
+        dto.setMessage(log.getMessage());
         dto.setJobApplicationId(log.getJobApplication() == null ? null : log.getJobApplication().getId());
         return dto;
     }
