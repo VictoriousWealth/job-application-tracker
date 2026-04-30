@@ -4,10 +4,19 @@ import java.util.UUID;
 
 public class ResumeResponseDTO {
 
+    private UUID id;
     private String title;
     private String filePath;
 
     // --- Getters and Setters ---
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
