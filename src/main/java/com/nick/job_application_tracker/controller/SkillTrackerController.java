@@ -61,7 +61,7 @@ public class SkillTrackerController {
     })
     @PostMapping
     public SkillTrackerDTO create(@RequestBody SkillTrackerCreateDTO dto) {
-        JobApplication jobApp = jobApplicationService.findById(dto.getJobApplicationId());
+        JobApplication jobApp = jobApplicationService.getModelById(dto.getJobApplicationId());
         return SkillTrackerMapper.toDTO(service.save(SkillTrackerMapper.toEntity(dto, jobApp)));
     }
 
