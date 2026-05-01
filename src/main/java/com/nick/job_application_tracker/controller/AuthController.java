@@ -24,7 +24,7 @@ import com.nick.job_application_tracker.dto.special.SignupRequest;
 import com.nick.job_application_tracker.dto.special.UserDetailDTO;
 import com.nick.job_application_tracker.model.Role;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
