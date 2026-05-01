@@ -8,7 +8,7 @@ The repository is organized as a layered Spring Boot application:
 
 - API layer: controllers and DTO contracts
 - business layer: services and domain orchestration
-- persistence layer: repositories and custom query logic
+- persistence layer: repositories and ownership-aware query logic
 - domain layer: JPA entities and enums
 - platform layer: security, JWT, auditing, logging, OpenAPI, and exception handling
 
@@ -65,7 +65,7 @@ Provides:
 
 - basic CRUD access through Spring Data JPA
 - scoped query methods such as "by user and not deleted"
-- custom query implementations for search, recency, and filtering
+- filtering, recency, and reporting-oriented lookup methods where needed
 
 ### `model`
 
@@ -134,4 +134,4 @@ The finished backend should support:
 
 ## Current State Note
 
-The codebase is still converging on this design. Some packages reflect older naming or partially migrated abstractions. This document captures the architecture the repository should align with, not a claim that every current implementation detail already does.
+The codebase is now largely aligned with this design. The remaining gaps are more about coverage depth, future integrations, and product expansion than unresolved package structure.
