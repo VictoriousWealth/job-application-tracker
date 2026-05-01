@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.create.AttachmentCreateDTO;
 import com.nick.job_application_tracker.dto.response.AttachmentResponseDTO;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
 import com.nick.job_application_tracker.mapper.AttachmentMapper;
 import com.nick.job_application_tracker.model.Attachment;
 import com.nick.job_application_tracker.model.JobApplication;
