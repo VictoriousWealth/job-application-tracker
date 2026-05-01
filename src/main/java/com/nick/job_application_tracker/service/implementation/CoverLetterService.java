@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.create.CoverLetterCreateDTO;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
 import com.nick.job_application_tracker.dto.response.CoverLetterResponseDTO;
 import com.nick.job_application_tracker.mapper.CoverLetterMapper;
 import com.nick.job_application_tracker.model.CoverLetter;
