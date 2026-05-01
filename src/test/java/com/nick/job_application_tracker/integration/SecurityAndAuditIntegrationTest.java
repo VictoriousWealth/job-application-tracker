@@ -105,6 +105,38 @@ class SecurityAndAuditIntegrationTest {
     }
 
     @Test
+    void malformedUuidPathParametersReturnStructuredBadRequest() throws Exception {
+        String token = loginAfterSignup("uuid-check@example.com", "Password123!");
+
+        mockMvc.perform(get("/api/job-applications/{id}", "not-a-uuid").header(AUTHORIZATION, bearer(token)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.path").value("/api/job-applications/not-a-uuid"))
+            .andExpect(jsonPath("$.message", containsString("Invalid value for parameter 'id'")));
+    }
+
+    @Test
+    void userAdminEndpointsRejectNonAdminsAndValidateAdminInput() throws Exception {
+        String password = "Password123!";
+        String adminEmail = "user-admin@example.com";
+
+        signup(adminEmail, password);
+        promoteToAdmin(adminEmail);
+
+        String adminToken = login(adminEmail, password);
+        String basicToken = loginAfterSignup("member@example.com", password);
+
+        mockMvc.perform(get("/api/users").header(AUTHORIZATION, bearer(basicToken)))
+            .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/api/users/{id}", "not-a-uuid").header(AUTHORIZATION, bearer(adminToken)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.path").value("/api/users/not-a-uuid"))
+            .andExpect(jsonPath("$.message", containsString("Invalid value for parameter 'id'")));
+    }
+
+    @Test
     void disabledUsersCannotLogInOrReuseExistingTokens() throws Exception {
         String email = "disabled@example.com";
         String password = "Password123!";
