@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.create.FollowUpReminderCreateDTO;
 import com.nick.job_application_tracker.dto.response.FollowUpReminderResponseDTO;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
 import com.nick.job_application_tracker.mapper.FollowUpReminderMapper;
 import com.nick.job_application_tracker.model.FollowUpReminder;
 import com.nick.job_application_tracker.model.JobApplication;
