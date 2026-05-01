@@ -1,7 +1,7 @@
 package com.nick.job_application_tracker.util;
 
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
