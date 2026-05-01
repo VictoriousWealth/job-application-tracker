@@ -91,7 +91,6 @@ public class JwtService {
         return !MessageDigest.isEqual(signature.getBytes(), normalizedSignature.getBytes());
     }
 
-    //TODO instance could be based on header values
     private String generateSignature(String message) throws InvalidKeyException, NoSuchAlgorithmException {
         Mac mac = Mac.getInstance("HmacSHA256");
         SecretKeySpec secretKey = new SecretKeySpec(secretBytes, "HmacSHA256");
