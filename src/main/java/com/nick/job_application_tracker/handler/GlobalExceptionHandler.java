@@ -25,16 +25,16 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.nick.job_application_tracker.common.LogKeys;
 import com.nick.job_application_tracker.dto.special.ErrorResponseDTO;
-import com.nick.job_application_tracker.exception.client_exception.BadRequestException;
-import com.nick.job_application_tracker.exception.client_exception.ConflictException;
-import com.nick.job_application_tracker.exception.client_exception.ForbiddenException;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
-import com.nick.job_application_tracker.exception.client_exception.RateLimitExceededException;
-import com.nick.job_application_tracker.exception.client_exception.UnauthorizedException;
-import com.nick.job_application_tracker.exception.client_exception.ValidationException;
-import com.nick.job_application_tracker.exception.server_exception.InternalServerErrorException;
-import com.nick.job_application_tracker.exception.server_exception.ServiceUnavailableException;
-import com.nick.job_application_tracker.exception.server_exception.specialised_case.DownstreamApiUnavailableException;
+import com.nick.job_application_tracker.exception.client.BadRequestException;
+import com.nick.job_application_tracker.exception.client.ConflictException;
+import com.nick.job_application_tracker.exception.client.ForbiddenException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
+import com.nick.job_application_tracker.exception.client.RateLimitExceededException;
+import com.nick.job_application_tracker.exception.client.UnauthorizedException;
+import com.nick.job_application_tracker.exception.client.ValidationException;
+import com.nick.job_application_tracker.exception.server.InternalServerErrorException;
+import com.nick.job_application_tracker.exception.server.ServiceUnavailableException;
+import com.nick.job_application_tracker.exception.server.specialized.DownstreamApiUnavailableException;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
