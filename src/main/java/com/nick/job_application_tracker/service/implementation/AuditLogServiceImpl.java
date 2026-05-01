@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 
 import com.nick.job_application_tracker.dto.AuditLogDTO;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
 import com.nick.job_application_tracker.model.AuditLog;
 import com.nick.job_application_tracker.model.User;
 import com.nick.job_application_tracker.repository.interfaces.AuditLogRepository;
