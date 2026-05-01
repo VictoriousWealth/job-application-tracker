@@ -25,15 +25,14 @@ import com.nick.job_application_tracker.model.JobSource;
 import com.nick.job_application_tracker.model.Location;
 import com.nick.job_application_tracker.model.Resume;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.ApplicationTimelineRepository;
-import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.specialised_common.JobApplicationServiceInterface;
+import com.nick.job_application_tracker.repository.interfaces.ApplicationTimelineRepository;
+import com.nick.job_application_tracker.repository.interfaces.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 import com.nick.job_application_tracker.util.SecurityUtils;
 
 @Service
-public class JobApplicationService implements JobApplicationServiceInterface {
+public class JobApplicationService {
     private static final Supplier<NotFoundException> EXCEPTION_SUPPLIER = () -> new NotFoundException("Job application not found", null);
 
     private final UserRepository userRepository;
@@ -77,7 +76,6 @@ public class JobApplicationService implements JobApplicationServiceInterface {
         this(locationService, resumeService, coverLetterService, jobSourceService, jobApplicationRepository, userRepository, null, null);
     }
 
-    @Override
     public JobApplicationResponseDTO create(JobApplicationCreateDTO dto) {
         User user = getCurrentUser();
         JobSource jobSource = jobSourceService.getModelById(dto.getSourceId());
@@ -98,26 +96,22 @@ public class JobApplicationService implements JobApplicationServiceInterface {
         return JobApplicationMapper.toResponseDTO(saved);
     }
 
-    @Override
     public JobApplicationDetailDTO getDetailById(UUID id) {
         return JobApplicationMapper.toDetailDTO(getModelById(id));
     }
 
-    @Override
     public JobApplication getModelById(UUID id) {
         User user = getCurrentUser();
         return jobApplicationRepository.findByIdAndUserIdAndDeletedFalse(id, user.getId())
             .orElseThrow(EXCEPTION_SUPPLIER);
     }
 
-    @Override
     public Page<JobApplicationResponseDTO> getAll(Pageable pageable) {
         User user = getCurrentUser();
         Page<JobApplication> jobApplications = jobApplicationRepository.findByUserIdAndDeletedFalse(user.getId(), pageable);
         return jobApplications.map(JobApplicationMapper::toResponseDTO);
     }
 
-    @Override
     public JobApplicationDetailDTO patchById(UUID id, JsonNode node) {
         JobApplication jobApplication = getModelById(id);
         Status previousStatus = jobApplication.getStatus();
@@ -185,7 +179,6 @@ public class JobApplicationService implements JobApplicationServiceInterface {
         return JobApplicationMapper.toDetailDTO(saved);
     }
 
-    @Override
     public JobApplicationDetailDTO updateById(UUID id, JobApplicationUpdateDTO dto) {
         JobApplication jobApplication = getModelById(id);
         Status previousStatus = jobApplication.getStatus();
@@ -206,7 +199,6 @@ public class JobApplicationService implements JobApplicationServiceInterface {
         return JobApplicationMapper.toDetailDTO(saved);
     }
 
-    @Override
     public String deleteById(UUID id) {
         JobApplication jobApplication = getModelById(id);
         jobApplication.softDelete();
