@@ -4,9 +4,7 @@ This repository is the Spring Boot backend for a job application tracking system
 
 ## Status
 
-The documentation in this repository describes the intended completed system.
-
-The implementation itself is still in transition and does not yet fully match the target design described here. Treat the docs as the product and architecture reference, not as a guarantee that every code path is already complete.
+The backend now implements the documented core workflows, secured API surface, extended read models, and behavior-focused test suite. The remaining work is mostly incremental hardening or future product expansion, not a structural rewrite.
 
 ## Target Capabilities
 
@@ -48,12 +46,12 @@ The codebase is organized around standard Spring backend layers:
 
 - `controller`: HTTP endpoints
 - `service`: business logic and orchestration
-- `repository`: persistence and custom queries
+- `repository`: persistence access and ownership-aware query methods
 - `model`: JPA entities and enums
 - `dto`: request and response contracts
 - `config`: security, JWT, OpenAPI, auditing, and filters
 - `handler`: centralized exception handling
-- `scripts`: utility scripts for testing coverage and scaffolding
+- `scripts`: utility scripts for development and coverage
 - `docs`: product and architecture documentation
 
 ## Local Development
