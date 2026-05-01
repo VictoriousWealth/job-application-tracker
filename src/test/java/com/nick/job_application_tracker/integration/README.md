@@ -10,3 +10,4 @@ Integration tests should cover cross-layer workflows such as authenticated job-a
 
 - `JobSearchWorkflowIntegrationTest`: verifies the secured end-to-end user workflow, including signup/login, application creation, related records, insights, exports, calendar output, matching, ownership isolation, and pageable job-application listing.
 - `SecurityAndAuditIntegrationTest`: verifies admin-only audit access, unauthenticated requests, malformed UUID handling, admin user-management denial paths, invalid export requests, and disabled-account token handling.
+- `FrontendShellIntegrationTest`: verifies the bundled frontend shell and public static assets are served by Spring Boot.
