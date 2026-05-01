@@ -15,16 +15,16 @@ import com.nick.job_application_tracker.model.Resume;
 import com.nick.job_application_tracker.model.ScheduledCommunication;
 import com.nick.job_application_tracker.model.SkillTracker;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.ApplicationTimelineRepository;
-import com.nick.job_application_tracker.repository.inter_face.AttachmentRepository;
-import com.nick.job_application_tracker.repository.inter_face.CommunicationLogRepository;
-import com.nick.job_application_tracker.repository.inter_face.CoverLetterRepository;
-import com.nick.job_application_tracker.repository.inter_face.FollowUpReminderRepository;
-import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.inter_face.ResumeRepository;
-import com.nick.job_application_tracker.repository.inter_face.ScheduledCommunicationRepository;
-import com.nick.job_application_tracker.repository.inter_face.SkillTrackerRepository;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.repository.interfaces.ApplicationTimelineRepository;
+import com.nick.job_application_tracker.repository.interfaces.AttachmentRepository;
+import com.nick.job_application_tracker.repository.interfaces.CommunicationLogRepository;
+import com.nick.job_application_tracker.repository.interfaces.CoverLetterRepository;
+import com.nick.job_application_tracker.repository.interfaces.FollowUpReminderRepository;
+import com.nick.job_application_tracker.repository.interfaces.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.interfaces.ResumeRepository;
+import com.nick.job_application_tracker.repository.interfaces.ScheduledCommunicationRepository;
+import com.nick.job_application_tracker.repository.interfaces.SkillTrackerRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
 import com.nick.job_application_tracker.util.SecurityUtils;
 
 @Service
