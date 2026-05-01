@@ -266,6 +266,45 @@ class JobSearchWorkflowIntegrationTest {
             .andExpect(status().isNotFound());
     }
 
+    @Test
+    void jobApplicationsEndpointSupportsPaginationAndSorting() throws Exception {
+        String token = loginAfterSignup("pagination@example.com", "Password123!");
+        UUID sourceId = createResource(
+            "/api/job-sources",
+            token,
+            Map.of("name", "Company Site"),
+            201
+        );
+
+        createJobApplication(token, sourceId, "Platform Engineer", "Beta");
+        createJobApplication(token, sourceId, "Infrastructure Engineer", "Alpha");
+        createJobApplication(token, sourceId, "Distributed Systems Engineer", "Gamma");
+
+        mockMvc.perform(get("/api/job-applications")
+                .param("page", "0")
+                .param("size", "2")
+                .param("sort", "company,asc")
+                .header(AUTHORIZATION, bearer(token)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content.length()").value(2))
+            .andExpect(jsonPath("$.totalElements").value(3))
+            .andExpect(jsonPath("$.totalPages").value(2))
+            .andExpect(jsonPath("$.number").value(0))
+            .andExpect(jsonPath("$.size").value(2))
+            .andExpect(jsonPath("$.content[0].company").value("Alpha"))
+            .andExpect(jsonPath("$.content[1].company").value("Beta"));
+
+        mockMvc.perform(get("/api/job-applications")
+                .param("page", "1")
+                .param("size", "2")
+                .param("sort", "company,asc")
+                .header(AUTHORIZATION, bearer(token)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content.length()").value(1))
+            .andExpect(jsonPath("$.number").value(1))
+            .andExpect(jsonPath("$.content[0].company").value("Gamma"));
+    }
+
     private String loginAfterSignup(String email, String password) throws Exception {
         signup(email, password);
         return login(email, password);
@@ -300,6 +339,22 @@ class JobSearchWorkflowIntegrationTest {
             .andReturn();
 
         return UUID.fromString(readJson(result).get("id").asText());
+    }
+
+    private UUID createJobApplication(String token, UUID sourceId, String jobTitle, String company) throws Exception {
+        return createResource(
+            "/api/job-applications",
+            token,
+            Map.of(
+                "jobTitle", jobTitle,
+                "company", company,
+                "status", "APPLIED",
+                "sourceId", sourceId.toString(),
+                "jobDescription", "Java APIs and distributed systems",
+                "notes", "Pagination coverage"
+            ),
+            201
+        );
     }
 
     private JsonNode readJson(MvcResult result) throws Exception {
