@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.nick.job_application_tracker.dto.create.ResumeCreateDTO;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
 import com.nick.job_application_tracker.dto.response.ResumeResponseDTO;
 import com.nick.job_application_tracker.mapper.ResumeMapper;
 import com.nick.job_application_tracker.model.Resume;
