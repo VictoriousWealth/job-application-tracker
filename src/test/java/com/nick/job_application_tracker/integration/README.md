@@ -1,6 +1,6 @@
 # Integration Tests
 
-This package is reserved for tests that exercise multiple layers together.
+This package contains full-stack tests that exercise multiple layers together through the real Spring Boot application context.
 
 ## Responsibility
 
@@ -8,4 +8,4 @@ Integration tests should cover cross-layer workflows such as authenticated job-a
 
 ## Current State Note
 
-The directory is currently empty, which makes it a good place to add end-to-end workflow tests as the codebase stabilizes.
+- `JobSearchWorkflowIntegrationTest`: verifies the secured end-to-end user workflow, including signup/login, application creation, related records, insights, exports, calendar output, matching, and ownership isolation.
