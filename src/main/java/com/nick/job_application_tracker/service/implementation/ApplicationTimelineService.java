@@ -13,7 +13,7 @@ import com.nick.job_application_tracker.dto.create.ApplicationTimelineCreateDTO;
 import com.nick.job_application_tracker.dto.detail.ApplicationTimelineDetailDTO;
 import com.nick.job_application_tracker.dto.response.ApplicationTimelineResponseDTO;
 import com.nick.job_application_tracker.dto.update.ApplicationTimelineUpdateDTO;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
 import com.nick.job_application_tracker.mapper.ApplicationTimelineMapper;
 import com.nick.job_application_tracker.model.ApplicationTimeline;
 import com.nick.job_application_tracker.model.ApplicationTimeline.EventType;
