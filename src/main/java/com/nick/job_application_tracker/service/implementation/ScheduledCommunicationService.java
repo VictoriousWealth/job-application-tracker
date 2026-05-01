@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.nick.job_application_tracker.dto.create.ScheduledCommunicationCreateDTO;
 import com.nick.job_application_tracker.dto.detail.ScheduledCommunicationDetailDTO;
 import com.nick.job_application_tracker.dto.response.ScheduledCommunicationResponseDTO;
-import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
+import com.nick.job_application_tracker.exception.client.NotFoundException;
 import com.nick.job_application_tracker.mapper.ScheduledCommunicationMapper;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.ScheduledCommunication;
