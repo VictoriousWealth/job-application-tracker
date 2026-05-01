@@ -71,7 +71,7 @@ public class SecurityConfig {
 
         // 🔹 Role-Based Authorization
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers(HttpMethod.GET, "/", "/favicon.ico", "/error").permitAll();
+            auth.requestMatchers(HttpMethod.GET, "/", "/index.html", "/favicon.ico", "/error", "/app.js", "/styles.css").permitAll();
             auth.requestMatchers("/api/auth/login", "/api/auth/signup").permitAll();
             auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll(); // OpenAPI docs
             auth.requestMatchers("/api/users/me").authenticated();
