@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JobTrackr</title>
+    <meta name="description" content="JobTrackr workspace for applications, documents, reminders, insights, and admin operations.">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="backdrop">
+        <div class="backdrop-orb backdrop-orb-a"></div>
+        <div class="backdrop-orb backdrop-orb-b"></div>
+        <div class="backdrop-grid"></div>
+    </div>
+
+    <div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="shell">
+        <section id="authScreen" class="auth-screen">
+            <div class="hero-panel surface">
+                <p class="eyebrow">Bundled Frontend</p>
+                <h1>Run your job search like a living pipeline, not a stack of tabs.</h1>
+                <p class="lede">
+                    JobTrackr turns the backend into a working desk: application tracking, document reuse,
+                    reminders, calendar signals, fit analysis, and an admin trail when you need it.
+                </p>
+
+                <div class="hero-stat-grid">
+                    <article class="hero-stat">
+                        <span class="hero-stat-value">1</span>
+                        <span class="hero-stat-label">workspace for pipeline, docs, and follow-up</span>
+                    </article>
+                    <article class="hero-stat">
+                        <span class="hero-stat-value">3</span>
+                        <span class="hero-stat-label">operating modes: build, review, and act</span>
+                    </article>
+                    <article class="hero-stat">
+                        <span class="hero-stat-value">24/7</span>
+                        <span class="hero-stat-label">same-origin frontend talking directly to the API</span>
+                    </article>
+                </div>
+
+                <div class="feature-list">
+                    <article class="feature-chip">
+                        <h2>Pipeline clarity</h2>
+                        <p>See application status, deadlines, and related activity in one place.</p>
+                    </article>
+                    <article class="feature-chip">
+                        <h2>Document reuse</h2>
+                        <p>Keep resumes and cover letters ready to attach without leaving the workspace.</p>
+                    </article>
+                    <article class="feature-chip">
+                        <h2>Next actions</h2>
+                        <p>Use reminders, events, analytics, and matching to decide what to do next.</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="auth-panel surface">
+                <div class="auth-panel-header">
+                    <div>
+                        <p class="eyebrow">Secure Access</p>
+                        <h2 id="authTitle">Sign in to your workspace</h2>
+                    </div>
+                    <div class="segmented-control" role="tablist" aria-label="Authentication mode">
+                        <button id="loginModeButton" class="segment is-active" type="button" data-auth-mode="login">Log in</button>
+                        <button id="signupModeButton" class="segment" type="button" data-auth-mode="signup">Sign up</button>
+                    </div>
+                </div>
+
+                <p id="authMessage" class="auth-message"></p>
+
+                <form id="loginForm" class="stack-form">
+                    <label>
+                        <span>Email</span>
+                        <input name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+                    </label>
+                    <label>
+                        <span>Password</span>
+                        <input name="password" type="password" autocomplete="current-password" required placeholder="Password123!">
+                    </label>
+                    <button class="primary-button" type="submit">Enter JobTrackr</button>
+                </form>
+
+                <form id="signupForm" class="stack-form" hidden>
+                    <label>
+                        <span>Email</span>
+                        <input name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+                    </label>
+                    <label>
+                        <span>Password</span>
+                        <input name="password" type="password" autocomplete="new-password" required placeholder="Password123!">
+                    </label>
+                    <button class="primary-button" type="submit">Create account</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="workspace" class="workspace" hidden>
+            <aside class="sidebar surface">
+                <div class="brand-lockup">
+                    <p class="eyebrow">Workspace</p>
+                    <h2>JobTrackr</h2>
+                    <p class="sidebar-copy">Applications, documents, reminders, analytics, and admin controls in one live surface.</p>
+                </div>
+
+                <nav class="nav-stack" aria-label="Workspace sections">
+                    <button class="nav-button is-active" type="button" data-view="overview">Overview</button>
+                    <button class="nav-button" type="button" data-view="pipeline">Pipeline</button>
+                    <button class="nav-button" type="button" data-view="library">Library</button>
+                    <button class="nav-button" type="button" data-view="calendar">Calendar</button>
+                    <button class="nav-button" type="button" data-view="account">Account</button>
+                    <button id="adminNavButton" class="nav-button" type="button" data-view="admin" hidden>Admin</button>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <span class="status-pill">Local API</span>
+                    <span class="status-pill status-pill-muted" id="sessionRole">Role loading</span>
+                </div>
+            </aside>
+
+            <div class="workspace-body">
+                <header class="topbar surface">
+                    <div>
+                        <p id="viewEyebrow" class="eyebrow">Workspace pulse</p>
+                        <h1 id="viewTitle">Overview</h1>
+                    </div>
+                    <div class="topbar-actions">
+                        <div class="identity-chip">
+                            <span id="userEmail">loading@example.com</span>
+                        </div>
+                        <button id="refreshButton" class="ghost-button" type="button">Refresh</button>
+                        <button id="logoutButton" class="ghost-button" type="button">Sign out</button>
+                    </div>
+                </header>
+
+                <main class="view-stack">
+                    <section id="overviewView" class="view is-active">
+                        <div id="overviewStats" class="metric-grid"></div>
+                        <div class="split-layout">
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Analytics</p>
+                                        <h2>Pipeline conversion</h2>
+                                    </div>
+                                </div>
+                                <div id="analyticsGrid" class="analytics-grid"></div>
+                                <div class="panel-header panel-header-spaced">
+                                    <div>
+                                        <p class="eyebrow">Sources</p>
+                                        <h2>Source performance</h2>
+                                    </div>
+                                </div>
+                                <div id="sourcePerformance" class="list-block"></div>
+                            </article>
+
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Momentum</p>
+                                        <h2>Recommendations</h2>
+                                    </div>
+                                </div>
+                                <div id="recommendationList" class="list-block"></div>
+                            </article>
+                        </div>
+
+                        <article class="surface panel-card">
+                            <div class="panel-header">
+                                <div>
+                                    <p class="eyebrow">Calendar</p>
+                                    <h2>Upcoming events</h2>
+                                </div>
+                            </div>
+                            <div id="upcomingEvents" class="list-block"></div>
+                        </article>
+                    </section>
+
+                    <section id="pipelineView" class="view" hidden>
+                        <div class="pipeline-layout">
+                            <div class="pipeline-column">
+                                <article class="surface panel-card">
+                                    <div class="panel-header">
+                                        <div>
+                                            <p class="eyebrow">Quick setup</p>
+                                            <h2>Create sources and locations</h2>
+                                        </div>
+                                    </div>
+                                    <div class="mini-form-grid">
+                                        <form id="sourceForm" class="stack-form compact-form">
+                                            <label>
+                                                <span>Job source</span>
+                                                <input name="name" required placeholder="LinkedIn, Referral, Company site">
+                                            </label>
+                                            <button class="ghost-button" type="submit">Add source</button>
+                                        </form>
+
+                                        <form id="locationForm" class="stack-form compact-form">
+                                            <label>
+                                                <span>City</span>
+                                                <input name="city" required placeholder="London">
+                                            </label>
+                                            <label>
+                                                <span>Country</span>
+                                                <input name="country" required placeholder="United Kingdom">
+                                            </label>
+                                            <button class="ghost-button" type="submit">Add location</button>
+                                        </form>
+                                    </div>
+                                </article>
+
+                                <article class="surface panel-card">
+                                    <div class="panel-header">
+                                        <div>
+                                            <p class="eyebrow">New application</p>
+                                            <h2>Start a record</h2>
+                                        </div>
+                                    </div>
+                                    <form id="jobApplicationForm" class="stack-form">
+                                        <div class="field-grid">
+                                            <label>
+                                                <span>Job title</span>
+                                                <input name="jobTitle" required placeholder="Backend Engineer">
+                                            </label>
+                                            <label>
+                                                <span>Company</span>
+                                                <input name="company" required placeholder="OpenAI">
+                                            </label>
+                                        </div>
+                                        <div class="field-grid">
+                                            <label>
+                                                <span>Status</span>
+                                                <select name="status"></select>
+                                            </label>
+                                            <label>
+                                                <span>Source</span>
+                                                <select name="sourceId" required id="jobSourceSelect"></select>
+                                            </label>
+                                        </div>
+                                        <div class="field-grid">
+                                            <label>
+                                                <span>Location</span>
+                                                <select name="locationId" id="jobLocationSelect"></select>
+                                            </label>
+                                            <label>
+                                                <span>Resume</span>
+                                                <select name="resumeId" id="jobResumeSelect"></select>
+                                            </label>
+                                        </div>
+                                        <div class="field-grid">
+                                            <label>
+                                                <span>Cover letter</span>
+                                                <select name="coverLetterId" id="jobCoverLetterSelect"></select>
+                                            </label>
+                                            <label>
+                                                <span>Applied on</span>
+                                                <input name="appliedOn" type="datetime-local">
+                                            </label>
+                                        </div>
+                                        <label>
+                                            <span>Deadline</span>
+                                            <input name="deadline" type="datetime-local">
+                                        </label>
+                                        <label>
+                                            <span>Job description</span>
+                                            <textarea name="jobDescription" rows="5" required placeholder="Paste the role brief, keywords, or the parts you want to match against."></textarea>
+                                        </label>
+                                        <label>
+                                            <span>Notes</span>
+                                            <textarea name="notes" rows="4" placeholder="Capture why this role matters, outreach context, or prep notes."></textarea>
+                                        </label>
+                                        <button class="primary-button" type="submit">Create application</button>
+                                    </form>
+                                </article>
+                            </div>
+
+                            <div class="pipeline-column pipeline-column-wide">
+                                <article class="surface panel-card">
+                                    <div class="panel-header panel-header-wrap">
+                                        <div>
+                                            <p class="eyebrow">Pipeline</p>
+                                            <h2>Your applications</h2>
+                                        </div>
+                                        <div class="inline-controls">
+                                            <label class="inline-select">
+                                                <span>Sort</span>
+                                                <select id="applicationSort">
+                                                    <option value="createdAt,desc">Newest first</option>
+                                                    <option value="company,asc">Company A to Z</option>
+                                                    <option value="status,asc">Status</option>
+                                                    <option value="deadline,asc">Deadline</option>
+                                                </select>
+                                            </label>
+                                            <div class="pager">
+                                                <button id="applicationsPrev" class="ghost-button" type="button">Prev</button>
+                                                <span id="applicationPageLabel">Page 1</span>
+                                                <button id="applicationsNext" class="ghost-button" type="button">Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="applicationList" class="application-list"></div>
+                                </article>
+
+                                <article class="surface panel-card">
+                                    <div class="panel-header panel-header-wrap">
+                                        <div>
+                                            <p class="eyebrow">Selected record</p>
+                                            <h2 id="selectedApplicationTitle">Choose an application</h2>
+                                        </div>
+                                        <div class="inline-controls">
+                                            <label class="inline-select">
+                                                <span>Status</span>
+                                                <select id="selectedStatus"></select>
+                                            </label>
+                                            <button id="saveStatusButton" class="ghost-button" type="button">Update status</button>
+                                            <button id="deleteApplicationButton" class="ghost-button danger-button" type="button">Delete</button>
+                                        </div>
+                                    </div>
+
+                                    <div id="selectedApplicationSummary" class="application-summary empty-shell">
+                                        Select a record to open its workspace.
+                                    </div>
+
+                                    <div class="detail-grid">
+                                        <section class="surface inset-card">
+                                            <div class="panel-header">
+                                                <div>
+                                                    <p class="eyebrow">Timeline</p>
+                                                    <h3>Activity</h3>
+                                                </div>
+                                            </div>
+                                            <div id="timelineList" class="list-block"></div>
+                                        </section>
+
+                                        <section class="surface inset-card">
+                                            <div class="panel-header">
+                                                <div>
+                                                    <p class="eyebrow">Matching</p>
+                                                    <h3>Fit guidance</h3>
+                                                </div>
+                                            </div>
+                                            <div id="matchingPanel" class="list-block"></div>
+                                        </section>
+                                    </div>
+
+                                    <div class="related-grid">
+                                        <section class="surface inset-card">
+                                            <div class="panel-header">
+                                                <div>
+                                                    <p class="eyebrow">Skills</p>
+                                                    <h3>Tracked keywords</h3>
+                                                </div>
+                                            </div>
+                                            <form id="skillForm" class="stack-form compact-form">
+                                                <label>
+                                                    <span>Skill name</span>
+                                                    <input name="skillName" required placeholder="Java, Docker, Distributed Systems">
+                                                </label>
+                                                <button class="ghost-button" type="submit">Add skill</button>
+                                            </form>
+                                            <div id="skillList" class="pill-list"></div>
+                                        </section>
+
+                                        <section class="surface inset-card">
+                                            <div class="panel-header">
+                                                <div>
+                                                    <p class="eyebrow">Attachments</p>
+                                                    <h3>Files</h3>
+                                                </div>
+                                            </div>
+                                            <form id="attachmentForm" class="stack-form compact-form">
+                                                <label>
+                                                    <span>Type</span>
+                                                    <select name="type"></select>
+                                                </label>
+                                                <label>
+                                                    <span>File path</span>
+                                                    <input name="filePath" required placeholder="/docs/job-description.pdf">
+                                                </label>
+                                                <button class="ghost-button" type="submit">Add attachment</button>
+                                            </form>
+                                            <div id="attachmentList" class="list-block"></div>
+                                        </section>
+
+                                        <section class="surface inset-card">
+                                            <div class="panel-header">
+                                                <div>
+                                                    <p class="eyebrow">Communications</p>
+                                                    <h3>Outreach history</h3>
+                                                </div>
+                                            </div>
+                                            <form id="communicationForm" class="stack-form compact-form">
+                                                <div class="field-grid">
+                                                    <label>
+                                                        <span>Method</span>
+                                                        <select name="type"></select>
+                                                    </label>
+                                                    <label>
+                                                        <span>Direction</span>
+                                                        <select name="direction"></select>
+                                                    </label>
+                                                </div>
+                                                <label>
+                                                    <span>Timestamp</span>
+                                                    <input name="timestamp" type="datetime-local" required>
+                                                </label>
+                                                <label>
+                                                    <span>Message</span>
+                                                    <textarea name="message" rows="3" required placeholder="Reached out to recruiter about next steps."></textarea>
+                                                </label>
+                                                <button class="ghost-button" type="submit">Log communication</button>
+                                            </form>
+                                            <div id="communicationList" class="list-block"></div>
+                                        </section>
+
+                                        <section class="surface inset-card">
+                                            <div class="panel-header">
+                                                <div>
+                                                    <p class="eyebrow">Follow-up</p>
+                                                    <h3>Reminders</h3>
+                                                </div>
+                                            </div>
+                                            <form id="followUpForm" class="stack-form compact-form">
+                                                <label>
+                                                    <span>Remind on</span>
+                                                    <input name="remindOn" type="datetime-local" required>
+                                                </label>
+                                                <label>
+                                                    <span>Note</span>
+                                                    <textarea name="note" rows="3" required placeholder="Check in after interview loop."></textarea>
+                                                </label>
+                                                <button class="ghost-button" type="submit">Create reminder</button>
+                                            </form>
+                                            <div id="followUpList" class="list-block"></div>
+                                        </section>
+
+                                        <section class="surface inset-card">
+                                            <div class="panel-header">
+                                                <div>
+                                                    <p class="eyebrow">Events</p>
+                                                    <h3>Scheduled communications</h3>
+                                                </div>
+                                            </div>
+                                            <form id="scheduledForm" class="stack-form compact-form">
+                                                <label>
+                                                    <span>Type</span>
+                                                    <select name="type"></select>
+                                                </label>
+                                                <label>
+                                                    <span>Scheduled for</span>
+                                                    <input name="scheduledFor" type="datetime-local" required>
+                                                </label>
+                                                <label>
+                                                    <span>Notes</span>
+                                                    <textarea name="notes" rows="3" required placeholder="System design interview, take-home review, or recruiter call."></textarea>
+                                                </label>
+                                                <button class="ghost-button" type="submit">Add event</button>
+                                            </form>
+                                            <div id="scheduledList" class="list-block"></div>
+                                        </section>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="libraryView" class="view" hidden>
+                        <div class="split-layout">
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Documents</p>
+                                        <h2>Resumes</h2>
+                                    </div>
+                                </div>
+                                <form id="resumeForm" class="stack-form compact-form">
+                                    <label>
+                                        <span>Title</span>
+                                        <input name="title" required placeholder="Backend Resume">
+                                    </label>
+                                    <label>
+                                        <span>File path</span>
+                                        <input name="filePath" required placeholder="/docs/backend-resume.pdf">
+                                    </label>
+                                    <button class="ghost-button" type="submit">Save resume</button>
+                                </form>
+                                <div id="resumeList" class="list-block"></div>
+                            </article>
+
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Documents</p>
+                                        <h2>Cover letters</h2>
+                                    </div>
+                                </div>
+                                <form id="coverLetterForm" class="stack-form compact-form">
+                                    <label>
+                                        <span>Title</span>
+                                        <input name="title" required placeholder="Platform Cover Letter">
+                                    </label>
+                                    <label>
+                                        <span>File path</span>
+                                        <input name="filePath" required placeholder="/docs/platform-cover-letter.pdf">
+                                    </label>
+                                    <label>
+                                        <span>Content</span>
+                                        <textarea name="content" rows="6" placeholder="Paste a reusable body or summary."></textarea>
+                                    </label>
+                                    <button class="ghost-button" type="submit">Save cover letter</button>
+                                </form>
+                                <div id="coverLetterList" class="list-block"></div>
+                            </article>
+                        </div>
+
+                        <div class="split-layout">
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Metadata</p>
+                                        <h2>Job sources</h2>
+                                    </div>
+                                </div>
+                                <div id="sourceList" class="list-block"></div>
+                            </article>
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Metadata</p>
+                                        <h2>Locations</h2>
+                                    </div>
+                                </div>
+                                <div id="locationList" class="list-block"></div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section id="calendarView" class="view" hidden>
+                        <article class="surface panel-card">
+                            <div class="panel-header panel-header-wrap">
+                                <div>
+                                    <p class="eyebrow">Sync and export</p>
+                                    <h2>Calendar and workspace exports</h2>
+                                </div>
+                                <div class="button-row">
+                                    <button id="downloadCalendarButton" class="ghost-button" type="button">Download ICS</button>
+                                    <button id="downloadJsonButton" class="ghost-button" type="button">Export JSON</button>
+                                    <button id="downloadCsvButton" class="ghost-button" type="button">Export CSV</button>
+                                    <button id="downloadPdfButton" class="ghost-button" type="button">Export PDF</button>
+                                </div>
+                            </div>
+                            <form id="calendarFilterForm" class="filter-form">
+                                <label>
+                                    <span>From</span>
+                                    <input name="from" type="date">
+                                </label>
+                                <label>
+                                    <span>To</span>
+                                    <input name="to" type="date">
+                                </label>
+                                <button class="primary-button" type="submit">Refresh events</button>
+                            </form>
+                        </article>
+
+                        <article class="surface panel-card">
+                            <div class="panel-header">
+                                <div>
+                                    <p class="eyebrow">Calendar feed</p>
+                                    <h2>Upcoming reminders and interviews</h2>
+                                </div>
+                            </div>
+                            <div id="calendarEventList" class="list-block"></div>
+                        </article>
+                    </section>
+
+                    <section id="accountView" class="view" hidden>
+                        <div class="split-layout">
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Profile</p>
+                                        <h2>Update your account</h2>
+                                    </div>
+                                </div>
+                                <form id="profileForm" class="stack-form">
+                                    <label>
+                                        <span>Email</span>
+                                        <input id="profileEmailInput" name="email" type="email" placeholder="you@example.com">
+                                    </label>
+                                    <label>
+                                        <span>New password</span>
+                                        <input name="password" type="password" autocomplete="new-password" placeholder="Leave blank to keep current password">
+                                    </label>
+                                    <button class="primary-button" type="submit">Save profile</button>
+                                </form>
+                            </article>
+
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Session</p>
+                                        <h2>Current access</h2>
+                                    </div>
+                                </div>
+                                <div id="accountSnapshot" class="list-block"></div>
+                                <button id="deactivateAccountButton" class="ghost-button danger-button" type="button">Deactivate account</button>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section id="adminView" class="view" hidden>
+                        <div class="split-layout">
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Admin</p>
+                                        <h2>Users</h2>
+                                    </div>
+                                </div>
+                                <div id="adminUserList" class="list-block"></div>
+                            </article>
+                            <article class="surface panel-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Admin</p>
+                                        <h2>Audit log</h2>
+                                    </div>
+                                </div>
+                                <div id="auditLogList" class="list-block"></div>
+                            </article>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </section>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+</body>
+</html>
