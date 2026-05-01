@@ -8,5 +8,5 @@ Integration tests should cover cross-layer workflows such as authenticated job-a
 
 ## Current State Note
 
-- `JobSearchWorkflowIntegrationTest`: verifies the secured end-to-end user workflow, including signup/login, application creation, related records, insights, exports, calendar output, matching, and ownership isolation.
-- `SecurityAndAuditIntegrationTest`: verifies admin-only audit access, unauthenticated and invalid-request failures, and disabled-account token handling.
+- `JobSearchWorkflowIntegrationTest`: verifies the secured end-to-end user workflow, including signup/login, application creation, related records, insights, exports, calendar output, matching, ownership isolation, and pageable job-application listing.
+- `SecurityAndAuditIntegrationTest`: verifies admin-only audit access, unauthenticated requests, malformed UUID handling, admin user-management denial paths, invalid export requests, and disabled-account token handling.
