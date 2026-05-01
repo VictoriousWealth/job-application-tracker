@@ -11,21 +11,19 @@ import com.nick.job_application_tracker.dto.response.SkillTrackerResponseDTO;
 import com.nick.job_application_tracker.mapper.SkillTrackerMapper;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.SkillTracker;
-import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.inter_face.SkillTrackerRepository;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.specialised_common.JobApplicationServiceInterface;
+import com.nick.job_application_tracker.repository.interfaces.SkillTrackerRepository;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 
 @Service
 public class SkillTrackerService {
 
     private final SkillTrackerRepository repo;
-    private final JobApplicationServiceInterface jobApplicationService;
+    private final JobApplicationService jobApplicationService;
     private final AuditLogService auditLogService;
 
     public SkillTrackerService(
         SkillTrackerRepository repo,
-        JobApplicationServiceInterface jobApplicationService,
+        JobApplicationService jobApplicationService,
         AuditLogService auditLogService
     ) {
         this.repo = repo;
