@@ -4,11 +4,9 @@ This package owns database access.
 
 ## Package Split
 
-The repository code is divided into three concerns:
+The repository code is centered on one concern:
 
-- `inter_face`: Spring Data repository interfaces
-- `custom`: custom repository contracts for non-trivial queries
-- `implementation`: custom repository implementations
+- `interfaces`: Spring Data repository interfaces
 
 ## Domain Coverage
 
@@ -36,7 +34,6 @@ Repositories should provide:
 - scoped queries that respect ownership and soft deletion
 - filtering by status, source, location, keywords, and time where useful
 - pagination for collection queries
-- custom search and reporting queries when method-name conventions are not enough
 
 ## Rule Of Thumb
 
