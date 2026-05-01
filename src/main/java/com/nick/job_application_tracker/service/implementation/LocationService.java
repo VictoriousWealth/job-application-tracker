@@ -17,12 +17,11 @@ import com.nick.job_application_tracker.exception.client_exception.ConflictExcep
 import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
 import com.nick.job_application_tracker.mapper.LocationMapper;
 import com.nick.job_application_tracker.model.Location;
-import com.nick.job_application_tracker.repository.inter_face.LocationRepository;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
-import com.nick.job_application_tracker.service.specialised_common.LocationServiceInterface;
+import com.nick.job_application_tracker.repository.interfaces.LocationRepository;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 
 @Service
-public class LocationService implements LocationServiceInterface {
+public class LocationService {
 
     private final LocationRepository locationRepository;
     private final AuditLogService auditLogService;
@@ -87,29 +86,24 @@ public class LocationService implements LocationServiceInterface {
             });
     }
 
-    @Override
     public LocationResponseDTO create(LocationCreateDTO dto) {
         return createLocation(dto);
     }
 
-    @Override
     public LocationDetailDTO getDetailById(UUID id) {
         return getLocationById(id)
             .orElseThrow(() -> new NotFoundException("Location not found", null));
     }
 
-    @Override
     public Location getModelById(UUID id) {
         return locationRepository.findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new NotFoundException("Location not found", null));
     }
 
-    @Override
     public Page<LocationResponseDTO> getAll(Pageable pageable) {
         return locationRepository.findAllByDeletedFalse(pageable).map(LocationMapper::toResponseDTO);
     }
 
-    @Override
     public LocationDetailDTO patchById(UUID id, JsonNode node) {
         Location location = getModelById(id);
         if (node.has("city")) {
@@ -123,7 +117,6 @@ public class LocationService implements LocationServiceInterface {
         return LocationMapper.toDetailDTO(location);
     }
 
-    @Override
     public LocationDetailDTO updateById(UUID id, LocationUpdateDTO dto) {
         Location location = getModelById(id);
         LocationMapper.updateEntity(location, dto);
@@ -132,7 +125,6 @@ public class LocationService implements LocationServiceInterface {
         return LocationMapper.toDetailDTO(location);
     }
 
-    @Override
     public String deleteById(UUID id) {
         deleteLocation(id);
         return "No Content";
