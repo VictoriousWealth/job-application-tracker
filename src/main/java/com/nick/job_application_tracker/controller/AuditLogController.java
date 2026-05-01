@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nick.job_application_tracker.dto.AuditLogDTO;
 import com.nick.job_application_tracker.dto.special.ErrorResponseDTO;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
