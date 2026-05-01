@@ -16,8 +16,8 @@ import com.nick.job_application_tracker.exception.client_exception.ConflictExcep
 import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
 import com.nick.job_application_tracker.mapper.JobSourceMapper;
 import com.nick.job_application_tracker.model.JobSource;
-import com.nick.job_application_tracker.repository.inter_face.JobSourceRepository;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.repository.interfaces.JobSourceRepository;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 
 @Service
 public class JobSourceService {
