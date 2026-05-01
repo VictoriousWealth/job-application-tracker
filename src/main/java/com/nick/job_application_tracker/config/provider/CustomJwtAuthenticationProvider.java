@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.nick.job_application_tracker.config.CustomJwtAuthenticationToken;
 import com.nick.job_application_tracker.config.service.JwtService;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
 
 @Component
 public class CustomJwtAuthenticationProvider implements AuthenticationProvider {
