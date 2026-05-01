@@ -12,9 +12,9 @@ import com.nick.job_application_tracker.exception.client_exception.NotFoundExcep
 import com.nick.job_application_tracker.dto.response.CoverLetterResponseDTO;
 import com.nick.job_application_tracker.mapper.CoverLetterMapper;
 import com.nick.job_application_tracker.model.CoverLetter;
-import com.nick.job_application_tracker.repository.inter_face.CoverLetterRepository;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.repository.interfaces.CoverLetterRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 import com.nick.job_application_tracker.util.SecurityUtils;
 
 @Service
