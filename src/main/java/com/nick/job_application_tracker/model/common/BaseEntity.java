@@ -40,7 +40,7 @@ public abstract class BaseEntity {
     @Column(name = "updated_by")
     protected String updatedBy;
 
-    //TODO: put this in dtos to avoid conflicting queries
+    // Optimistic locking prevents lost updates when the same record is changed concurrently.
     @Version
     @Column(name = "version", nullable = false)
     protected Long version; 
