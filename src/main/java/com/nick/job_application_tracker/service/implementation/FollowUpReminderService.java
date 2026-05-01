@@ -14,10 +14,10 @@ import com.nick.job_application_tracker.mapper.FollowUpReminderMapper;
 import com.nick.job_application_tracker.model.FollowUpReminder;
 import com.nick.job_application_tracker.model.JobApplication;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.FollowUpReminderRepository;
-import com.nick.job_application_tracker.repository.inter_face.JobApplicationRepository;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.repository.interfaces.FollowUpReminderRepository;
+import com.nick.job_application_tracker.repository.interfaces.JobApplicationRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 import com.nick.job_application_tracker.util.SecurityUtils;
 
 @Service
