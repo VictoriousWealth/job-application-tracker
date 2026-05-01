@@ -1,10 +1,10 @@
-# JobTrackr Backend
+# JobTrackr
 
-This repository is the Spring Boot backend for a job application tracking system. The finished product is meant to let a user manage the full lifecycle of a job search in one place: applications, resumes, cover letters, communications, reminders, interviews, attachments, skills, audit history, and reporting-ready metadata.
+This repository is a Spring Boot job application tracking system with both the backend API and a bundled server-served frontend. The finished product is meant to let a user manage the full lifecycle of a job search in one place: applications, resumes, cover letters, communications, reminders, interviews, attachments, skills, audit history, and reporting-ready metadata.
 
 ## Status
 
-The backend now implements the documented core workflows, secured API surface, extended read models, and behavior-focused test suite. The remaining work is mostly incremental hardening or future product expansion, not a structural rewrite.
+The repository now implements the documented core workflows, secured API surface, bundled frontend workspace, extended read models, and behavior-focused test suite. The remaining work is mostly incremental hardening or future product expansion, not a structural rewrite.
 
 ## Target Capabilities
 
@@ -16,6 +16,7 @@ The backend now implements the documented core workflows, secured API surface, e
 - Searchable metadata for sources, locations, and skills
 - Auditable CRUD activity and administrator visibility into user/account state
 - API-first design suitable for a future web or mobile client
+- Bundled browser workspace for the current backend without requiring a separate frontend toolchain
 
 ## Documentation Map
 
@@ -50,6 +51,7 @@ The codebase is organized around standard Spring backend layers:
 - `model`: JPA entities and enums
 - `dto`: request and response contracts
 - `config`: security, JWT, OpenAPI, auditing, and filters
+- `src/main/resources/static`: bundled frontend shell, styles, and client-side API integration
 - `handler`: centralized exception handling
 - `scripts`: utility scripts for development and coverage
 - `docs`: product and architecture documentation
@@ -74,6 +76,8 @@ Typical commands:
 ./gradlew test
 ./gradlew bootRun
 ```
+
+Once the app is running, open `http://localhost:8080/` to use the bundled frontend.
 
 ## Product Direction
 
