@@ -11,9 +11,9 @@ import com.nick.job_application_tracker.dto.AuditLogDTO;
 import com.nick.job_application_tracker.exception.client_exception.NotFoundException;
 import com.nick.job_application_tracker.model.AuditLog;
 import com.nick.job_application_tracker.model.User;
-import com.nick.job_application_tracker.repository.inter_face.AuditLogRepository;
-import com.nick.job_application_tracker.repository.inter_face.UserRepository;
-import com.nick.job_application_tracker.service.inter_face.AuditLogService;
+import com.nick.job_application_tracker.repository.interfaces.AuditLogRepository;
+import com.nick.job_application_tracker.repository.interfaces.UserRepository;
+import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 import com.nick.job_application_tracker.util.SecurityUtils;
 
 @Service
