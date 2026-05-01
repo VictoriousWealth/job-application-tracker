@@ -4,9 +4,9 @@ This package defines the domain-specific exception model for the backend.
 
 ## Main Categories
 
-- `base_case`: shared exception base classes
-- `client_exception`: errors caused by invalid input, missing resources, forbidden actions, or similar client-side conditions
-- `server_exception`: internal failures and unavailable downstream or platform conditions
+- `base`: shared exception base classes
+- `client`: errors caused by invalid input, missing resources, forbidden actions, or similar client-side conditions
+- `server`: internal failures and unavailable downstream or platform conditions
 
 ## Purpose
 
