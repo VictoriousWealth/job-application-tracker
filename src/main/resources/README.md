@@ -1,6 +1,6 @@
 # Resource Files
 
-This directory contains runtime configuration and logging resources.
+This directory contains runtime configuration, logging resources, and the bundled static frontend.
 
 ## Files
 
@@ -8,6 +8,7 @@ This directory contains runtime configuration and logging resources.
 - `application-dev.yaml`: development profile settings
 - `application-prod.yaml`: production profile settings
 - `logback-spring.xml`: logging configuration
+- `static/`: server-served frontend assets (`index.html`, `styles.css`, `app.js`)
 
 ## Intended Use
 
@@ -15,3 +16,4 @@ This directory contains runtime configuration and logging resources.
 - use profile-specific files for environment-dependent settings
 - source secrets and database credentials from environment variables or `.env`
 - keep logging structured and consistent across environments
+- keep the bundled frontend same-origin with the API so JWT-based requests can use the existing backend directly
