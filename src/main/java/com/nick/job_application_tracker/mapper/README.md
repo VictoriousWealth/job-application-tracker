@@ -39,4 +39,4 @@ The mapper layer is expected to support the same main domain resources as the DT
 
 ## Current State Note
 
-This package shows the intended transformation boundary for the system, but naming and implementation style are still mixed between static helpers and component-based mappers. The long-term goal should be a single, consistent mapping strategy.
+This package is now intentionally resource-specific. Some mappers are static utility-style helpers and others are Spring components, but the unused generic base abstraction has been removed because mapper signatures vary by resource and related entities.
