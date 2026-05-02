@@ -1,6 +1,6 @@
 # Configuration Layer
 
-This package contains cross-cutting runtime configuration for the backend.
+This package contains cross-cutting runtime configuration for the application.
 
 ## Main Concerns
 
@@ -13,10 +13,11 @@ This package contains cross-cutting runtime configuration for the backend.
 - `JpaAuditingConfig` and `AuditorAwareImpl`: entity auditing support
 - `OpenApiConfig`: generated API documentation configuration
 - `ApiResponseFactory`: shared API response construction support
+- same-origin public asset handling for `/`, `/index.html`, `/app.js`, and `/styles.css`
 
-## Target Outcome
+## Runtime Expectations
 
-The finished configuration layer should provide:
+The configuration layer should provide:
 
 - secure authentication and authorization boundaries
 - request-scoped user identity
@@ -26,4 +27,4 @@ The finished configuration layer should provide:
 
 ## Current State Note
 
-Security and documentation are among the most sensitive parts of the repository. Treat this package as foundational infrastructure and keep its behavior aligned with the product-level requirements in `docs/SYSTEM_FEATURES.md`.
+Security and documentation are among the most sensitive parts of the repository. Treat this package as foundational infrastructure and keep its behavior aligned with the product-level requirements in `docs/SYSTEM_FEATURES.md`, especially the boundary between public frontend assets and protected API routes.
