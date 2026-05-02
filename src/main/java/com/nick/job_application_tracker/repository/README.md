@@ -1,6 +1,6 @@
 # Repository Layer
 
-This package owns database access.
+This package owns database access for the application.
 
 ## Package Split
 
