@@ -1,11 +1,11 @@
 # Documentation Index
 
-This directory collects the repository-level documentation for the intended finished system.
+This directory collects the repository-level documentation for the current system and its near-term evolution.
 
 ## Product And Design
 
-- [SYSTEM_FEATURES.md](./SYSTEM_FEATURES.md): complete target feature set, expected results, and expected system effects
-- [ARCHITECTURE.md](./ARCHITECTURE.md): target architecture, package layout, and request flow
+- [SYSTEM_FEATURES.md](./SYSTEM_FEATURES.md): implemented feature set, expected results, and expected system effects
+- [ARCHITECTURE.md](./ARCHITECTURE.md): current architecture, package layout, and request flow
 
 ## Repository Guides
 
@@ -13,10 +13,11 @@ This directory collects the repository-level documentation for the intended fini
 - [../HELP.md](../HELP.md): developer setup and quickstart
 - [../CVREADME.md](../CVREADME.md): concise architecture summary
 - [../scripts/README.md](../scripts/README.md): utility scripts
+- [../src/main/resources/static/README.md](../src/main/resources/static/README.md): bundled frontend overview
 
 ## Package-Level Documentation
 
-The source tree also includes focused READMEs for the main backend packages:
+The source tree also includes focused READMEs for the main application packages:
 
 - `src/main/java/com/nick/job_application_tracker/controller`
 - `src/main/java/com/nick/job_application_tracker/dto`
@@ -30,4 +31,4 @@ The source tree also includes focused READMEs for the main backend packages:
 
 ## Scope Note
 
-These docs describe the system this repository is meant to become. The implementation is still in progress, so use the documentation as the target reference rather than assuming every capability is already production-ready.
+These docs describe the implemented system, its architecture, and the direction for future expansion. Use them as the current operating reference, while still treating deployment, UX, and scaling concerns as separate workstreams.
