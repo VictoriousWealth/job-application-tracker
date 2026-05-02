@@ -1,6 +1,6 @@
 # Scripts
 
-This directory contains helper scripts for coverage reporting and test scaffolding.
+This directory contains helper scripts for coverage reporting and test scaffolding support.
 
 ## Script Index
 
@@ -35,7 +35,7 @@ What it does:
 
 ## Template Generator Scripts
 
-The generator scripts are meant to create placeholders quickly when a new layer is added. They are useful for bootstrapping package structure, but they do not create production-quality tests.
+The generator scripts create placeholders quickly when a new layer is added. They are useful for bootstrapping package structure, but they do not create production-quality tests.
 
 After running one of the generators, expect to:
 
@@ -46,4 +46,4 @@ After running one of the generators, expect to:
 
 ## Recommendation
 
-Treat these scripts as development convenience tools. The long-term standard for this repository should be behavior-driven tests that validate business rules, security boundaries, and persistence behavior.
+Treat these scripts as development convenience tools. The maintained standard for this repository is behavior-driven testing of the API, services, integrations, and bundled frontend smoke surface. The frontend itself is zero-build and does not rely on this directory.
