@@ -74,6 +74,7 @@ See [HELP.md](./HELP.md) for the full setup guide. At a minimum, local developme
 - PostgreSQL
 - environment variables or a `.env` file for:
   - `SPRING_PROFILES_ACTIVE`
+  - `JWT_SECRET`
   - `POSTGRES_HOST`
   - `POSTGRES_PORT`
   - `POSTGRES_DB`
@@ -90,6 +91,45 @@ Typical commands:
 Once the app is running, open `http://localhost:8080/` to use the bundled frontend.
 
 For local non-test runs, set `JWT_SECRET` explicitly so tokens remain valid across restarts.
+
+## How To Run
+
+1. Create a `.env` file in the repository root.
+
+```env
+SPRING_PROFILES_ACTIVE=dev
+JWT_SECRET=replace-with-at-least-32-bytes-or-base64
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=jobtrackr
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+```
+
+2. Make sure PostgreSQL is running and the `POSTGRES_DB` database already exists.
+
+3. Start the application.
+
+```bash
+./gradlew bootRun
+```
+
+4. Open the app in your browser.
+
+```text
+http://localhost:8080/
+```
+
+5. Optional: run the automated tests in a separate shell.
+
+```bash
+./gradlew test
+```
+
+Useful local URLs:
+
+- `http://localhost:8080/`: bundled frontend
+- `http://localhost:8080/swagger-ui/index.html`: Swagger UI
 
 ## Product Direction
 
