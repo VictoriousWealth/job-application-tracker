@@ -1,6 +1,6 @@
 # Domain Model
 
-This package contains the persistent domain for the backend.
+This package contains the persistent domain for the application.
 
 ## Core Entities
 
@@ -21,7 +21,7 @@ This package contains the persistent domain for the backend.
 
 ## Shared Entity Conventions
 
-Most entities are meant to inherit common behavior from `BaseEntity`:
+Most entities inherit common behavior from `BaseEntity`:
 
 - UUID primary key
 - creation and update timestamps
@@ -29,9 +29,9 @@ Most entities are meant to inherit common behavior from `BaseEntity`:
 - optimistic locking support
 - soft-delete support for history-preserving resources
 
-## Target Ownership Model
+## Ownership Model
 
-The intended domain boundary is:
+The domain boundary is:
 
 - a `User` owns their `JobApplication` records
 - application-linked entities such as attachments, reminders, schedules, and communications should resolve back to that same user through the application
@@ -51,4 +51,4 @@ When the model is fully supported by the service and repository layers, it shoul
 
 ## Current State Note
 
-The entity set reflects the intended finished product well, even though some implementation details elsewhere in the repository are still being reconciled.
+The entity set now matches the active service, repository, and integration-test surface. Future domain changes should preserve user ownership, auditability, and UUID-based identity.
