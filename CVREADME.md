@@ -1,10 +1,10 @@
 # Architecture Summary
 
-This file is a short, portfolio-style summary of the repository.
+This file is a short, portfolio-style summary of the repository as it exists today.
 
 ## Purpose
 
-The project is intended to be a backend API for managing the full job search lifecycle:
+The project is a Spring Boot application for managing the full job search lifecycle:
 
 - account creation and authentication
 - job application tracking
@@ -14,8 +14,9 @@ The project is intended to be a backend API for managing the full job search lif
 - interview and assessment scheduling
 - follow-up reminders
 - audit logging and operational traceability
+- a bundled browser workspace served from the same application
 
-## Target Design
+## Architecture
 
 The system follows a standard layered Spring architecture:
 
@@ -29,16 +30,17 @@ The system follows a standard layered Spring architecture:
 
 ## Why This Structure
 
-The intended end state is a backend that is:
+The implemented design is a layered application that is:
 
 - maintainable: responsibilities separated by layer and domain
 - auditable: important mutations should leave a trace
 - reusable: documents, sources, locations, and skills can be shared across workflows
 - extensible: ready for analytics, exports, dashboards, and AI-assisted features
+- directly usable: the bundled frontend consumes the secured API without a separate frontend deployment
 
 ## Product Outcome
 
-Once complete, the system should give a user one place to answer the practical questions of a job search:
+The system gives a user one place to answer the practical questions of a job search:
 
 - Which roles have I applied to?
 - Which documents did I use?
@@ -48,4 +50,4 @@ Once complete, the system should give a user one place to answer the practical q
 
 ## Important Note
 
-This summary describes the intended finished system. The current implementation is still being refactored and does not yet fully match that target.
+The repository is functionally working and test-green locally. The main remaining gaps are operational hardening and future expansion rather than missing core workflows.
