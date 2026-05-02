@@ -8,4 +8,4 @@ This package is reserved for tests around application configuration, security wi
 
 ## Current State Note
 
-The directory is currently light on files, but it provides the expected home for future configuration and bootstrapping tests.
+The directory is intentionally narrow right now. It holds configuration-focused tests such as JWT behavior and remains the home for additional security, profile, or bootstrapping coverage.
