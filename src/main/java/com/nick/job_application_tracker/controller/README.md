@@ -1,6 +1,6 @@
 # Controller Layer
 
-This package contains the REST API entry points for the backend.
+This package contains the REST API entry points for the application.
 
 ## Responsibility
 
@@ -12,7 +12,7 @@ Controllers should:
 - return stable response DTOs
 - avoid embedding persistence or domain logic directly
 
-## Target Endpoint Groups
+## Endpoint Groups
 
 - `AuthController`: signup, login, token refresh, and current-user auth state
 - `UserController`: profile management and admin-visible account operations
@@ -35,7 +35,7 @@ Controllers should:
 
 ## Design Expectations
 
-In the finished system, controllers should expose:
+Controllers should expose:
 
 - consistent `/api/...` routing
 - pageable list responses where collections can grow
@@ -45,4 +45,4 @@ In the finished system, controllers should expose:
 
 ## Notes On Current State
 
-The package already expresses the intended API surface, but some controllers still reflect in-progress refactoring. Use this README as the target responsibility map for the controller layer.
+This package now reflects the working API surface used by both tests and the bundled frontend. Future changes should preserve consistent routing, user scoping, and error-shape behavior.
