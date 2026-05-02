@@ -12,4 +12,4 @@ These classes should expose enough information for a client to render a focused 
 
 ## Current State Note
 
-When a controller returns a single resource by ID, this package is usually the intended output family.
+When a controller returns a single resource by ID, this package is usually the default output family.
