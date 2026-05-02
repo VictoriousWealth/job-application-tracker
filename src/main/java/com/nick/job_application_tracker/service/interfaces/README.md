@@ -2,8 +2,6 @@
 
 This package contains reusable service contracts that are shared across the service layer.
 
-## Intended Responsibilities
-
 ## Contents
 
 - `AuditLogService`: audit logging contract used by mutating services
