@@ -99,6 +99,7 @@ For local non-test runs, set `JWT_SECRET` explicitly so tokens remain valid acro
 ```env
 SPRING_PROFILES_ACTIVE=dev
 JWT_SECRET=replace-with-at-least-32-bytes-or-base64
+DDL_AUTO=create
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_DB=jobtrackr
@@ -107,6 +108,9 @@ POSTGRES_PASSWORD=postgres
 ```
 
 2. Make sure PostgreSQL is running and the `POSTGRES_DB` database already exists.
+
+If you are starting with a fresh database, `DDL_AUTO=create` is the simplest local option for the first run.
+If you are pointing at an older pre-UUID database, do not use `update`: Hibernate cannot safely migrate the old integer/identity schema to UUID columns.
 
 3. Start the application.
 
@@ -130,6 +134,11 @@ Useful local URLs:
 
 - `http://localhost:8080/`: bundled frontend
 - `http://localhost:8080/swagger-ui/index.html`: Swagger UI
+
+Legacy database note:
+
+- If your local PostgreSQL database was created before the UUID refactor, either drop and recreate that database for local use or perform an explicit SQL migration.
+- The app now defaults `DDL_AUTO` to `none` when the variable is not set so it does not keep attempting invalid integer-to-UUID schema mutations on startup.
 
 ## Product Direction
 
