@@ -1,6 +1,6 @@
 # Service Layer
 
-This package contains the business logic of the backend.
+This package contains the business logic of the application.
 
 ## Subpackages
 
@@ -19,6 +19,6 @@ Services should:
 - write audit log entries for important changes
 - define allowed state transitions and domain workflows
 
-## Current Direction
+## Runtime Shape
 
-The service layer now uses a straightforward split between reusable contracts in `interfaces` and executable business logic in `implementation`.
+The service layer now uses a straightforward split between reusable contracts in `interfaces` and executable business logic in `implementation`. It is the main seam between the persistence layer and both the API tests and bundled frontend workflows.
