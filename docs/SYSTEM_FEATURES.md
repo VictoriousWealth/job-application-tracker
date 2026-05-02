@@ -1,10 +1,10 @@
 # System Features And Expected Outcomes
 
-This document describes the complete system this repository is meant to provide once the backend is finished and stabilized.
+This document describes the complete system this repository provides today and the extended outcomes it is designed to support.
 
 ## Product Goal
 
-The system should act as a single workspace for managing a user's job search from first discovery to final outcome. It should reduce manual tracking, prevent missed follow-ups, preserve history, and create a reliable dataset for future analytics and automation.
+The system acts as a single workspace for managing a user's job search from first discovery to final outcome. It reduces manual tracking, prevents missed follow-ups, preserves history, and creates a reliable dataset for analytics, exports, and automation.
 
 ## Primary Users
 
@@ -14,9 +14,9 @@ The system should act as a single workspace for managing a user's job search fro
 
 ## Core Feature Set
 
-| Area | Target Capability | Expected Result | Expected Effect |
+| Area | Capability | Expected Result | Expected Effect |
 | --- | --- | --- | --- |
-| Authentication | User signup, login, token refresh, logout/session handling, password changes, account status checks | A user can securely access only their own workspace | Safe multi-user operation and a foundation for role-based access |
+| Authentication | User signup, login, token refresh, logout/session handling, password changes, account status checks | A user can securely access only their own workspace through the API and bundled frontend | Safe multi-user operation and a foundation for role-based access |
 | User Profile | View and update account details, deactivate account, manage enabled status | Users can maintain their identity and account lifecycle | Cleaner account ownership and reduced manual admin work |
 | Job Applications | Create, read, update, soft delete, restore, and list job applications | Each opportunity has a canonical record with status, company, role, description, notes, dates, and related assets | Better visibility into pipeline health and less duplicate tracking |
 | Application Status Flow | Support lifecycle states such as draft, applied, interview, offer, rejected, and future custom transitions | Users can see exactly where each opportunity stands | Faster prioritization and clearer next actions |
@@ -34,12 +34,13 @@ The system should act as a single workspace for managing a user's job search fro
 | Audit Logging | Capture create, update, delete, enable/disable, and other important actions | Sensitive state changes are traceable | Easier debugging, accountability, and compliance |
 | Error Handling | Uniform structured API errors with request identifiers and field-level validation details | Clients can reliably interpret failures | Faster debugging and a more stable client integration surface |
 | OpenAPI | Document endpoints, request bodies, responses, and common errors | The API is discoverable and easier to integrate against | Lower integration cost and better maintainability |
+| Bundled Frontend | Same-origin browser workspace for auth, pipeline, documents, analytics, exports, calendar, profile, and admin screens | Users can operate the system without a separate client deployment | Faster local adoption and lower integration overhead |
 
 ## Extended Feature Set
 
-These features are implied by the current direction of the repository and make the system materially more valuable once the core API is stable.
+These features are already represented in the application and make the system materially more valuable beyond basic CRUD workflows.
 
-| Area | Target Capability | Expected Result | Expected Effect |
+| Area | Capability | Expected Result | Expected Effect |
 | --- | --- | --- | --- |
 | Dashboarding | Summaries for applications by status, source, location, and time period | Users can see pipeline health at a glance | Better strategic decisions during a job search |
 | Analytics | Conversion metrics such as applied-to-interview and interview-to-offer ratios | Users can identify what is working and what is not | Improved focus on better channels and application habits |
@@ -50,7 +51,7 @@ These features are implied by the current direction of the repository and make t
 
 ## Expected User-Level Results
 
-Once complete, a typical user should be able to:
+A typical user should be able to:
 
 - sign in and maintain a private job-search workspace
 - create one record per opportunity and attach all related artifacts to it
@@ -62,18 +63,18 @@ Once complete, a typical user should be able to:
 
 ## Expected System-Level Effects
 
-The finished system should produce the following effects:
+The system should produce the following effects:
 
 - fewer missed follow-ups, interviews, and deadlines
 - less duplication of resumes, cover letters, and job notes
 - better historical visibility into what happened with each opportunity
 - better reporting quality because sources, locations, and statuses are normalized
 - stronger operational control because important changes are auditable
-- a stable backend surface for a future frontend, automation, or AI layer
+- a stable application surface for the bundled frontend, future dedicated clients, automation, or AI layers
 
 ## Non-Functional Expectations
 
-The completed backend should also aim for:
+The application should also provide:
 
 - strong authentication and authorization boundaries
 - consistent validation across all write endpoints
@@ -85,7 +86,7 @@ The completed backend should also aim for:
 
 ## Completion Criteria
 
-The backend should be considered functionally complete when it can support the following end-to-end scenario:
+The system is functionally complete when it can support the following end-to-end scenario:
 
 1. A user signs up and logs in.
 2. The user creates a job application with source, location, resume, and cover letter.
@@ -94,4 +95,4 @@ The backend should be considered functionally complete when it can support the f
 5. The system records the application timeline and audit trail.
 6. The user can later search, filter, update, export, and review that entire history.
 
-At that point, the backend is not just storing records. It is operating as a real job-search system.
+At that point, the repository is not just exposing endpoints. It is operating as a real job-search system.
