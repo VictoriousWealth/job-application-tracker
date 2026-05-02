@@ -14,7 +14,7 @@ The repository is organized around five DTO groups:
 
 ## Covered Resource Types
 
-The DTO structure is intended to cover the full domain:
+The DTO structure covers the full domain:
 
 - application timeline
 - attachments
@@ -50,4 +50,4 @@ The separation is deliberate:
 
 ## Current State Note
 
-The intended structure is clear, but some classes elsewhere in the repository still reference older DTO names. This README describes the DTO model the project should standardize on.
+This package reflects the active DTO model used by the controllers, tests, and bundled frontend. New contracts should keep following the same create, update, detail, response, and special split.
