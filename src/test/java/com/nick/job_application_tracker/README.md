@@ -1,6 +1,6 @@
 # Test Suite
 
-This directory contains unit, slice, and integration-oriented tests for the backend packages.
+This directory contains unit, slice, and integration-oriented tests for the application packages.
 
 ## Package Layout
 
@@ -8,9 +8,9 @@ This directory contains unit, slice, and integration-oriented tests for the back
 - `service`: business logic tests
 - `integration`: full-stack workflow tests
 
-## Target Testing Standard
+## Testing Standard
 
-The finished repository should aim for tests that verify:
+The repository tests should verify:
 
 - authentication and authorization boundaries
 - ownership scoping by user
@@ -21,4 +21,4 @@ The finished repository should aim for tests that verify:
 
 ## Current State Note
 
-The maintained suite is behavior-focused: controller slice tests, service tests for computed workflows, smoke tests for bootstrapping, and end-to-end integration coverage for secured user journeys.
+The maintained suite is behavior-focused: controller slice tests, service tests for computed workflows, smoke tests for bootstrapping, end-to-end integration coverage for secured user journeys, and frontend-shell smoke tests for the bundled client.
