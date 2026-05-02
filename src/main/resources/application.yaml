@@ -8,6 +8,9 @@ spring:
       ddl-auto: update
     show-sql: false
 
+server:
+  port: ${PORT:8081}
+
 logging:
   config: classpath:logback-spring.xml
 
