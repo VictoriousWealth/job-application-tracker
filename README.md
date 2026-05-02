@@ -1,12 +1,12 @@
 # JobTrackr
 
-This repository is a Spring Boot job application tracking system with both the backend API and a bundled server-served frontend. The finished product is meant to let a user manage the full lifecycle of a job search in one place: applications, resumes, cover letters, communications, reminders, interviews, attachments, skills, audit history, and reporting-ready metadata.
+This repository is a Spring Boot job application tracking system with both the backend API and a bundled server-served frontend. It lets a user manage the full lifecycle of a job search in one place: applications, resumes, cover letters, communications, reminders, interviews, attachments, skills, audit history, and reporting-ready metadata.
 
 ## Status
 
-The repository now implements the documented core workflows, secured API surface, bundled frontend workspace, extended read models, and behavior-focused test suite. The remaining work is mostly incremental hardening or future product expansion, not a structural rewrite.
+The repository now implements the documented core workflows, secured API surface, bundled frontend workspace, extended read models, and behavior-focused test suite. The remaining work is mostly operational hardening, browser-level UX polish, or future product expansion, not structural rework.
 
-## Target Capabilities
+## Core Capabilities
 
 - User signup, login, session/token lifecycle, and profile management
 - End-to-end job application tracking from draft to offer or rejection
@@ -15,14 +15,14 @@ The repository now implements the documented core workflows, secured API surface
 - Scheduling and reminder workflows for interviews, assessments, and follow-ups
 - Searchable metadata for sources, locations, and skills
 - Auditable CRUD activity and administrator visibility into user/account state
-- API-first design suitable for a future web or mobile client
+- API-first design that can support additional web, mobile, or automation clients
 - Bundled browser workspace for the current backend without requiring a separate frontend toolchain
 
 ## Documentation Map
 
 - [docs/README.md](./docs/README.md): documentation index
-- [docs/SYSTEM_FEATURES.md](./docs/SYSTEM_FEATURES.md): complete target feature set, expected results, and expected effects
-- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md): target architecture and package responsibilities
+- [docs/SYSTEM_FEATURES.md](./docs/SYSTEM_FEATURES.md): implemented feature set, expected results, and expansion areas
+- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md): current architecture and package responsibilities
 - [HELP.md](./HELP.md): developer quickstart and local setup
 - [CVREADME.md](./CVREADME.md): concise architecture summary for portfolio or interview use
 - [scripts/README.md](./scripts/README.md): developer utility scripts
@@ -40,6 +40,16 @@ Package-level READMEs are also present under `src/main/java/com/nick/job_applica
 - Gradle Kotlin DSL
 - OpenAPI / Swagger
 - Logback with JSON logging
+
+## Frontend Surface
+
+The bundled frontend at `src/main/resources/static` provides:
+
+- authentication flows against the existing JWT API
+- dashboard, analytics, recommendations, and calendar views
+- application creation, selection, status updates, and related-record management
+- document library and account management views
+- admin-only user and audit screens when the signed-in user has `ADMIN`
 
 ## Repository Shape
 
@@ -79,12 +89,14 @@ Typical commands:
 
 Once the app is running, open `http://localhost:8080/` to use the bundled frontend.
 
+For local non-test runs, set `JWT_SECRET` explicitly so tokens remain valid across restarts.
+
 ## Product Direction
 
-The intended finished system is more than a CRUD demo. It is meant to become an operational workspace for job searching:
+The system is more than a CRUD demo. It already operates as an end-to-end job-search workspace and is positioned for incremental expansion:
 
 - a single source of truth for every application
 - fewer missed follow-ups and deadlines
 - consistent document reuse and version tracking
 - cleaner historical records for reflection, analytics, and reporting
-- a backend foundation for future dashboards, exports, and AI-assisted features
+- a foundation for deeper dashboards, exports, and AI-assisted features
