@@ -8,6 +8,10 @@ This directory contains the server-served frontend for JobTrackr.
 - `styles.css`: visual system, layout, responsive behavior, and motion
 - `app.js`: client-side state management, API integration, and UI rendering
 
+## Entry Point
+
+The frontend is served directly by Spring Boot at `/` and shares the same origin as the secured API under `/api/...`.
+
 ## Responsibility
 
 The bundled frontend is intentionally zero-build:
@@ -16,3 +20,13 @@ The bundled frontend is intentionally zero-build:
 - it uses the same origin as the backend API
 - it stores the JWT locally and sends it through the existing bearer-auth flow
 - it avoids introducing a separate frontend toolchain into the repository
+
+## Current Views
+
+- authentication
+- overview dashboard
+- pipeline and related records
+- document library
+- calendar and export actions
+- account management
+- admin user and audit views for `ADMIN` users
