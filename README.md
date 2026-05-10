@@ -88,7 +88,7 @@ Typical commands:
 ./gradlew bootRun
 ```
 
-Once the app is running, open `http://localhost:8080/` to use the bundled frontend.
+Once the app is running, open `http://localhost:8081/` to use the bundled frontend by default, or use the value of `PORT` if you override it.
 
 For local non-test runs, set `JWT_SECRET` explicitly so tokens remain valid across restarts.
 
@@ -121,7 +121,7 @@ If you are pointing at an older pre-UUID database, do not use `update`: Hibernat
 4. Open the app in your browser.
 
 ```text
-http://localhost:8080/
+http://localhost:8081/
 ```
 
 5. Optional: run the automated tests in a separate shell.
@@ -132,8 +132,8 @@ http://localhost:8080/
 
 Useful local URLs:
 
-- `http://localhost:8080/`: bundled frontend
-- `http://localhost:8080/swagger-ui/index.html`: Swagger UI
+- `http://localhost:8081/`: bundled frontend
+- `http://localhost:8081/swagger-ui/index.html`: Swagger UI
 
 Legacy database note:
 
