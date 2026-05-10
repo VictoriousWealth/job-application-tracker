@@ -506,6 +506,12 @@ button:disabled {
     padding: 1.35rem;
 }
 
+.detail-hero {
+    background:
+        linear-gradient(180deg, rgba(255, 250, 244, 0.92), rgba(255, 247, 238, 0.82)),
+        radial-gradient(circle at top right, rgba(182, 93, 47, 0.09), transparent 38%);
+}
+
 .panel-header {
     display: flex;
     justify-content: space-between;
@@ -520,6 +526,13 @@ button:disabled {
 
 .panel-header-spaced {
     margin-top: 1.35rem;
+}
+
+.route-copy {
+    margin: 0.45rem 0 0;
+    max-width: 42rem;
+    color: var(--muted);
+    line-height: 1.6;
 }
 
 .button-row,
