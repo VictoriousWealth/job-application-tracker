@@ -107,7 +107,7 @@
 
                 <nav class="nav-stack" aria-label="Workspace sections">
                     <button class="nav-button is-active" type="button" data-view="overview">Overview</button>
-                    <button class="nav-button" type="button" data-view="pipeline">Pipeline</button>
+                    <button class="nav-button" type="button" data-view="pipeline">Applications</button>
                     <button class="nav-button" type="button" data-view="library">Library</button>
                     <button class="nav-button" type="button" data-view="calendar">Calendar</button>
                     <button class="nav-button" type="button" data-view="account">Account</button>
@@ -181,6 +181,19 @@
                     <section id="pipelineView" class="view" hidden>
                         <div class="pipeline-layout">
                             <div class="pipeline-column">
+                                <article class="surface panel-card">
+                                    <div class="panel-header">
+                                        <div>
+                                            <p class="eyebrow">Applications</p>
+                                            <h2>Queue and create</h2>
+                                        </div>
+                                    </div>
+                                    <p class="muted-copy">
+                                        Keep creation and triage here. Open any role into its own workspace for notes,
+                                        reminders, files, timeline, and match guidance.
+                                    </p>
+                                </article>
+
                                 <article class="surface panel-card">
                                     <div class="panel-header">
                                         <div>
@@ -280,7 +293,7 @@
                                 <article class="surface panel-card">
                                     <div class="panel-header panel-header-wrap">
                                         <div>
-                                            <p class="eyebrow">Pipeline</p>
+                                            <p class="eyebrow">Applications</p>
                                             <h2>Your applications</h2>
                                         </div>
                                         <div class="inline-controls">
@@ -302,167 +315,173 @@
                                     </div>
                                     <div id="applicationList" class="application-list"></div>
                                 </article>
-
-                                <article class="surface panel-card">
-                                    <div class="panel-header panel-header-wrap">
-                                        <div>
-                                            <p class="eyebrow">Selected record</p>
-                                            <h2 id="selectedApplicationTitle">Choose an application</h2>
-                                        </div>
-                                        <div class="inline-controls">
-                                            <label class="inline-select">
-                                                <span>Status</span>
-                                                <select id="selectedStatus"></select>
-                                            </label>
-                                            <button id="saveStatusButton" class="ghost-button" type="button">Update status</button>
-                                            <button id="deleteApplicationButton" class="ghost-button danger-button" type="button">Delete</button>
-                                        </div>
-                                    </div>
-
-                                    <div id="selectedApplicationSummary" class="application-summary empty-shell">
-                                        Select a record to open its workspace.
-                                    </div>
-
-                                    <div class="detail-grid">
-                                        <section class="surface inset-card">
-                                            <div class="panel-header">
-                                                <div>
-                                                    <p class="eyebrow">Timeline</p>
-                                                    <h3>Activity</h3>
-                                                </div>
-                                            </div>
-                                            <div id="timelineList" class="list-block"></div>
-                                        </section>
-
-                                        <section class="surface inset-card">
-                                            <div class="panel-header">
-                                                <div>
-                                                    <p class="eyebrow">Matching</p>
-                                                    <h3>Fit guidance</h3>
-                                                </div>
-                                            </div>
-                                            <div id="matchingPanel" class="list-block"></div>
-                                        </section>
-                                    </div>
-
-                                    <div class="related-grid">
-                                        <section class="surface inset-card">
-                                            <div class="panel-header">
-                                                <div>
-                                                    <p class="eyebrow">Skills</p>
-                                                    <h3>Tracked keywords</h3>
-                                                </div>
-                                            </div>
-                                            <form id="skillForm" class="stack-form compact-form">
-                                                <label>
-                                                    <span>Skill name</span>
-                                                    <input name="skillName" required placeholder="Java, Docker, Distributed Systems">
-                                                </label>
-                                                <button class="ghost-button" type="submit">Add skill</button>
-                                            </form>
-                                            <div id="skillList" class="pill-list"></div>
-                                        </section>
-
-                                        <section class="surface inset-card">
-                                            <div class="panel-header">
-                                                <div>
-                                                    <p class="eyebrow">Attachments</p>
-                                                    <h3>Files</h3>
-                                                </div>
-                                            </div>
-                                            <form id="attachmentForm" class="stack-form compact-form">
-                                                <label>
-                                                    <span>Type</span>
-                                                    <select name="type"></select>
-                                                </label>
-                                                <label>
-                                                    <span>File path</span>
-                                                    <input name="filePath" required placeholder="/docs/job-description.pdf">
-                                                </label>
-                                                <button class="ghost-button" type="submit">Add attachment</button>
-                                            </form>
-                                            <div id="attachmentList" class="list-block"></div>
-                                        </section>
-
-                                        <section class="surface inset-card">
-                                            <div class="panel-header">
-                                                <div>
-                                                    <p class="eyebrow">Communications</p>
-                                                    <h3>Outreach history</h3>
-                                                </div>
-                                            </div>
-                                            <form id="communicationForm" class="stack-form compact-form">
-                                                <div class="field-grid">
-                                                    <label>
-                                                        <span>Method</span>
-                                                        <select name="type"></select>
-                                                    </label>
-                                                    <label>
-                                                        <span>Direction</span>
-                                                        <select name="direction"></select>
-                                                    </label>
-                                                </div>
-                                                <label>
-                                                    <span>Timestamp</span>
-                                                    <input name="timestamp" type="datetime-local" required>
-                                                </label>
-                                                <label>
-                                                    <span>Message</span>
-                                                    <textarea name="message" rows="3" required placeholder="Reached out to recruiter about next steps."></textarea>
-                                                </label>
-                                                <button class="ghost-button" type="submit">Log communication</button>
-                                            </form>
-                                            <div id="communicationList" class="list-block"></div>
-                                        </section>
-
-                                        <section class="surface inset-card">
-                                            <div class="panel-header">
-                                                <div>
-                                                    <p class="eyebrow">Follow-up</p>
-                                                    <h3>Reminders</h3>
-                                                </div>
-                                            </div>
-                                            <form id="followUpForm" class="stack-form compact-form">
-                                                <label>
-                                                    <span>Remind on</span>
-                                                    <input name="remindOn" type="datetime-local" required>
-                                                </label>
-                                                <label>
-                                                    <span>Note</span>
-                                                    <textarea name="note" rows="3" required placeholder="Check in after interview loop."></textarea>
-                                                </label>
-                                                <button class="ghost-button" type="submit">Create reminder</button>
-                                            </form>
-                                            <div id="followUpList" class="list-block"></div>
-                                        </section>
-
-                                        <section class="surface inset-card">
-                                            <div class="panel-header">
-                                                <div>
-                                                    <p class="eyebrow">Events</p>
-                                                    <h3>Scheduled communications</h3>
-                                                </div>
-                                            </div>
-                                            <form id="scheduledForm" class="stack-form compact-form">
-                                                <label>
-                                                    <span>Type</span>
-                                                    <select name="type"></select>
-                                                </label>
-                                                <label>
-                                                    <span>Scheduled for</span>
-                                                    <input name="scheduledFor" type="datetime-local" required>
-                                                </label>
-                                                <label>
-                                                    <span>Notes</span>
-                                                    <textarea name="notes" rows="3" required placeholder="System design interview, take-home review, or recruiter call."></textarea>
-                                                </label>
-                                                <button class="ghost-button" type="submit">Add event</button>
-                                            </form>
-                                            <div id="scheduledList" class="list-block"></div>
-                                        </section>
-                                    </div>
-                                </article>
                             </div>
+                        </div>
+                    </section>
+
+                    <section id="applicationView" class="view" hidden>
+                        <article class="surface panel-card detail-hero">
+                            <div class="panel-header panel-header-wrap">
+                                <div>
+                                    <p class="eyebrow">Application workspace</p>
+                                    <h2 id="selectedApplicationTitle">Choose an application</h2>
+                                    <p class="route-copy">
+                                        Focus on one role at a time: status, notes, assets, follow-up, calendar, and fit guidance.
+                                    </p>
+                                </div>
+                                <div class="inline-controls">
+                                    <button id="backToPipelineButton" class="ghost-button" type="button">Back to applications</button>
+                                    <label class="inline-select">
+                                        <span>Status</span>
+                                        <select id="selectedStatus"></select>
+                                    </label>
+                                    <button id="saveStatusButton" class="ghost-button" type="button">Update status</button>
+                                    <button id="deleteApplicationButton" class="ghost-button danger-button" type="button">Delete</button>
+                                </div>
+                            </div>
+
+                            <div id="selectedApplicationSummary" class="application-summary empty-shell">
+                                Select a record to open its workspace.
+                            </div>
+                        </article>
+
+                        <div class="detail-grid">
+                            <section class="surface inset-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Timeline</p>
+                                        <h3>Activity</h3>
+                                    </div>
+                                </div>
+                                <div id="timelineList" class="list-block"></div>
+                            </section>
+
+                            <section class="surface inset-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Matching</p>
+                                        <h3>Fit guidance</h3>
+                                    </div>
+                                </div>
+                                <div id="matchingPanel" class="list-block"></div>
+                            </section>
+                        </div>
+
+                        <div class="related-grid">
+                            <section class="surface inset-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Skills</p>
+                                        <h3>Tracked keywords</h3>
+                                    </div>
+                                </div>
+                                <form id="skillForm" class="stack-form compact-form">
+                                    <label>
+                                        <span>Skill name</span>
+                                        <input name="skillName" required placeholder="Java, Docker, Distributed Systems">
+                                    </label>
+                                    <button class="ghost-button" type="submit">Add skill</button>
+                                </form>
+                                <div id="skillList" class="pill-list"></div>
+                            </section>
+
+                            <section class="surface inset-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Attachments</p>
+                                        <h3>Files</h3>
+                                    </div>
+                                </div>
+                                <form id="attachmentForm" class="stack-form compact-form">
+                                    <label>
+                                        <span>Type</span>
+                                        <select name="type"></select>
+                                    </label>
+                                    <label>
+                                        <span>File path</span>
+                                        <input name="filePath" required placeholder="/docs/job-description.pdf">
+                                    </label>
+                                    <button class="ghost-button" type="submit">Add attachment</button>
+                                </form>
+                                <div id="attachmentList" class="list-block"></div>
+                            </section>
+
+                            <section class="surface inset-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Communications</p>
+                                        <h3>Outreach history</h3>
+                                    </div>
+                                </div>
+                                <form id="communicationForm" class="stack-form compact-form">
+                                    <div class="field-grid">
+                                        <label>
+                                            <span>Method</span>
+                                            <select name="type"></select>
+                                        </label>
+                                        <label>
+                                            <span>Direction</span>
+                                            <select name="direction"></select>
+                                        </label>
+                                    </div>
+                                    <label>
+                                        <span>Timestamp</span>
+                                        <input name="timestamp" type="datetime-local" required>
+                                    </label>
+                                    <label>
+                                        <span>Message</span>
+                                        <textarea name="message" rows="3" required placeholder="Reached out to recruiter about next steps."></textarea>
+                                    </label>
+                                    <button class="ghost-button" type="submit">Log communication</button>
+                                </form>
+                                <div id="communicationList" class="list-block"></div>
+                            </section>
+
+                            <section class="surface inset-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Follow-up</p>
+                                        <h3>Reminders</h3>
+                                    </div>
+                                </div>
+                                <form id="followUpForm" class="stack-form compact-form">
+                                    <label>
+                                        <span>Remind on</span>
+                                        <input name="remindOn" type="datetime-local" required>
+                                    </label>
+                                    <label>
+                                        <span>Note</span>
+                                        <textarea name="note" rows="3" required placeholder="Check in after interview loop."></textarea>
+                                    </label>
+                                    <button class="ghost-button" type="submit">Create reminder</button>
+                                </form>
+                                <div id="followUpList" class="list-block"></div>
+                            </section>
+
+                            <section class="surface inset-card">
+                                <div class="panel-header">
+                                    <div>
+                                        <p class="eyebrow">Events</p>
+                                        <h3>Scheduled communications</h3>
+                                    </div>
+                                </div>
+                                <form id="scheduledForm" class="stack-form compact-form">
+                                    <label>
+                                        <span>Type</span>
+                                        <select name="type"></select>
+                                    </label>
+                                    <label>
+                                        <span>Scheduled for</span>
+                                        <input name="scheduledFor" type="datetime-local" required>
+                                    </label>
+                                    <label>
+                                        <span>Notes</span>
+                                        <textarea name="notes" rows="3" required placeholder="System design interview, take-home review, or recruiter call."></textarea>
+                                    </label>
+                                    <button class="ghost-button" type="submit">Add event</button>
+                                </form>
+                                <div id="scheduledList" class="list-block"></div>
+                            </section>
                         </div>
                     </section>
 
