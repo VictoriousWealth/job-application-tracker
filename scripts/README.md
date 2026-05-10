@@ -46,4 +46,4 @@ After running one of the generators, expect to:
 
 ## Recommendation
 
-Treat these scripts as development convenience tools. The maintained standard for this repository is behavior-driven testing of the API, services, integrations, and bundled frontend smoke surface. The frontend itself is zero-build and does not rely on this directory.
+Treat these scripts as development convenience tools. The maintained standard for this repository is behavior-driven testing of the API, services, integrations, and bundled frontend smoke surface. The frontend has its own source and build workflow under `frontend/`, so these scripts are still backend/test-oriented helpers rather than part of the browser build.
