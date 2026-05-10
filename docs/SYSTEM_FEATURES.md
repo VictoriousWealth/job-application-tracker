@@ -34,7 +34,7 @@ The system acts as a single workspace for managing a user's job search from firs
 | Audit Logging | Capture create, update, delete, enable/disable, and other important actions | Sensitive state changes are traceable | Easier debugging, accountability, and compliance |
 | Error Handling | Uniform structured API errors with request identifiers and field-level validation details | Clients can reliably interpret failures | Faster debugging and a more stable client integration surface |
 | OpenAPI | Document endpoints, request bodies, responses, and common errors | The API is discoverable and easier to integrate against | Lower integration cost and better maintainability |
-| Bundled Frontend | Same-origin browser workspace for auth, pipeline, documents, analytics, exports, calendar, profile, and admin screens | Users can operate the system without a separate client deployment | Faster local adoption and lower integration overhead |
+| Bundled Frontend | Same-origin React workspace for auth, overview, applications queue, per-application workspaces, documents, analytics, exports, calendar, profile, and admin screens | Users can operate the system without a separate client deployment and with clearer navigation between tasks | Faster local adoption, lower integration overhead, and less browser-side confusion |
 
 ## Extended Feature Set
 
