@@ -16,7 +16,7 @@ The repository now implements the documented core workflows, secured API surface
 - Searchable metadata for sources, locations, and skills
 - Auditable CRUD activity and administrator visibility into user/account state
 - API-first design that can support additional web, mobile, or automation clients
-- Bundled browser workspace for the current backend without requiring a separate frontend toolchain
+- Bundled browser workspace compiled from a colocated React/Vite frontend
 
 ## Documentation Map
 
@@ -38,16 +38,19 @@ Package-level READMEs are also present under `src/main/java/com/nick/job_applica
 - Spring Data JPA
 - PostgreSQL
 - Gradle Kotlin DSL
+- React
+- Vite
 - OpenAPI / Swagger
 - Logback with JSON logging
 
 ## Frontend Surface
 
-The bundled frontend at `src/main/resources/static` provides:
+The browser workspace is authored in `frontend/` and compiled into `src/main/resources/static` for Spring Boot to serve. It provides:
 
 - authentication flows against the existing JWT API
 - dashboard, analytics, recommendations, and calendar views
 - application creation, selection, status updates, and related-record management
+- dedicated application workspaces with separate summary, activity, and asset tabs
 - document library and account management views
 - admin-only user and audit screens when the signed-in user has `ADMIN`
 
@@ -61,7 +64,8 @@ The codebase is organized around standard Spring backend layers:
 - `model`: JPA entities and enums
 - `dto`: request and response contracts
 - `config`: security, JWT, OpenAPI, auditing, and filters
-- `src/main/resources/static`: bundled frontend shell, styles, and client-side API integration
+- `frontend`: React/Vite frontend source and build config
+- `src/main/resources/static`: compiled frontend assets served by Spring Boot
 - `handler`: centralized exception handling
 - `scripts`: utility scripts for development and coverage
 - `docs`: product and architecture documentation
@@ -72,6 +76,7 @@ See [HELP.md](./HELP.md) for the full setup guide. At a minimum, local developme
 
 - Java 17
 - PostgreSQL
+- Node.js 20+
 - environment variables or a `.env` file for:
   - `SPRING_PROFILES_ACTIVE`
   - `JWT_SECRET`
@@ -87,6 +92,23 @@ Typical commands:
 ./gradlew test
 ./gradlew bootRun
 ```
+
+Frontend commands:
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+For frontend-only iteration, you can run:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The Vite dev server proxies `/api` requests to `http://localhost:8081/`.
 
 Once the app is running, open `http://localhost:8081/` to use the bundled frontend by default, or use the value of `PORT` if you override it.
 
@@ -118,13 +140,21 @@ If you are pointing at an older pre-UUID database, do not use `update`: Hibernat
 ./gradlew bootRun
 ```
 
-4. Open the app in your browser.
+4. Build the frontend bundle when you change browser code.
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+5. Open the app in your browser.
 
 ```text
 http://localhost:8081/
 ```
 
-5. Optional: run the automated tests in a separate shell.
+6. Optional: run the automated tests in a separate shell.
 
 ```bash
 ./gradlew test
