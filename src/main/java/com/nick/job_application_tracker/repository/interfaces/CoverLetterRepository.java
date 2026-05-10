@@ -5,6 +5,9 @@ import com.nick.job_application_tracker.model.CoverLetter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -22,4 +25,8 @@ public interface CoverLetterRepository extends JpaRepository<CoverLetter, UUID> 
     Page<CoverLetter> findByCreatedByAndDeletedTrue(String createdBy, Pageable pageable);
 
     long countByCreatedByAndDeletedFalse(String createdBy);
+
+    @Modifying
+    @Query("update CoverLetter c set c.createdBy = :newCreatedBy where c.createdBy = :oldCreatedBy")
+    int reassignOwnership(@Param("oldCreatedBy") String oldCreatedBy, @Param("newCreatedBy") String newCreatedBy);
 }
