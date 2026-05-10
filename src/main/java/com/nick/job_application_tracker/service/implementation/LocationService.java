@@ -42,10 +42,10 @@ public class LocationService {
     }
 
     public LocationResponseDTO createLocation(LocationCreateDTO dto) {
-        locationRepository.findByCityIgnoreCaseAndCountryIgnoreCaseAndDeletedFalse(dto.getCity(), dto.getCountry())
-            .ifPresent(existing -> {
-                throw new ConflictException("Location already exists");
-            });
+        Optional<Location> existingLocation = locationRepository.findByCityIgnoreCaseAndCountryIgnoreCaseAndDeletedFalse(dto.getCity(), dto.getCountry());
+        if (existingLocation.isPresent()) {
+            return LocationMapper.toResponseDTO(existingLocation.get());
+        }
         Location saved = locationRepository.save(LocationMapper.toEntity(dto));
         auditLogService.logCreate("Created location with id: " + saved.getId());
         return LocationMapper.toResponseDTO(saved);
