@@ -6,11 +6,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nick.job_application_tracker.dto.special.UserDetailDTO;
 import com.nick.job_application_tracker.dto.special.UserUpdateDTO;
+import com.nick.job_application_tracker.exception.client.ConflictException;
 import com.nick.job_application_tracker.mapper.UserMapper;
 import com.nick.job_application_tracker.model.User;
+import com.nick.job_application_tracker.repository.interfaces.CoverLetterRepository;
+import com.nick.job_application_tracker.repository.interfaces.ResumeRepository;
 import com.nick.job_application_tracker.repository.interfaces.UserRepository;
 import com.nick.job_application_tracker.service.interfaces.AuditLogService;
 
@@ -21,12 +25,23 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
     private final AuditLogService auditLogService;
+    private final ResumeRepository resumeRepository;
+    private final CoverLetterRepository coverLetterRepository;
 
-    public UserService(UserRepository repo, PasswordEncoder passwordEncoder, UserMapper mapper, AuditLogService auditLogService) {
+    public UserService(
+        UserRepository repo,
+        PasswordEncoder passwordEncoder,
+        UserMapper mapper,
+        AuditLogService auditLogService,
+        ResumeRepository resumeRepository,
+        CoverLetterRepository coverLetterRepository
+    ) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
         this.auditLogService = auditLogService;
+        this.resumeRepository = resumeRepository;
+        this.coverLetterRepository = coverLetterRepository;
     }
 
     public UserDetailDTO getUserInfoByEmail(String email) {
@@ -45,12 +60,19 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public UserDetailDTO updateSelf(String email, UserUpdateDTO dto) {
         User user = repo.findByEmailAndDeletedFalse(email).orElseThrow();
+        String previousEmail = user.getEmail();
 
         boolean updated = false;
 
         if (dto.email != null && !dto.email.isBlank() && !dto.email.equals(user.getEmail())) {
+            repo.findByEmailAndDeletedFalse(dto.email)
+                .filter(existing -> !existing.getId().equals(user.getId()))
+                .ifPresent(existing -> {
+                    throw new ConflictException("Email already in use.");
+                });
             user.setEmail(dto.email);
             updated = true;
         }
@@ -61,6 +83,10 @@ public class UserService {
 
         if (updated) {
             User saved = repo.save(user);
+            if (!previousEmail.equals(saved.getEmail())) {
+                resumeRepository.reassignOwnership(previousEmail, saved.getEmail());
+                coverLetterRepository.reassignOwnership(previousEmail, saved.getEmail());
+            }
             auditLogService.logUpdate("Updated own user account with id: " + saved.getId());
             return mapper.toDTO(saved);
         }
