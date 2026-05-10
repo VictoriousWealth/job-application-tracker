@@ -14,7 +14,7 @@ The project is a Spring Boot application for managing the full job search lifecy
 - interview and assessment scheduling
 - follow-up reminders
 - audit logging and operational traceability
-- a bundled browser workspace served from the same application
+- a bundled React workspace compiled into the same Spring Boot application
 
 ## Architecture
 
@@ -26,6 +26,7 @@ The system follows a standard layered Spring architecture:
 - `model`: JPA entities and enums
 - `dto`: stable API contracts
 - `config`: security, JWT, auditing, logging, and OpenAPI
+- `frontend`: React/Vite source for the browser workspace
 - `handler`: centralized exception translation
 
 ## Why This Structure
@@ -36,7 +37,7 @@ The implemented design is a layered application that is:
 - auditable: important mutations should leave a trace
 - reusable: documents, sources, locations, and skills can be shared across workflows
 - extensible: ready for analytics, exports, dashboards, and AI-assisted features
-- directly usable: the bundled frontend consumes the secured API without a separate frontend deployment
+- directly usable: the bundled frontend consumes the secured API as a same-origin compiled artifact without requiring a second production deployment
 
 ## Product Outcome
 
