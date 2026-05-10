@@ -29,8 +29,7 @@ public class CustomJwtAuthFilter extends OncePerRequestFilter {
         "/swagger-ui/**",
         "/swagger-ui.html",
         "/index.html",
-        "/app.js",
-        "/styles.css",
+        "/assets/**",
         "/",
         "/favicon.ico",
         "/error"
