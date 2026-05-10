@@ -25,6 +25,7 @@ The repository now implements the documented core workflows, secured API surface
 - [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md): current architecture and package responsibilities
 - [HELP.md](./HELP.md): developer quickstart and local setup
 - [CVREADME.md](./CVREADME.md): concise architecture summary for portfolio or interview use
+- [frontend/README.md](./frontend/README.md): frontend source layout and build workflow
 - [scripts/README.md](./scripts/README.md): developer utility scripts
 
 Package-level READMEs are also present under `src/main/java/com/nick/job_application_tracker/...` for controllers, DTOs, models, repositories, services, configuration, exceptions, handlers, and utilities.
@@ -49,10 +50,13 @@ The browser workspace is authored in `frontend/` and compiled into `src/main/res
 
 - authentication flows against the existing JWT API
 - dashboard, analytics, recommendations, and calendar views
-- application creation, selection, status updates, and related-record management
+- an applications queue with sorting, paging, and creation workflows
 - dedicated application workspaces with separate summary, activity, and asset tabs
 - document library and account management views
 - admin-only user and audit screens when the signed-in user has `ADMIN`
+- hash-routed browser navigation for `#/overview`, `#/applications`, `#/applications/:id`, `#/library`, `#/calendar`, `#/account`, and `#/admin`
+
+Treat `src/main/resources/static` as generated output. Browser code should be changed in `frontend/` and then rebuilt.
 
 ## Repository Shape
 
@@ -108,7 +112,7 @@ cd frontend
 npm run dev
 ```
 
-The Vite dev server proxies `/api` requests to `http://localhost:8081/`.
+The Vite dev server runs on `http://localhost:5173/` and proxies `/api` requests to `http://localhost:8081/`.
 
 Once the app is running, open `http://localhost:8081/` to use the bundled frontend by default, or use the value of `PORT` if you override it.
 
