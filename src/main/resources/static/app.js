@@ -8,7 +8,8 @@ const SCHEDULED_TYPES = ["INTERVIEW", "ONLINE_ASSESSMENT", "CALL", "IN_PERSON_AS
 
 const viewMeta = {
     overview: { eyebrow: "Workspace pulse", title: "Overview" },
-    pipeline: { eyebrow: "Execution lane", title: "Pipeline" },
+    pipeline: { eyebrow: "Execution lane", title: "Applications" },
+    application: { eyebrow: "Focused record", title: "Application workspace" },
     library: { eyebrow: "Reusable assets", title: "Library" },
     calendar: { eyebrow: "Export and sync", title: "Calendar" },
     account: { eyebrow: "Identity and access", title: "Account" },
@@ -58,7 +59,7 @@ async function init() {
     populateStaticSelects();
     bindEvents();
     switchAuthMode("login");
-    setView("overview");
+    applyRouteState(parseRoute());
 
     if (!state.token) {
         render();
@@ -95,6 +96,7 @@ function cacheDom() {
     dom.views = {
         overview: document.getElementById("overviewView"),
         pipeline: document.getElementById("pipelineView"),
+        application: document.getElementById("applicationView"),
         library: document.getElementById("libraryView"),
         calendar: document.getElementById("calendarView"),
         account: document.getElementById("accountView"),
@@ -121,6 +123,7 @@ function cacheDom() {
     dom.selectedStatus = document.getElementById("selectedStatus");
     dom.saveStatusButton = document.getElementById("saveStatusButton");
     dom.deleteApplicationButton = document.getElementById("deleteApplicationButton");
+    dom.backToPipelineButton = document.getElementById("backToPipelineButton");
     dom.selectedApplicationSummary = document.getElementById("selectedApplicationSummary");
     dom.timelineList = document.getElementById("timelineList");
     dom.matchingPanel = document.getElementById("matchingPanel");
@@ -167,15 +170,17 @@ function populateStaticSelects() {
 }
 
 function bindEvents() {
+    window.addEventListener("hashchange", handleHashChange);
     dom.loginModeButton.addEventListener("click", () => switchAuthMode("login"));
     dom.signupModeButton.addEventListener("click", () => switchAuthMode("signup"));
     dom.loginForm.addEventListener("submit", handleLogin);
     dom.signupForm.addEventListener("submit", handleSignup);
     dom.logoutButton.addEventListener("click", logout);
     dom.refreshButton.addEventListener("click", refreshActiveView);
+    dom.backToPipelineButton.addEventListener("click", () => navigateToView("pipeline"));
 
     dom.navButtons.forEach((button) => {
-        button.addEventListener("click", () => setView(button.dataset.view));
+        button.addEventListener("click", () => navigateToView(button.dataset.view));
     });
 
     dom.sourceForm.addEventListener("submit", handleCreateSource);
@@ -285,20 +290,16 @@ async function authenticate(email, password) {
 
 async function bootstrapWorkspace() {
     state.user = await apiJson("/api/auth/me");
-    state.activeView = "overview";
     await Promise.all([
         loadReferences(),
         loadOverview(),
         loadApplications(0)
     ]);
-    if (state.selectedApplicationId) {
-        await loadSelectedApplication(state.selectedApplicationId);
-    } else if (state.applications.content.length > 0) {
-        await loadSelectedApplication(state.applications.content[0].id);
-    }
+    await syncSelectedApplicationForRoute(parseRoute());
     if (isAdmin()) {
         await loadAdmin();
     }
+    await applyRoute(parseRoute());
     render();
 }
 
@@ -307,14 +308,11 @@ async function refreshActiveView() {
         await loadReferences();
         await loadOverview();
         await loadApplications(state.applications.number);
-        if (state.selectedApplicationId) {
-            await loadSelectedApplication(state.selectedApplicationId);
-        } else if (state.applications.content.length > 0) {
-            await loadSelectedApplication(state.applications.content[0].id);
-        }
+        await syncSelectedApplicationForRoute(parseRoute());
         if (isAdmin()) {
             await loadAdmin();
         }
+        await applyRoute(parseRoute());
         render();
         showToast("Workspace refreshed", "The latest backend data is now on screen.", "success");
     } catch (error) {
@@ -331,12 +329,145 @@ function setView(viewName) {
     });
 
     dom.navButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.view === viewName);
+        const isApplicationsNav = viewName === "pipeline" || viewName === "application";
+        const active = button.dataset.view === viewName || (isApplicationsNav && button.dataset.view === "pipeline");
+        button.classList.toggle("is-active", active);
     });
 
     const meta = viewMeta[viewName];
     dom.viewEyebrow.textContent = meta.eyebrow;
     dom.viewTitle.textContent = meta.title;
+}
+
+function parseRoute() {
+    const cleanedHash = window.location.hash.replace(/^#\/?/, "");
+    if (!cleanedHash) {
+        return { view: "overview", applicationId: null };
+    }
+
+    const [section, value] = cleanedHash.split("/");
+    switch (section) {
+        case "overview":
+            return { view: "overview", applicationId: null };
+        case "applications":
+            return value
+                ? { view: "application", applicationId: value }
+                : { view: "pipeline", applicationId: null };
+        case "library":
+            return { view: "library", applicationId: null };
+        case "calendar":
+            return { view: "calendar", applicationId: null };
+        case "account":
+            return { view: "account", applicationId: null };
+        case "admin":
+            return { view: "admin", applicationId: null };
+        default:
+            return { view: "overview", applicationId: null };
+    }
+}
+
+function buildRouteHash(viewName, options = {}) {
+    switch (viewName) {
+        case "pipeline":
+            return "#/applications";
+        case "application":
+            return options.applicationId ? `#/applications/${options.applicationId}` : "#/applications";
+        case "library":
+            return "#/library";
+        case "calendar":
+            return "#/calendar";
+        case "account":
+            return "#/account";
+        case "admin":
+            return "#/admin";
+        case "overview":
+        default:
+            return "#/overview";
+    }
+}
+
+function applyRouteState(route) {
+    const fallbackView = route.view === "application" ? "application" : route.view;
+    setView(viewMeta[fallbackView] ? fallbackView : "overview");
+}
+
+async function applyRoute(route = parseRoute()) {
+    let nextView = route.view;
+    let nextApplicationId = route.applicationId || state.selectedApplicationId;
+
+    if (nextView === "admin" && !isAdmin()) {
+        nextView = "overview";
+    }
+
+    if (nextView === "application") {
+        if (!nextApplicationId) {
+            nextView = "pipeline";
+        } else if (state.selectedApplicationId !== nextApplicationId || !state.selectedApplication) {
+            try {
+                await loadSelectedApplication(nextApplicationId);
+            } catch (error) {
+                nextView = "pipeline";
+                nextApplicationId = null;
+                showToast("Application unavailable", error.message, "error");
+            }
+        }
+    }
+
+    setView(nextView);
+    syncRouteHash(nextView, nextApplicationId);
+}
+
+async function handleHashChange() {
+    applyRouteState(parseRoute());
+    if (!state.token) {
+        render();
+        return;
+    }
+
+    try {
+        await applyRoute(parseRoute());
+        render();
+    } catch (error) {
+        showToast("Navigation failed", error.message, "error");
+    }
+}
+
+async function syncSelectedApplicationForRoute(route) {
+    const routeApplicationId = route.view === "application" ? route.applicationId : null;
+    const preferredApplicationId = routeApplicationId || state.selectedApplicationId || state.applications.content[0]?.id || null;
+
+    if (!preferredApplicationId) {
+        clearSelectedApplication();
+        return;
+    }
+
+    try {
+        await loadSelectedApplication(preferredApplicationId);
+    } catch (error) {
+        if (routeApplicationId && state.applications.content[0]?.id && routeApplicationId !== state.applications.content[0].id) {
+            await loadSelectedApplication(state.applications.content[0].id);
+            return;
+        }
+        clearSelectedApplication();
+    }
+}
+
+function syncRouteHash(viewName, applicationId = null) {
+    const nextHash = buildRouteHash(viewName, { applicationId });
+    if (window.location.hash !== nextHash) {
+        window.history.replaceState(null, "", nextHash);
+    }
+}
+
+function navigateToView(viewName, options = {}) {
+    const nextHash = buildRouteHash(viewName, options);
+    if (window.location.hash === nextHash) {
+        applyRoute(parseRoute()).then(render).catch((error) => {
+            showToast("Navigation failed", error.message, "error");
+        });
+        return;
+    }
+    window.location.hash = nextHash;
 }
 
 async function loadOverview() {
@@ -964,8 +1095,7 @@ async function handleCreateApplication(event) {
         await loadApplications(0);
         await loadOverview();
         await loadSelectedApplication(created.id);
-        renderOverview();
-        renderPipeline();
+        navigateToView("application", { applicationId: created.id });
     }, "Application created");
 }
 
@@ -976,7 +1106,7 @@ async function handleApplicationListClick(event) {
     }
     await runMutation(async () => {
         await loadSelectedApplication(button.dataset.id);
-        renderPipeline();
+        navigateToView("application", { applicationId: button.dataset.id });
     }, null);
 }
 
@@ -1019,8 +1149,8 @@ async function handleDeleteApplication() {
         } else if (state.applications.content[0]) {
             await loadSelectedApplication(state.applications.content[0].id);
         }
-        renderOverview();
-        renderPipeline();
+        const nextApplicationId = state.selectedApplicationId || state.applications.content[0]?.id || null;
+        navigateToView(nextApplicationId ? "application" : "pipeline", { applicationId: nextApplicationId });
     }, "Application deleted");
 }
 
@@ -1256,6 +1386,7 @@ function buildCalendarPath(basePath, from = "", to = "") {
 function logout() {
     clearSession();
     switchAuthMode("login");
+    syncRouteHash("overview");
     render();
 }
 
