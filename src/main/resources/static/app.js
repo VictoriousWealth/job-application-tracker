@@ -891,7 +891,7 @@ async function handleCreateSource(event) {
         await loadReferences();
         renderReferenceSelects();
         renderLibrary();
-    }, "Source added");
+    }, "Source ready");
 }
 
 async function handleCreateLocation(event) {
@@ -907,7 +907,7 @@ async function handleCreateLocation(event) {
         await loadReferences();
         renderReferenceSelects();
         renderLibrary();
-    }, "Location added");
+    }, "Location ready");
 }
 
 async function handleCreateResume(event) {
