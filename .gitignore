@@ -50,3 +50,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Frontend
+frontend/node_modules/
