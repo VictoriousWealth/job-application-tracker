@@ -13,7 +13,7 @@ This package contains cross-cutting runtime configuration for the application.
 - `JpaAuditingConfig` and `AuditorAwareImpl`: entity auditing support
 - `OpenApiConfig`: generated API documentation configuration
 - `ApiResponseFactory`: shared API response construction support
-- same-origin public asset handling for `/`, `/index.html`, `/app.js`, and `/styles.css`
+- same-origin public asset handling for `/`, `/index.html`, and the compiled `/assets/**` frontend bundle
 
 ## Runtime Expectations
 
