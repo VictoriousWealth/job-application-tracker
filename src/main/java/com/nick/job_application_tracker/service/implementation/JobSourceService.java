@@ -39,10 +39,10 @@ public class JobSourceService {
     }
 
     public JobSourceResponseDTO createSource(JobSourceCreateDTO createDTO) {
-        jobSourceRepository.findByNameIgnoreCaseAndDeletedFalse(createDTO.getName())
-            .ifPresent(existing -> {
-                throw new ConflictException("Job source already exists");
-            });
+        Optional<JobSource> existingSource = jobSourceRepository.findByNameIgnoreCaseAndDeletedFalse(createDTO.getName());
+        if (existingSource.isPresent()) {
+            return mapper.toResponseDTO(existingSource.get());
+        }
 
         JobSource source = mapper.toEntity(createDTO);
         JobSource savedSource = jobSourceRepository.save(source);
