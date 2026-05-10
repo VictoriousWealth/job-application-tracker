@@ -12,8 +12,9 @@ This directory collects the repository-level documentation for the current syste
 - [../README.md](../README.md): project overview
 - [../HELP.md](../HELP.md): developer setup and quickstart
 - [../CVREADME.md](../CVREADME.md): concise architecture summary
+- [../frontend/README.md](../frontend/README.md): frontend source and build workflow
+- [../src/main/resources/README.md](../src/main/resources/README.md): runtime resources and compiled frontend output
 - [../scripts/README.md](../scripts/README.md): utility scripts
-- [../src/main/resources/static/README.md](../src/main/resources/static/README.md): bundled frontend overview
 
 ## Package-Level Documentation
 
