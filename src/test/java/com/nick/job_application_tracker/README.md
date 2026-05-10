@@ -21,4 +21,4 @@ The repository tests should verify:
 
 ## Current State Note
 
-The maintained suite is behavior-focused: controller slice tests, service tests for computed workflows, smoke tests for bootstrapping, end-to-end integration coverage for secured user journeys, and frontend-shell smoke tests for the bundled client.
+The maintained suite is behavior-focused: controller slice tests, service tests for computed workflows, smoke tests for bootstrapping, end-to-end integration coverage for secured user journeys, and frontend-shell smoke tests for the compiled client bundle served by Spring Boot.
