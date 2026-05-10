@@ -10,7 +10,7 @@ The repository is organized as a layered Spring Boot application with a bundled 
 - persistence layer: repositories and ownership-aware query logic
 - domain layer: JPA entities and enums
 - platform layer: security, JWT, auditing, logging, OpenAPI, and exception handling
-- presentation layer: static frontend assets under `src/main/resources/static`
+- presentation layer: React/Vite frontend source under `frontend/` and compiled assets under `src/main/resources/static`
 
 The application is API-first and can serve its bundled frontend, additional clients, automation scripts, or later integrations without exposing persistence concerns directly.
 
@@ -25,7 +25,7 @@ The primary request path is:
 5. Repositories load and persist entities.
 6. Mappers convert entities into response DTOs.
 7. The handler layer turns exceptions into stable API error responses.
-8. The bundled frontend renders or updates workspace state from the returned JSON.
+8. The bundled React frontend updates route state and screen data from the returned JSON.
 
 ## Package Responsibilities
 
@@ -98,15 +98,25 @@ Contains cross-cutting platform concerns:
 - logging filter
 - JPA auditing
 - OpenAPI generation
-- public asset allowlisting for the bundled frontend shell
+- public asset allowlisting for `/`, `/index.html`, and the compiled `/assets/**` frontend bundle
+
+### `frontend`
+
+Contains the browser UI source:
+
+- `index.html`: Vite entry shell
+- `src/main.jsx`: React entry point
+- `src/App.jsx`: routed workspace UI, API calls, and screen composition
+- `src/styles.css`: visual system and responsive layout
+- `vite.config.js`: dev-server proxy and production build output configuration
 
 ### `src/main/resources/static`
 
-Contains the zero-build browser client:
+Contains the compiled frontend bundle served by Spring Boot:
 
-- `index.html`: app shell
-- `styles.css`: visual system and layout
-- `app.js`: client-side state, fetch logic, and rendering
+- `index.html`: generated production app shell
+- `assets/*.js`: compiled React bundle
+- `assets/*.css`: compiled styles
 
 ### `handler`
 
@@ -141,7 +151,7 @@ The application should support:
 - profile-based environment configuration
 - pageable collection endpoints
 - testable service and repository boundaries
-- a same-origin frontend that can use the secured API without a second deployment artifact
+- a same-origin frontend that can use the secured API without a second production deployment artifact
 
 ## Current State Note
 
