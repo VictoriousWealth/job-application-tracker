@@ -33,3 +33,7 @@ The source tree also includes focused READMEs for the main application packages:
 ## Scope Note
 
 These docs describe the implemented system, its architecture, and the direction for future expansion. Use them as the current operating reference, while still treating deployment, UX, and scaling concerns as separate workstreams.
+
+## Product demo
+
+[Responsive desktop, tablet and phone videos](../README.md#responsive-video-demo) show the application workflow with fictional data.
