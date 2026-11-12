@@ -6,6 +6,23 @@ This repository is a Spring Boot job application tracking system with both the b
 
 The repository now implements the documented core workflows, secured API surface, bundled frontend workspace, extended read models, and behavior-focused test suite. The remaining work is mostly operational hardening, browser-level UX polish, or future product expansion, not structural rework.
 
+## Responsive video demo
+
+[![Watch the 22-second JobTrackr demo](./docs/videos/desktop.jpg)](./docs/videos/desktop.mp4)
+
+Watch: [Desktop (16:9)](./docs/videos/desktop.mp4) · [Tablet (4:3)](./docs/videos/tablet.mp4) · [Phone (9:16)](./docs/videos/mobile.mp4)
+
+Application queue → focused record → status update → calendar and follow-ups. All three editions use the real React frontend at their corresponding responsive layouts: 1440×900 desktop, 1024×768 tablet and 390×844 phone. Smaller layouts stack panels and move navigation above the content; captures are scrolled to the relevant sections.
+
+These edited demos use fictional applications and local fixture responses, not a production backend session or real applicant data. GitHub README video versions are selected manually.
+
+<details>
+<summary>Media credits</summary>
+
+[Music and sound-effect credits](./docs/videos/credits.txt).
+
+</details>
+
 ## Core Capabilities
 
 - User signup, login, session/token lifecycle, and profile management
