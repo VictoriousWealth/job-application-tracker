@@ -1,0 +1,4 @@
+Music: Happy Beats / Business Moves Vol.12 by Sascha Ende, https://ende.app/en — CC BY 4.0 https://creativecommons.org/licenses/by/4.0/ ; trimmed to 22 seconds with gain and fades.
+Sound effects: Kenney, CC0.
+UI: JobTrackr React frontend, job-application-tracker repository; isolated fictional application data.
+Device framing adapted from Hyperframes browser-device-stage (MIT).
